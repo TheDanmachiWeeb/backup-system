@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using System;
 
-namespace backup_system
+namespace BackupSystem
 {
     public class MyContext : DbContext
     {
