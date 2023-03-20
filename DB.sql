@@ -1,79 +1,79 @@
 USE 3b1_podskalskyjakub_db1;
 
 CREATE TABLE Users (
-  user_id int PRIMARY KEY AUTO_INCREMENT,
+  userId int PRIMARY KEY AUTO_INCREMENT,
   username varchar(255) UNIQUE NOT NULL,
-  password_hash varchar(255) NOT NULL
+  passwordHash varchar(255) NOT NULL
 );
 
 CREATE TABLE Stations (
-  station_id int PRIMARY KEY AUTO_INCREMENT,
-  station_name varchar(255) NOT NULL,
-  ip_address varchar(45) NOT NULL,
-  mac_address varchar(17) NOT NULL,
+  stationId int PRIMARY KEY AUTO_INCREMENT,
+  stationName varchar(255) NOT NULL,
+  ipAddress varchar(45) NOT NULL,
+  macAddress varchar(17) NOT NULL,
   active Bit NOT NULL
 );
 
 CREATE TABLE Groups (
-  group_id int PRIMARY KEY AUTO_INCREMENT,
-  group_name varchar(255)
+  groupId int PRIMARY KEY AUTO_INCREMENT,
+  groupName varchar(255)
 );
 
 CREATE TABLE StationGroup (
-  station_id int NOT NULL,
-  group_id int NOT NULL,
-  PRIMARY KEY(station_id, group_id)
+  stationId int NOT NULL,
+  groupId int NOT NULL,
+  PRIMARY KEY(stationId, groupId)
 );
 
 CREATE TABLE Configurations (
-  config_id int PRIMARY KEY AUTO_INCREMENT,
-  backup_type enum('full', 'diff', 'inc') NOT NULL,
+  configId int PRIMARY KEY AUTO_INCREMENT,
+  backupType enum('full', 'diff', 'inc') NOT NULL,
   retention int NOT NULL,
-  package_size int,
-  period_cron varchar(255)
+  packageSize int,
+  periodCron varchar(255)
 );
 
 CREATE TABLE BackupSources (
-  config_id int NOT NULL,
-  source_path varchar(255) NOT NULL
+  configId int NOT NULL,
+  sourcePath varchar(255) NOT NULL
 );
 
 CREATE TABLE BackupDestinations (
-  config_id int NOT NULL,
-  destination_type enum('local', 'network', 'ftp') NOT NULL,
-  destination_path varchar(255) NOT NULL
+  configId int NOT NULL,
+  destinationType enum('local', 'network', 'ftp') NOT NULL,
+  destinationPath varchar(255) NOT NULL
 );
 
 CREATE TABLE StationConfiguration (
-  station_id int NOT NULL,
-  group_id int,
-  config_id int NOT NULL,
-  PRIMARY KEY(station_id, config_id)
+  stationId int NOT NULL,
+  groupId int,
+  configId int NOT NULL,
+  PRIMARY KEY(stationId, configId)
 );
 
 CREATE TABLE Reports (
-  report_id int PRIMARY KEY AUTO_INCREMENT,
-  station_id int NOT NULL,
-  config_id int NOT NULL,
-  report_time datetime NOT NULL,
-  backup_size bigint NOT NULL,
+  reportId int PRIMARY KEY AUTO_INCREMENT,
+  stationId int NOT NULL,
+  configId int NOT NULL,
+  reportTime datetime NOT NULL,
+  backupSize bigint NOT NULL,
   success Bit NOT NULL
 );
 
-ALTER TABLE StationGroup ADD FOREIGN KEY (station_id) REFERENCES Stations (station_id);
+ALTER TABLE StationGroup ADD FOREIGN KEY (stationId) REFERENCES Stations (stationId);
 
-ALTER TABLE StationGroup ADD FOREIGN KEY (group_id) REFERENCES Groups (group_id);
+ALTER TABLE StationGroup ADD FOREIGN KEY (groupId) REFERENCES Groups (groupId);
 
-ALTER TABLE BackupSources ADD FOREIGN KEY (config_id) REFERENCES Configurations (config_id);
+ALTER TABLE BackupSources ADD FOREIGN KEY (configId) REFERENCES Configurations (configId);
 
-ALTER TABLE BackupDestinations ADD FOREIGN KEY (config_id) REFERENCES Configurations (config_id);
+ALTER TABLE BackupDestinations ADD FOREIGN KEY (configId) REFERENCES Configurations (configId);
 
-ALTER TABLE StationConfiguration ADD FOREIGN KEY (station_id) REFERENCES Stations (station_id);
+ALTER TABLE StationConfiguration ADD FOREIGN KEY (stationId) REFERENCES Stations (stationId);
 
-ALTER TABLE StationConfiguration ADD FOREIGN KEY (group_id) REFERENCES Groups (group_id);
+ALTER TABLE StationConfiguration ADD FOREIGN KEY (groupId) REFERENCES Groups (groupId);
 
-ALTER TABLE StationConfiguration ADD FOREIGN KEY (config_id) REFERENCES Configurations (config_id);
+ALTER TABLE StationConfiguration ADD FOREIGN KEY (configId) REFERENCES Configurations (configId);
 
-ALTER TABLE Reports ADD FOREIGN KEY (station_id) REFERENCES Stations (station_id);
+ALTER TABLE Reports ADD FOREIGN KEY (stationId) REFERENCES Stations (stationId);
 
-ALTER TABLE Reports ADD FOREIGN KEY (config_id) REFERENCES Configurations (config_id);
+ALTER TABLE Reports ADD FOREIGN KEY (configId) REFERENCES Configurations (configId);
