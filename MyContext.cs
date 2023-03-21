@@ -8,6 +8,7 @@ namespace BackupSystem
     public class MyContext : DbContext
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<Station> Stations { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

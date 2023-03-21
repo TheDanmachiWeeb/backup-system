@@ -36,8 +36,8 @@ namespace BackupSystem.Controllers
         [HttpPost]
         public async Task<ActionResult<List<User>>> Post([FromBody] User req)
         {
-            var user = await context.Users.Where(u => u.Username == req.Username).FirstOrDefaultAsync();
-            if (user?.Username == req.Username)
+            var userDb = await context.Users.Where(u => u.Username == req.Username).FirstOrDefaultAsync();
+            if (userDb != null)
                 return BadRequest("User already exists.");
 
             context.Users.Add(req);

@@ -7,13 +7,13 @@ public partial class Station
 {
     public int StationId { get; set; }
 
-    public string StationName { get; set; } = null!;
+    public string? StationName { get; set; }
 
-    public string IpAddress { get; set; } = null!;
+    public string? IpAddress { get; set; } 
 
-    public string MacAddress { get; set; } = null!;
+    public string? MacAddress { get; set; } 
 
-    public ulong Active { get; set; }
+    public bool Active { get; set; }
 
     public virtual ICollection<Report> Reports { get; } = new List<Report>();
 
