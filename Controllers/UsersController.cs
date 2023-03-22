@@ -41,7 +41,7 @@ namespace BackupSystem.Controllers
                 return BadRequest("User already exists.");
 
             context.Users.Add(req);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
             return Ok(req);
         }
