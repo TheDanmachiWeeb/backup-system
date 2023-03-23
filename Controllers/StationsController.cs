@@ -6,7 +6,10 @@ using Org.BouncyCastle.Ocsp;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace BackupSystem.Controllers
+
+
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class StationsController : ControllerBase
@@ -17,24 +20,70 @@ namespace BackupSystem.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Station>>> Get()
         {
-            return Ok(await context.Stations.ToListAsync());
+            var stations = await context.Stations
+                .Select(s => new Station
+                {
+                    StationId = s.StationId,
+                    StationName = s.StationName,
+                    IpAddress = s.IpAddress,
+                    MacAddress = s.MacAddress,
+                    Active = s.Active,
+                    Groups = s.StationGroups
+                        .Select(sg => new Group
+                        {
+                            GroupId = sg.GroupId,
+                            GroupName = sg.Group!.GroupName
+                        })
+                        .ToList()
+                })
+                .ToListAsync();
+
+            return Ok(stations);
         }
 
         // GET api/<StationsController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<List<Station>>> Get(int id)
+        public async Task<ActionResult<Station>> Get(int id)
         {
-            var station = await context.Stations.FindAsync(id);
+            var station = await context.Stations
+                .Where(s => s.StationId == id)
+                .Select(s => new Station
+                {
+                    StationId = s.StationId,
+                    StationName = s.StationName,
+                    IpAddress = s.IpAddress,
+                    MacAddress = s.MacAddress,
+                    Active = s.Active,
+                    Groups = s.StationGroups
+                        .Select(sg => new Group
+                        {
+                            GroupId = sg.GroupId,
+                            GroupName = sg.Group!.GroupName
+                        })
+                        .ToList(),
+                    Configurations = s.StationConfigurations
+                        .Select(sc => new Configuration
+                        {
+                            ConfigId = sc.ConfigId,
+                            ConfigName = sc.Config.ConfigName,
+                            BackupType = sc.Config.BackupType,
+                            Retention = sc.Config.Retention,
+                            PackageSize = sc.Config.PackageSize,
+                            PeriodCron = sc.Config.PeriodCron,
+                        })
+                        .ToList()
+                })
+                .FirstOrDefaultAsync();
 
             if (station == null)
-                return NotFound("Station with this ID not found.");
+                return NotFound();
 
             return Ok(station);
         }
 
         // POST api/<StationsController>
         [HttpPost]
-        public async Task<ActionResult<List<Station>>> Post([FromBody] Station req)
+        public async Task<ActionResult<Station>> Post([FromBody] Station req)
         {
             var stationDb = await context.Stations.Where(s => s.MacAddress == req.MacAddress).FirstOrDefaultAsync();
             if (stationDb != null)
@@ -62,6 +111,7 @@ namespace BackupSystem.Controllers
             await context.SaveChangesAsync();
 
             return Ok(await context.Stations.ToListAsync());
+       
         }
 
         // DELETE api/<StationsController>/5

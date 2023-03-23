@@ -5,15 +5,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BackupSystem.Models;
 
-public partial class StationConfiguration
+public partial class StationGroup
 {
     public int StationId { get; set; }
 
     public int GroupId { get; set; }
-
-    public int ConfigId { get; set; }
-
-    public virtual Configuration Config { get; set; } = null!;
 
     public virtual Group Group { get; set; } = null!;
 

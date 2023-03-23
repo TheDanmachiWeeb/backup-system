@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace BackupSystem.Models;
 
 public partial class BackupDestination
 {
-    public int ConfigId { get; set; }
+    public int ConfigId  {get; set; }
 
     public string DestinationType { get; set; } = null!;
 

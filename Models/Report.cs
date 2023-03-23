@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace BackupSystem.Models;
 
@@ -13,9 +14,9 @@ public partial class Report
 
     public DateTime ReportTime { get; set; }
 
-    public long BackupSize { get; set; }
+    public ulong BackupSize { get; set; }
 
-    public ulong Success { get; set; }
+    public Boolean Success { get; set; }
 
     public virtual Configuration Config { get; set; } = null!;
 
