@@ -111,17 +111,27 @@ namespace BackupSystem.Controllers
             await context.SaveChangesAsync();
 
             return Ok(await context.Stations.ToListAsync());
-       
         }
 
         // DELETE api/<StationsController>/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<List<Station>>> Delete(int id)
         {
-            var station = await context.Stations.FindAsync(id);
+            // Find the existing station record
+            Station? station = await context.Stations.FindAsync(id);
+
             if (station == null)
                 return NotFound("Station with this ID not found.");
 
+            // Delete existing StationConfiguration records for the station
+            var existingStationConfigs = await context.StationConfiguration.Where(sc => sc.StationId == station.StationId).ToListAsync();
+            context.StationConfiguration.RemoveRange(existingStationConfigs);
+
+            // Delete existing StationGroup records for the station
+            var existingStationGroups = await context.StationGroup.Where(sg => sg.StationId == station.StationId).ToListAsync();
+            context.StationGroup.RemoveRange(existingStationGroups);
+
+            // Delete the station record
             context.Stations.Remove(station);
 
             await context.SaveChangesAsync();

@@ -1,7 +1,9 @@
 ﻿using BackupSystem.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System;
+using System.Diagnostics;
 using System.Reflection.Emit;
 
 namespace BackupSystem
@@ -28,40 +30,115 @@ namespace BackupSystem
                 throw new InvalidOperationException("MY_CONNECTION_STRING environment variable is not set.");
 
             optionsBuilder.UseMySQL(connectionString);
+            optionsBuilder.EnableSensitiveDataLogging();
         }
+
+        
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Define primary keys
+            //Define primary keys
             modelBuilder.Entity<Configuration>().HasKey(c => c.ConfigId);
-            modelBuilder.Entity<BackupSource>().HasKey(bs => bs.ConfigId);
-            modelBuilder.Entity<BackupDestination>().HasKey(bd => bd.ConfigId);
+            modelBuilder.Entity<BackupSource>().HasKey(bs => new { bs.ConfigId, bs.SourcePath});
+            modelBuilder.Entity<BackupDestination>().HasKey(bd =>new { bd.ConfigId, bd.DestinationPath });
             modelBuilder.Entity<Group>().HasKey(g => g.GroupId);
-            modelBuilder.Entity<StationConfiguration>().HasKey(sc => new { sc.StationId, sc.ConfigId, sc.GroupId });
+            modelBuilder.Entity<StationConfiguration>().HasKey(sc => new { sc.StationId, sc.ConfigId });
             modelBuilder.Entity<StationGroup>().HasKey(sg => new { sg.StationId, sg.GroupId });
             modelBuilder.Entity<Station>().HasKey(s => s.StationId);
             modelBuilder.Entity<Report>().HasKey(r => r.ReportId);
             modelBuilder.Entity<User>().HasKey(u => u.UserId);
 
-            //// Define foreign key relationships
-            //modelBuilder.Entity<BackupSources>()
-            //    .HasOne(bs => bs.Configuration)
-            //    .WithMany(c => c.BackupSources)
-            //    .HasForeignKey(bs => bs.configId)
-            //    .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<BackupDestination>()
+            .HasOne(bd => bd.Config)
+            .WithMany(c => c.BackupDestinations)
+            .HasForeignKey(bd => bd.ConfigId);
+            modelBuilder.Entity<BackupSource>()
+            .HasOne(bs => bs.Config)
+            .WithMany(c => c.BackupSources)
+            .HasForeignKey(bs => bs.ConfigId);
 
-            //modelBuilder.Entity<BackupDestinations>()
-            //    .HasOne(bd => bd.Configuration)
-            //    .WithMany(c => c.BackupDestinations)
-            //    .HasForeignKey(bd => bd.configId)
-            //    .OnDelete(DeleteBehavior.Cascade);
+
+
+            //modelBuilder.Entity<StationConfiguration>().ToTable("StationConfiguration");
+
+            //modelBuilder.Entity<Configuration>()
+            //    .HasMany(c => c.StationConfigurations)
+            //    .WithOne(sc => sc.Config)
+            //    .HasForeignKey(sc => sc.ConfigId);
+
+            //modelBuilder.Entity<Group>()
+            //    .HasMany(g => g.StationConfigurations)
+            //    .WithOne(sc => sc.Group)
+            //    .HasForeignKey(sc => sc.GroupId);
+
+
+            //modelBuilder.Entity<Configuration>()
+            //    .HasMany(c => c.Stations)
+            //    .WithMany(s => s.Configurations)
+            //    .UsingEntity<StationConfiguration>(
+            //            /*"StationConfiguration",*/ // Specify the join table name
+            //        j => j.HasOne(sc => sc.Station).WithMany(),
+            //        j => j.HasOne(sc => sc.Config).WithMany());
+
+            //modelBuilder.Entity<StationConfiguration>()
+            //    .HasKey(sc => new { sc.ConfigId, sc.StationId });
+
+            //modelBuilder.Entity<StationConfiguration>()
+            //    .HasOne<Configuration>(sc => sc.Config)
+            //    .WithMany(s => s.StationConfigurations)
+            //    .HasForeignKey(sc => sc.ConfigId);
+
+            //modelBuilder.Entity<StationConfiguration>()
+            //    .HasOne<Station>(sc => sc.Station)
+            //    .WithMany(s => s.StationConfigurations)
+            //    .HasForeignKey(sc => sc.StationId);
+
+            //modelBuilder.Entity<StationConfiguration>()
+            //    .HasKey(sc => new { sc.ConfigId, sc.GroupId, sc.StationId });
+
+            //modelBuilder.Entity<StationConfiguration>()
+            //    .HasOne(sc => sc.Config)
+            //    .WithMany(c => c.StationConfigurations)
+            //    .HasForeignKey(sc => sc.ConfigId);
+
+            //modelBuilder.Entity<StationConfiguration>()
+            //    .HasOne(sc => sc.Group)
+            //    .WithMany(g => g.StationConfigurations)
+            //    .HasForeignKey(sc => sc.GroupId);
 
             //modelBuilder.Entity<StationConfiguration>()
             //    .HasOne(sc => sc.Station)
             //    .WithMany(s => s.StationConfigurations)
-            //    .HasForeignKey(sc => sc.stationId);
+            //    .HasForeignKey(sc => sc.StationId);
 
 
+            //modelBuilder.Entity<StationConfiguration>()
+            //    .HasMany<Group>(sc => sc.Groups)
+            //    .WithMany(g => g.StationConfigurations)
+            //    .UsingEntity<StationGroup>(
+            //        sg => sg.HasOne(sg => sg.Group).WithMany(),
+            //        sg => sg.HasOne(sg => sg.Station).WithMany(),
+            //        sg => sg.HasKey(sg => new { sg.StationId, sg.GroupId })
+            //    );
         }
+
+
+        // Define foreign key relationships
+        //modelBuilder.Entity<BackupSource>()
+        //    .HasOne(bs => bs.Config)
+        //    .WithMany(c => c.BackupSources)
+        //    .HasForeignKey(bs => bs.ConfigId)
+        //    .OnDelete(DeleteBehavior.Cascade);
+
+        //modelBuilder.Entity<BackupDestinations>()
+        //    .HasOne(bd => bd.Configuration)
+        //    .WithMany(c => c.BackupDestinations)
+        //    .HasForeignKey(bd => bd.configId)
+        //    .OnDelete(DeleteBehavior.Cascade);
+
+
+
     }
 }
