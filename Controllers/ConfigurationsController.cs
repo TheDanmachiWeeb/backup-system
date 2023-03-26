@@ -6,6 +6,7 @@ using System.Linq;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Diagnostics;
 using static Org.BouncyCastle.Math.EC.ECCurve;
+using Newtonsoft.Json;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -51,32 +52,57 @@ namespace BackupSystem.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> Get(int id)
         {
-            var config = await context.Configurations.Where(c => c.ConfigId == id)
-                .Select(c => new
-                {
-                    c.ConfigName,
-                    c.BackupType,
-                    c.Retention,
-                    c.PackageSize,
-                    c.PeriodCron,
-                    BackupSources = c.BackupSources!
-                .Select(bc => bc.SourcePath).ToList(),
-                    BackupDestinations = c.BackupDestinations!
-                .Select(bd => new
-                {
-                    type = bd.DestinationType,
-                    DestinationPath = bd.DestinationPath
-                }).ToList(),
-                    Groups = c.StationConfigurations!
-                .Select(sc => sc.GroupId ?? 0).Where(g => g != 0).ToList(),
-                    Stations = c.StationConfigurations!
-                .Select(sc => sc.StationId).ToList()
-                }).ToListAsync();
+
+            var config = await context.Configurations
+    .Include(c => c.BackupSources)
+    .Include(c => c.BackupDestinations)
+    .Include(c => c.StationConfigurations)
+        .ThenInclude(sc => sc.Group)
+    .Include(c => c.StationConfigurations)
+        .ThenInclude(sc => sc.Station)
+    .FirstOrDefaultAsync(c => c.ConfigId == id);
 
             if (config == null)
                 return NotFound();
 
-            return Ok(config);
+            var settings = new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            };
+            string json = JsonConvert.SerializeObject(config, settings);
+
+            // Return the created group with the added stations as JSON
+            return Content(json, "application/json");
+
+            //return Ok(config);
+
+
+            //var config = await context.Configurations.Where(c => c.ConfigId == id)
+            //    .Select(c => new
+            //    {
+            //        c.ConfigName,
+            //        c.BackupType,
+            //        c.Retention,
+            //        c.PackageSize,
+            //        c.PeriodCron,
+            //        BackupSources = c.BackupSources!
+            //    .Select(bc => bc.SourcePath).ToList(),
+            //        BackupDestinations = c.BackupDestinations!
+            //    .Select(bd => new
+            //    {
+            //        type = bd.DestinationType,
+            //        DestinationPath = bd.DestinationPath
+            //    }).ToList(),
+            //        Groups = c.StationConfigurations!
+            //    .Select(sc => sc.GroupId ?? 0).Where(g => g != 0).ToList(),
+            //        Stations = c.StationConfigurations!
+            //    .Select(sc => sc.StationId).ToList()
+            //    }).ToListAsync();
+
+            //if (config == null)
+            //    return NotFound();
+
+            //return Ok(config);
         }
 
 
