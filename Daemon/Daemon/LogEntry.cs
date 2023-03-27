@@ -8,8 +8,8 @@ namespace Daemon
 {
       public class LogEntry
     {
-        public string SourcePath { get; set; }
-        public string DestinationPath { get; set; }
+        public List<String> SourcePaths { get; set; }
+        public List<String> DestinationPaths { get; set; }
 
     }
 }

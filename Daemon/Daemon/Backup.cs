@@ -20,27 +20,40 @@ namespace Daemon
         public void PerformBackup(BackupConfiguration config)
         {
             this.Config = config;
-            string sourcePath = config.SourcePath;
-            string destinationPath = config.DestinationPath;
+            List<string> sourcePaths = config.SourcePaths; Console.WriteLine(sourcePaths.Count);
+            List<string> destinationPaths = config.DestinationPaths; Console.WriteLine(destinationPaths.Count);
             BackupType backupType = config.BackupType;
-          
 
-            switch (backupType)
+
+            for (int i = 0; i < sourcePaths.Count; i++)
             {
-                case BackupType.Full:
-                    PerformFullBackup(sourcePath, destinationPath);
-                    break;
-                case BackupType.Differential:
-                    PerformDifferentialBackup(sourcePath, destinationPath);
-                    break;
-                case BackupType.Incremental:
-                    PerformIncrementalBackup(sourcePath, destinationPath);
-                    break;
-                default:
-                    Console.WriteLine("Invalid backup type.");
-                    break;
+                for (int j = 0; j < destinationPaths.Count; j++)
+                {
+                    string sourcePath = sourcePaths[i];
+                    string destinationPath = destinationPaths[j];
+
+                    switch (backupType)
+                    {
+                        case BackupType.Full:
+                            PerformFullBackup(sourcePath, destinationPath);
+                            break;
+                        case BackupType.Differential:
+                            PerformDifferentialBackup(sourcePath, destinationPath);
+                            break;
+                        case BackupType.Incremental:
+                            PerformIncrementalBackup(sourcePath, destinationPath);
+                            break;
+                        default:
+                            Console.WriteLine("Invalid backup type.");
+                            break;    
+                    }
+                    logger.LogBackup(config);
+                }
+             
             }
-            logger.LogBackup(config);
+
+
+           
         }
 
         private void PerformFullBackup(string sourcePath, string destinationPath)

@@ -8,7 +8,7 @@ namespace Daemon
 {
     public class BackupReport
     {
-        public string GenerateSummaryReport(List<LogEntry> logEntries)
+        public string GenerateBackupReport(List<LogEntry> logEntries)
         {
             string totalOperations = logEntries.Count.ToString();
 

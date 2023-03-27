@@ -8,8 +8,8 @@ namespace Daemon
 {
     public class BackupConfiguration
     {
-        public string SourcePath { get; set; }
-        public string DestinationPath { get; set; }
+        public List<String> SourcePaths { get; set; }
+        public List<String> DestinationPaths { get; set; }
         public BackupType BackupType { get; set; }
         public string LastBackupPath { get; set; }
     }

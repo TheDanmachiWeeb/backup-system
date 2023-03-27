@@ -14,8 +14,8 @@ namespace Daemon
         {
             LogEntry logEntry = new LogEntry
             {
-                SourcePath = config.SourcePath,
-                DestinationPath = config.DestinationPath,
+                SourcePaths = config.SourcePaths,
+                DestinationPaths = config.DestinationPaths,
             };
 
             LogEntries.Add(logEntry);
