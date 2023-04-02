@@ -6,162 +6,139 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using System.Security.Cryptography.X509Certificates;
+using System.Runtime.CompilerServices;
+using static System.Net.WebRequestMethods;
+using File = System.IO.File;
 
 namespace Daemon
 {
     public class Backup
     {
-        int i = 0;
         public BackupLogger logger = new BackupLogger();
-        BackupConfiguration Config;
+        private BackupConfiguration Config;
+        private BackupType type;
+        private string backupFolder;
+        private DateTime BackupStartTime;
+        public Snapshot snapshot;
+        private DateTime lastBackupTime;
+        private DateTime lastFullBackupTime;
+
+        private FileManager fileManager = new FileManager();
+
 
 
         public void PerformBackup(BackupConfiguration config)
         {
-            this.Config = config;
-            List<string> sourcePaths = config.SourcePaths; Console.WriteLine(sourcePaths.Count);
-            List<string> destinationPaths = config.DestinationPaths; Console.WriteLine(destinationPaths.Count);
-            BackupType backupType = config.BackupType;
+            string filename = "Snapshot_" + config.ID.ToString();
+            string directoryname = "Snapshots";
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, directoryname, filename);
 
-
-            for (int i = 0; i < sourcePaths.Count; i++)
+            if (File.Exists(filePath))
             {
-                for (int j = 0; j < destinationPaths.Count; j++)
-                {
-                    string sourcePath = sourcePaths[i];
-                    string destinationPath = destinationPaths[j];
+                snapshot = fileManager.ReadSnapshot(config);
+                Console.WriteLine(snapshot.Data[0]);
+                Console.WriteLine(snapshot.Data[1]);
+                lastFullBackupTime = DateTime.Parse(snapshot.Data[0]);
+                lastBackupTime = DateTime.Parse(snapshot.Data[0]);
+            }
 
-                    switch (backupType)
-                    {
-                        case BackupType.Full:
-                            PerformFullBackup(sourcePath, destinationPath);
-                            break;
-                        case BackupType.Differential:
-                            PerformDifferentialBackup(sourcePath, destinationPath);
-                            break;
-                        case BackupType.Incremental:
-                            PerformIncrementalBackup(sourcePath, destinationPath);
-                            break;
-                        default:
-                            Console.WriteLine("Invalid backup type.");
-                            break;    
-                    }
+            this.Config = config;
+            this.type = config.BackupType;
+            List<string> sourcePaths = config.SourcePaths; 
+            List<string> destinationPaths = config.DestinationPaths;
+            BackupStartTime = DateTime.Now;
+
+            for (int sID = 0; sID < sourcePaths.Count; sID++)
+            {
+                for (int dID = 0; dID < destinationPaths.Count; dID++)
+                {
+                    string sourcePath = sourcePaths[sID];
+                    string destinationPath = destinationPaths[dID];
+                    ProcessBackup(sourcePath, destinationPath, type);
                     logger.LogBackup(config);
                 }
-             
-            }
-
-
-           
-        }
-
-        private void PerformFullBackup(string sourcePath, string destinationPath)
-        {
-            string backupFolder = Path.Combine(destinationPath, "FullBackup_" + DateTime.Now.ToString("yyyyMMddHHmmss"));
-            Directory.CreateDirectory(backupFolder);
-
-            string[] filesToBackup = Directory.GetFiles(sourcePath, "*", SearchOption.AllDirectories);
-
-            foreach (string file in filesToBackup)
-            {
-                string relativePath = file.Substring(sourcePath.Length + 1);
-                string backupFilePath = Path.Combine(backupFolder, relativePath);
-
-                string backupDirectory = Path.GetDirectoryName(backupFilePath);
-                if (!Directory.Exists(backupDirectory))
+                if (type != BackupType.Differential)
                 {
-                    Directory.CreateDirectory(backupDirectory);
-                }
-
-                File.Copy(file, backupFilePath, true);
+                    Config.LastBackupPath = backupFolder;
+                } 
             }
-
-            Config.LastBackupPath = backupFolder;
-
-            Console.WriteLine("Full backup completed: {0} files backed up.", filesToBackup.Length);
-         
         }
 
-        private void PerformDifferentialBackup(string sourcePath, string destinationPath)
+        private void ProcessBackup(string sourcePath, string destinationPath, BackupType backupType)
         {
-            Console.WriteLine(Config.LastBackupPath);
-            if (!Directory.Exists(Config.LastBackupPath))
+            string LastFullBackup = Config.LastBackupPath;
+            string LastBackupPath = Config.LastBackupPath;
+
+            if ((backupType == BackupType.Differential || backupType == BackupType.Incremental) && !Directory.Exists(LastFullBackup))
             {
                 Console.WriteLine("Full backup does not exist > I will create one");
-                PerformFullBackup(sourcePath, destinationPath);
+                type = BackupType.Full;
+                ProcessBackup(sourcePath, destinationPath, BackupType.Full);
                 return;
             }
 
-            string fullBackupDir = Config.LastBackupPath;
-            DateTime lastBackupTime = File.GetLastWriteTime(fullBackupDir);
-            string backupFolder = Path.Combine(destinationPath, "DifferentialBackup_" + DateTime.Now.ToString("yyyyMMddHHmmss"));
+            backupFolder = Path.Combine(destinationPath, backupType +"Backup_" + BackupStartTime.ToString("yyyy-MM-dd-HH-mm-ss"));
             Directory.CreateDirectory(backupFolder);
-
             string[] filesToBackup = Directory.GetFiles(sourcePath, "*", SearchOption.AllDirectories);
 
-            foreach (string file in filesToBackup)
+            if (backupType == BackupType.Differential) 
             {
-                DateTime fileLastModified = File.GetLastWriteTime(file);
-
-                if (fileLastModified > lastBackupTime)
+                
+                foreach (string file in filesToBackup)
                 {
-                    string relativePath = file.Substring(sourcePath.Length + 1);
-                    string backupFilePath = Path.Combine(backupFolder, relativePath);
+                    DateTime fileLastModified = File.GetLastWriteTime(file);
 
-                    string backupDirectory = Path.GetDirectoryName(backupFilePath);
-                    if (!Directory.Exists(backupDirectory))
+                    if (fileLastModified > lastFullBackupTime)
                     {
-                        Directory.CreateDirectory(backupDirectory);
+                        MyCopy(sourcePath, file, backupFolder);
                     }
-
-                    File.Copy(file, backupFilePath, true);
                 }
             }
-
-            Console.WriteLine("Differential backup completed: {0} files backed up.", filesToBackup.Length);
-
-        }
-
-        private void PerformIncrementalBackup(string sourcePath, string destinationPath)
-        {
-            string lastBackupPath = Config.LastBackupPath;
-
-            if (!Directory.Exists(lastBackupPath))
+            else if (backupType == BackupType.Incremental)
             {
-                Console.WriteLine("No bAckup exists > I will create one");
-                PerformFullBackup(sourcePath, destinationPath);
-                return;
+                foreach (string file in filesToBackup)
+                {
+                    DateTime fileLastModified = File.GetLastWriteTime(file);
+
+                    if (fileLastModified > lastBackupTime)
+                    {
+                        MyCopy(sourcePath, file, backupFolder);
+                    }
+                }
+                CreateSnapshot(Config);
             }
+            else
+            {
+                foreach (string file in filesToBackup)
+                {
+                    MyCopy(sourcePath, file, backupFolder);
+                }
+                CreateSnapshot(Config);
+            }
+
+            Console.WriteLine("{1} backup completed: {0} files backed up.", filesToBackup.Length, backupType);
             
-            DateTime lastBackupTime = File.GetLastWriteTime(lastBackupPath);
-            string backupFolder = Path.Combine(destinationPath, "IncrementalBackup_" + DateTime.Now.ToString("yyyyMMddHHmmss"));
-            Directory.CreateDirectory(backupFolder);
+        }
+        private void MyCopy(string sourcePath, string file, string backupFolder)
+        {
+            string relativePath = file.Substring(sourcePath.Length + 1);
+            string backupFilePath = Path.Combine(backupFolder, relativePath);
 
-            string[] filesToBackup = Directory.GetFiles(sourcePath, "*", SearchOption.AllDirectories);
-
-            foreach (string file in filesToBackup)
+            string backupDirectory = Path.GetDirectoryName(backupFilePath);
+            if (!Directory.Exists(backupDirectory))
             {
-                DateTime fileLastModified = File.GetLastWriteTime(file);
-
-                if (fileLastModified > lastBackupTime)
-                {
-                    string relativePath = file.Substring(sourcePath.Length + 1);
-                    string backupFilePath = Path.Combine(backupFolder, relativePath);
-
-                    string backupDirectory = Path.GetDirectoryName(backupFilePath);
-                    if (!Directory.Exists(backupDirectory))
-                    {
-                        Directory.CreateDirectory(backupDirectory);
-                    }
-
-                    File.Copy(file, backupFilePath, true);
-                }
+                Directory.CreateDirectory(backupDirectory);
             }
 
-
-            Console.WriteLine("Incremental backup completed: {0} files backed up.", filesToBackup.Length);
-            Config.LastBackupPath = backupFolder;
+            File.Copy(file, backupFilePath, true);
+        }
+        
+        private void CreateSnapshot(BackupConfiguration config)
+        {
+            DateTime fileLastModified = BackupStartTime;
+            string[] info = new string[] { fileLastModified.ToString(), config.ID.ToString()! };
+            Snapshot snapshot = new Snapshot(info);
+            fileManager.SaveSnapshot(Config, snapshot);
         }
     }
 }
