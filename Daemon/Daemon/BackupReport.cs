@@ -16,6 +16,6 @@ namespace Daemon
             sb.AppendLine($"Total operations performed: {totalOperations}");
 
             return sb.ToString();
-        }
+        } 
     }
 }
