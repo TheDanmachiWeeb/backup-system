@@ -5,6 +5,8 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Diagnostics;
 using System.Reflection.Emit;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace BackupSystem
 {
@@ -33,10 +35,6 @@ namespace BackupSystem
             optionsBuilder.EnableSensitiveDataLogging();
         }
 
-        
-
-
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //Define primary keys
@@ -58,6 +56,37 @@ namespace BackupSystem
             .HasOne(bs => bs.Config)
             .WithMany(c => c.BackupSources)
             .HasForeignKey(bs => bs.ConfigId);
+
+            modelBuilder.Entity<StationConfiguration>()
+                .HasKey(sc => new { sc.StationId, sc.ConfigId, sc.GroupId });
+
+            modelBuilder.Entity<StationConfiguration>()
+                .HasOne(sc => sc.Config)
+                .WithMany(c => c.StationConfigurations)
+                .HasForeignKey(sc => sc.ConfigId);
+
+            modelBuilder.Entity<StationConfiguration>()
+                .HasOne(sc => sc.Group)
+                .WithMany(g => g.StationConfigurations)
+                .HasForeignKey(sc => sc.GroupId);
+
+            modelBuilder.Entity<StationConfiguration>()
+                .HasOne(sc => sc.Station)
+                .WithMany(s => s.StationConfigurations)
+                .HasForeignKey(sc => sc.StationId);
+
+            modelBuilder.Entity<StationGroup>()
+                .HasKey(sg => new { sg.StationId, sg.GroupId });
+
+            modelBuilder.Entity<StationGroup>()
+                .HasOne(sg => sg.Station)
+                .WithMany(s => s.StationGroups)
+                .HasForeignKey(sg => sg.StationId);
+
+            modelBuilder.Entity<StationGroup>()
+                .HasOne(sg => sg.Group)
+                .WithMany(g => g.StationGroups)
+                .HasForeignKey(sg => sg.GroupId);
 
 
 

@@ -4,11 +4,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 
-namespace BackupSystem.Models;
+namespace BackupSystem.Dtos;
 
-public partial class BackupSource
+public partial class BackupSourceDto
 {
-    public int ConfigId { get; set; }
     public string SourcePath { get; set; } = null!;
-    public virtual Configuration Config { get; set; } = null!;
 }

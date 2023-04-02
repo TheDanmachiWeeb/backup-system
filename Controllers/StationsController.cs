@@ -1,7 +1,10 @@
 ﻿using BackupSystem.Models;
+using BackupSystem.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Ocsp;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -9,34 +12,36 @@ namespace BackupSystem.Controllers
 
 
 {
-
     [Route("api/[controller]")]
     [ApiController]
     public class StationsController : ControllerBase
     {
+
         private MyContext context = new MyContext();
 
         // GET: api/<StationsController>
         [HttpGet]
-        public async Task<ActionResult<List<Station>>> Get()
+        public async Task<ActionResult<List<Station>>> Get([FromQuery] List<string> include)
         {
-            var stations = await context.Stations
-                .Select(s => new Station
+            var stations = await context.Stations.Select(s => new
+            {
+                StationId = s.StationId,
+                StationName = s.StationName,
+                Groups = include.Contains("Groups") ? s.StationGroups.Select(sg => new GroupDto
                 {
-                    StationId = s.StationId,
-                    StationName = s.StationName,
-                    IpAddress = s.IpAddress,
-                    MacAddress = s.MacAddress,
-                    Active = s.Active,
-                    Groups = s.StationGroups
-                        .Select(sg => new Group
-                        {
-                            GroupId = sg.GroupId,
-                            GroupName = sg.Group!.GroupName
-                        })
-                        .ToList()
-                })
-                .ToListAsync();
+                    GroupId = sg.Group.GroupId,
+                    GroupName = sg.Group.GroupName
+                }).ToList() : null,
+                Configs = include.Contains("Configs") ? s.StationConfigurations.Select(sc => new ConfigurationDto
+                {
+                    ConfigId = sc.Config.ConfigId,
+                    ConfigName = sc.Config.ConfigName,
+                    BackupType = sc.Config.BackupType,
+                    Retention = sc.Config.Retention,
+                    PackageSize = sc.Config.PackageSize,
+                    PeriodCron = sc.Config.PeriodCron,
+                }).ToList() : null
+            }).ToListAsync();
 
             return Ok(stations);
         }
@@ -47,7 +52,7 @@ namespace BackupSystem.Controllers
         {
             var station = await context.Stations
                 .Where(s => s.StationId == id)
-                .Select(s => new Station
+                .Select(s => new
                 {
                     StationId = s.StationId,
                     StationName = s.StationName,
@@ -55,14 +60,14 @@ namespace BackupSystem.Controllers
                     MacAddress = s.MacAddress,
                     Active = s.Active,
                     Groups = s.StationGroups
-                        .Select(sg => new Group
+                        .Select(sg => new GroupDto
                         {
                             GroupId = sg.GroupId,
                             GroupName = sg.Group!.GroupName
                         })
                         .ToList(),
-                    Configurations = s.StationConfigurations
-                        .Select(sc => new Configuration
+                    Configs = s.StationConfigurations
+                        .Select(sc => new ConfigurationDto
                         {
                             ConfigId = sc.ConfigId,
                             ConfigName = sc.Config.ConfigName,
@@ -70,8 +75,21 @@ namespace BackupSystem.Controllers
                             Retention = sc.Config.Retention,
                             PackageSize = sc.Config.PackageSize,
                             PeriodCron = sc.Config.PeriodCron,
-                        })
-                        .ToList()
+                            BackupSources = sc.Config.BackupSources
+                                .Where(bd => bd.ConfigId == sc.Config.ConfigId)
+                                .Select(bd => new BackupSourceDto
+                                {
+                                    SourcePath = bd.SourcePath,
+                                }).ToList(),
+                            BackupDestinations = sc.Config.BackupDestinations
+                                .Where(bd => bd.ConfigId == sc.Config.ConfigId)
+                                .Select(bd => new BackupDestinationDto
+                                {
+                                    DestinationPath = bd.DestinationPath,
+                                    DestinationType = bd.DestinationType
+                                }).ToList()
+                        }).ToList()
+                        
                 })
                 .FirstOrDefaultAsync();
 
@@ -81,15 +99,11 @@ namespace BackupSystem.Controllers
             return Ok(station);
         }
 
-        // POST api/<StationsController>
+        //// POST api/<StationsController>
         [HttpPost]
         public async Task<ActionResult<Station>> Post([FromBody] Station req)
         {
-            var stationDb = await context.Stations.Where(s => s.MacAddress == req.MacAddress).FirstOrDefaultAsync();
-            if (stationDb != null)
-                return BadRequest("Station already exists.");
-
-            context.Stations.Add(req);
+            await context.Stations.AddAsync(req);
             await context.SaveChangesAsync();
 
             return Ok(req);

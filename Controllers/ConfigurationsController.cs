@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using BackupSystem.Models;
+using BackupSystem.Dtos;
 using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Ocsp;
 using System.Linq;
@@ -21,28 +22,43 @@ namespace BackupSystem.Controllers
         private MyContext context = new MyContext();
         // GET: api/<ConfigurationsController>
         [HttpGet]
-        public async Task<ActionResult> Get()
+        public async Task<ActionResult> Get([FromQuery] List<string> include)
         {
             var configs = await context.Configurations
                 .Select(c => new
                 {
-                    c.ConfigName,
-                    c.BackupType,
-                    c.Retention,
-                    c.PackageSize,
-                    c.PeriodCron,
-                    BackupSources = c.BackupSources!
-                .Select(bc => bc.SourcePath).ToList(),
-                    BackupDestinations = c.BackupDestinations!
-                .Select(bd => new
-                {
-                    type = bd.DestinationType,
-                    destinationPath = bd.DestinationPath
-                }).ToList(),
-                    Groups = c.StationConfigurations!
-                .Select(sc => sc.GroupId ?? 0).Where(g => g != 0).ToList(),
-                    Stations = c.StationConfigurations!
-                .Select(sc => sc.StationId).ToList()
+                    ConfigId = c.ConfigId,
+                    ConfigName = c.ConfigName,
+                    BackupType = c.BackupType,
+                    Retention = c.Retention,
+                    PackageSize = c.PackageSize,
+                    PeriodCron = c.PeriodCron,
+                    BackupSources = c.BackupSources
+                        .Select(bs => new
+                        {
+                            SourcePath = bs.SourcePath
+                        })
+                        .ToList(),
+                    BackupDestinations = c.BackupDestinations
+                        .Select(bs => new
+                        {
+                            DestinationPath = bs.DestinationPath,
+                            DestinationType = bs.DestinationType
+                        })
+                        .ToList(),
+                    Groups = include.Contains("Groups") ? c.StationConfigurations!
+                        .ToList().Select(sc => new
+                        {
+                            GroupId = sc.GroupId,
+                            GroupName = sc.Group!.GroupName
+                        }).ToList() : null,
+                    Stations = include.Contains("Stations") ? c.StationConfigurations!
+                        .ToList().Select(sc => new
+                        {
+                            StationId = sc.StationId,
+                            StationName = sc.Station.StationName
+                        }).ToList() : null
+
                 }).ToListAsync();
 
             return Ok(configs);
@@ -53,62 +69,53 @@ namespace BackupSystem.Controllers
         public async Task<ActionResult> Get(int id)
         {
 
-            var config = await context.Configurations
-    .Include(c => c.BackupSources)
-    .Include(c => c.BackupDestinations)
-    .Include(c => c.StationConfigurations)
-        .ThenInclude(sc => sc.Group)
-    .Include(c => c.StationConfigurations)
-        .ThenInclude(sc => sc.Station)
-    .FirstOrDefaultAsync(c => c.ConfigId == id);
+            var config = await context.Configurations.Where(c => c.ConfigId == id)
+                .Select(c => new
+                {
+                    ConfigId = c.ConfigId,
+                    ConfigName = c.ConfigName,
+                    BackupType = c.BackupType,
+                    Retention = c.Retention,
+                    PackageSize = c.PackageSize,
+                    PeriodCron = c.PeriodCron,
+                    BackupSources = c.BackupSources
+                        .Select(bs => new
+                        {
+                            SourcePath = bs.SourcePath
+                        })
+                        .ToList(),
+                    BackupDestinations = c.BackupDestinations
+                        .Select(bs => new
+                        {
+                            DestinationPath = bs.DestinationPath,
+                            DestinationType = bs.DestinationType
+                        })
+                        .ToList(),
+                    Groups = c.StationConfigurations!
+                        .Select(sc => new
+                        {
+                            GroupId = sc.GroupId,
+                            GroupName = sc.Group!.GroupName
+                        }).ToList(),
+                    Stations = c.StationConfigurations!
+                       .Select(sc => new
+                       {
+                           StationId = sc.StationId,
+                           StationName = sc.Station.StationName
+                       }).ToList()
+
+                }).ToListAsync();
 
             if (config == null)
                 return NotFound();
 
-            var settings = new JsonSerializerSettings
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            };
-            string json = JsonConvert.SerializeObject(config, settings);
-
-            // Return the created group with the added stations as JSON
-            return Content(json, "application/json");
-
-            //return Ok(config);
-
-
-            //var config = await context.Configurations.Where(c => c.ConfigId == id)
-            //    .Select(c => new
-            //    {
-            //        c.ConfigName,
-            //        c.BackupType,
-            //        c.Retention,
-            //        c.PackageSize,
-            //        c.PeriodCron,
-            //        BackupSources = c.BackupSources!
-            //    .Select(bc => bc.SourcePath).ToList(),
-            //        BackupDestinations = c.BackupDestinations!
-            //    .Select(bd => new
-            //    {
-            //        type = bd.DestinationType,
-            //        DestinationPath = bd.DestinationPath
-            //    }).ToList(),
-            //        Groups = c.StationConfigurations!
-            //    .Select(sc => sc.GroupId ?? 0).Where(g => g != 0).ToList(),
-            //        Stations = c.StationConfigurations!
-            //    .Select(sc => sc.StationId).ToList()
-            //    }).ToListAsync();
-
-            //if (config == null)
-            //    return NotFound();
-
-            //return Ok(config);
+            return Ok(config);
         }
 
 
         // POST api/<ConfigurationsController>
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] Configuration req)
+        public async Task<ActionResult> Post([FromBody] ConfigurationDto req)
         {
             // Create new Configuration record
             Configuration config = new Configuration
@@ -123,7 +130,7 @@ namespace BackupSystem.Controllers
             context.Configurations.Add(config);
 
             // Create new BackupSources records
-            foreach (BackupSource source in req.BackupSources)
+            foreach (BackupSourceDto source in req.BackupSources)
             {
                 context.BackupSources.Add(new BackupSource
                 {
@@ -133,7 +140,7 @@ namespace BackupSystem.Controllers
             }
 
             // Create new BackupDestinations records
-            foreach (BackupDestination destination in req.BackupDestinations)
+            foreach (BackupDestinationDto destination in req.BackupDestinations)
             {
                 context.BackupDestinations.Add(new BackupDestination
                 {
@@ -146,7 +153,7 @@ namespace BackupSystem.Controllers
             await context.SaveChangesAsync();
 
             // Create new StationConfiguration records for Groups
-            foreach (Station station in req.Stations)
+            foreach (StationDto station in req.Stations)
             {
                 var dbStation = await context.Stations.Where(s => s.StationId == station.StationId).FirstOrDefaultAsync();
                 if (dbStation == null)
@@ -161,7 +168,7 @@ namespace BackupSystem.Controllers
             }
 
             // Create new StationConfiguration records for Stations
-            foreach (Group group in req.Groups)
+            foreach (GroupDto group in req.Groups)
             {
                 var dbGroup = await context.Groups.Where(g => group.GroupId == g.GroupId).FirstOrDefaultAsync();
                 if (dbGroup == null)
@@ -184,7 +191,7 @@ namespace BackupSystem.Controllers
 
         // PUT api/<ConfigurationsController>/5
         [HttpPut("{id}")]
-        public async Task<ActionResult> Put(int id, [FromBody] Configuration req)
+        public async Task<ActionResult> Put(int id, [FromBody] ConfigurationDto req)
         {
             // Find the existing configuration record
             Configuration? config = await context.Configurations.FindAsync(id);
@@ -207,7 +214,7 @@ namespace BackupSystem.Controllers
             var existingSources = await context.BackupSources.Where(bs => bs.ConfigId == config.ConfigId).ToListAsync();
             context.BackupSources.RemoveRange(existingSources);
 
-            foreach (BackupSource source in req.BackupSources)
+            foreach (BackupSourceDto source in req.BackupSources)
             {
                 context.BackupSources.Add(new BackupSource
                 {
@@ -220,7 +227,7 @@ namespace BackupSystem.Controllers
             var existingDestinations = await context.BackupDestinations.Where(d => d.ConfigId == config.ConfigId).ToListAsync();
             context.BackupDestinations.RemoveRange(existingDestinations);
 
-            foreach (BackupDestination destination in req.BackupDestinations)
+            foreach (BackupDestinationDto destination in req.BackupDestinations)
             {
                 context.BackupDestinations.Add(new BackupDestination
                 {
@@ -231,7 +238,7 @@ namespace BackupSystem.Controllers
             }
 
             // Create new StationConfiguration records for Stations
-            foreach (Station station in req.Stations)
+            foreach (StationDto station in req.Stations)
             {
                 var dbStation = await context.Stations.Where(s => s.StationId == station.StationId).FirstOrDefaultAsync();
                 if (dbStation == null)
@@ -246,7 +253,7 @@ namespace BackupSystem.Controllers
             }
 
             // Create new StationConfiguration records for Groups
-            foreach (Group group in req.Groups)
+            foreach (GroupDto group in req.Groups)
             {
                 var dbGroup = await context.Groups.Where(g => group.GroupId == g.GroupId).FirstOrDefaultAsync();
                 if (dbGroup == null)
@@ -259,7 +266,7 @@ namespace BackupSystem.Controllers
                     Config = config,
                     StationId = s.StationId,
                     GroupId = s.GroupId
-                })); 
+                }));
             }
 
             await context.SaveChangesAsync();
