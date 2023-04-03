@@ -1,0 +1,34 @@
+<div class="bg-blue-100 rounded-lg p-4">
+    <h2 class="text-2xl font-bold mb-4">Stations</h2>
+    <table class="table-auto">
+      <thead>
+        <tr>
+          <th class="px-4 py-2">Name</th>
+          <th class="px-4 py-2">IP Address</th>
+          <th class="px-4 py-2">MAC Address</th>
+          <th class="px-4 py-2">Active</th>
+          <th class="px-4 py-2">Last Backup</th>
+          <th class="px-4 py-2">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let station of stations">
+          <td class="border px-4 py-2">{{ station.name }}</td>
+          <td class="border px-4 py-2">{{ station.ipAddress }}</td>
+          <td class="border px-4 py-2">{{ station.macAddress }}</td>
+          <td class="border px-4 py-2">
+            <span [ngClass]="station.active ? 'bg-green-500 text-white px-2 py-1 rounded-md' : 'bg-red-500 text-white px-2 py-1 rounded-md'">
+              {{ station.active ? 'Active' : 'Inactive' }}
+            </span>
+          </td>
+          <td class="border px-4 py-2">{{ station.lastBackup }}</td>
+          <td class="border px-4 py-2">
+            <span [ngClass]="station.status === 'OK' ? 'bg-green-500 text-white px-2 py-1 rounded-md' : station.status === 'Warning' ? 'bg-yellow-500 text-white px-2 py-1 rounded-md' : 'bg-red-500 text-white px-2 py-1 rounded-md'">
+              {{ station.status }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
