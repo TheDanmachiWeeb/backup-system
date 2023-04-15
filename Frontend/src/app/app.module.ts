@@ -7,6 +7,10 @@ import { HeaderComponent } from './header/header.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { StationsComponent } from './stations/stations.component';
+import { AddStationComponent } from './stations/add-station/add-station.component';
+import { GroupComponent } from './group/group.component';
+import { AddUserComponent } from './users/add-user/add-user.component';
+import { UsersComponent } from './users/users.component';
 
 
 @NgModule({
@@ -16,6 +20,13 @@ import { StationsComponent } from './stations/stations.component';
     SidebarComponent,
     DashboardComponent,
     StationsComponent,
+    AddStationComponent,
+    GroupComponent,
+    AddUserComponent,
+    UsersComponent,
+    
+  
+    
   ],
   imports: [
     BrowserModule,

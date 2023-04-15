@@ -1,0 +1,28 @@
+<div class="bg-blue-100 rounded-lg p-4">
+    <h2 class="text-2xl font-bold mb-4 mt-4 text-left">Users</h2>
+    <table class="table-auto">
+        <thead>
+            <tr>
+                <th class="px-4 py-2">Userame</th>
+                <th class="px-4 py-2">Email</th>
+                <th class="px-4 py-2">Password</th>
+                <th class="px-4 py-2">Description</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let User of users">
+                <td class="border px-4 py-2">{{ User.username }}</td>
+                <td class="border px-4 py-2">{{ User.email }}</td>
+                <td class="border px-4 py-2">{{ User.password }}</td>
+                <td class="border px-4 py-2">{{ User.description }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<a  routerLink="/addUser" class=" w-1/6 flex items-center text-cyan-950 py-3 px-6 bg-blue-200 hover:bg-blue-300 transition duration-500 ease-in-out rounded-xl mt-4">
+    <i class="fas fa-plus mr-4"></i>
+    Add User
+  </a>
+
