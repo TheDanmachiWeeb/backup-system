@@ -1,0 +1,25 @@
+
+<div class="bg-blue-100 rounded-lg p-4">
+    <h2 class="text-2xl font-bold mb-4 mt-4 text-left">Conffigs</h2>
+    <table class="table-auto">
+        <thead>
+            <tr>
+                <th class="px-4 py-2">Name</th>
+                <th class="px-4 py-2">Type</th>
+                <th class="px-4 py-2">Station count</th>
+                <th class="px-4 py-2">Description</th>
+                <th class="px-4 py-2">Destination</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let Config of configs">
+                <td class="border px-4 py-2">{{ Config.name }}</td>
+                <td class="border px-4 py-2">{{ Config.type }}</td>
+                <td class="border px-4 py-2">{{ Config.stationCount }}</td>
+                <td class="border px-4 py-2">{{ Config.description }}</td>
+                <td class="border px-4 py-2">{{ Config.destination }}</td>
+
+            </tr>
+        </tbody>
+    </table>
+</div>

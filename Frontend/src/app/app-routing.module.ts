@@ -6,6 +6,7 @@ import { AddStationComponent } from './stations/add-station/add-station.componen
 import { GroupComponent } from './group/group.component'; 
 import { AddUserComponent } from './users/add-user/add-user.component';
 import { UsersComponent } from './users/users.component';
+import { ConfigsComponent } from './configs/configs.component';
 
 
 
@@ -16,7 +17,8 @@ const routes: Routes = [
   { path: 'addStation', component: AddStationComponent},
   { path: 'group', component: GroupComponent},
   { path: 'addUser', component: AddUserComponent},
-  { path: 'Users', component: UsersComponent}
+  { path: 'Users', component: UsersComponent},
+  { path: 'configs', component: ConfigsComponent},
 ];
 
 @NgModule({

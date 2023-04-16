@@ -11,6 +11,7 @@ import { AddStationComponent } from './stations/add-station/add-station.componen
 import { GroupComponent } from './group/group.component';
 import { AddUserComponent } from './users/add-user/add-user.component';
 import { UsersComponent } from './users/users.component';
+import { ConfigsComponent } from './configs/configs.component';
 
 
 @NgModule({
@@ -24,6 +25,7 @@ import { UsersComponent } from './users/users.component';
     GroupComponent,
     AddUserComponent,
     UsersComponent,
+    ConfigsComponent,
     
   
     
