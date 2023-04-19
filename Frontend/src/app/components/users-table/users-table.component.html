@@ -1,0 +1,18 @@
+<table class="min-w-full divide-y divide-gray-200">
+    <thead class="bg-gray-50">
+      <tr>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-200">
+      <tr *ngFor="let item of users">
+        <td class="px-6 py-4 whitespace-nowrap">{{item.username}}</td>
+        <td class="px-6 py-4 whitespace-nowrap">{{item.email}}</td>
+      </tr>
+      <tr>
+        <td class="px-6 py-4 whitespace-nowrap">JaneDoe</td>
+        <td class="px-6 py-4 whitespace-nowrap">janedoe@example.com</td>
+      </tr>
+    </tbody>
+  </table>
