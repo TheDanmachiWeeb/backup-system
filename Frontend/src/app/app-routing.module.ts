@@ -12,9 +12,7 @@ import {SettingsPageComponent} from './pages/settings-page/settings-page.compone
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: DashboardPageComponent }, // Redirect to the dashboard component
   { path: 'stations', component: StationsListPageComponent},
-  
-
-];
+]
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
