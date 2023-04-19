@@ -10,6 +10,7 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { UsersListPageComponent } from './pages/users-list-page/users-list-page.component';
 import {HttpClientModule} from "@angular/common/http";
 import { DashboardPageComponent } from './pages/dashboard-page/dashboard-page.component';
+import { StationsListPageComponent } from './pages/stations-list-page/stations-list-page.component';
 
 
 @NgModule({
@@ -18,6 +19,7 @@ import { DashboardPageComponent } from './pages/dashboard-page/dashboard-page.co
     SidebarComponent,
     UsersListPageComponent,
     DashboardPageComponent,
+    StationsListPageComponent,
 
   ],
   imports: [
