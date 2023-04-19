@@ -29,7 +29,7 @@ import { UsersTableComponent } from './components/users-table/users-table.compon
     ConfigsListPageComponent,
     ReportsListPageComponent,
     SettingsPageComponent,
-    UsersTableComponent,
+    UsersTableComponent
 
   ],
   imports: [
