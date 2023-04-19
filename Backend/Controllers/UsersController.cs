@@ -54,6 +54,7 @@ namespace BackupSystem.Controllers
             if (user == null)
                 return NotFound();
 
+            user.Email = req.Email;
             user.Username = req.Username;
             user.PasswordHash = req.PasswordHash;
 

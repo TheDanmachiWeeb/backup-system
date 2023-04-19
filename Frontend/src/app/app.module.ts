@@ -1,38 +1,30 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HeaderComponent } from './header/header.component';
-import { SidebarComponent } from './sidebar/sidebar.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { StationsComponent } from './stations/stations.component';
-import { AddStationComponent } from './stations/add-station/add-station.component';
-import { GroupComponent } from './group/group.component';
-import { AddUserComponent } from './users/add-user/add-user.component';
-import { UsersComponent } from './users/users.component';
-import { ConfigsComponent } from './configs/configs.component';
+
+
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { UsersListPageComponent } from './pages/users-list-page/users-list-page.component';
+import {HttpClientModule} from "@angular/common/http";
+import { DashboardPageComponent } from './pages/dashboard-page/dashboard-page.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent,
     SidebarComponent,
-    DashboardComponent,
-    StationsComponent,
-    AddStationComponent,
-    GroupComponent,
-    AddUserComponent,
-    UsersComponent,
-    ConfigsComponent,
-    
-  
-    
+    UsersListPageComponent,
+    DashboardPageComponent,
+
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule,
+    CommonModule
   ],
   providers: [],
   bootstrap: [AppComponent]
