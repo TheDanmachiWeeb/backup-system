@@ -8,14 +8,17 @@ module.exports = {
   ],
   theme: {
     extend: {
+      gradientColorStops: theme => ({
+        'pinky': 'linear-gradient(156deg, #E9DEFA 17.26%, #FBFCDB 100%)',
+      }),
       colors: {
-        primary: '#414C59', // Dark blue
-        secondary: '#E0E6ED', // Light gray
-        tertiary: '#F4F5F7', // Off-white
-        success: '#4CAF50', // Green
-        warning: '#FFC107', // Orange
-        danger: '#FF5252', // Red
+        blacky: '#0F1322',
+        sandy: '#D3B6A2', 
+        cyany: '#63DBE2', 
       },
+      backgroundImage: theme => ({
+        'pinky': theme('gradientColorStops.pinky'),
+      }),
     },
   },
   plugins: [ require('tailwindcss-children'),],
