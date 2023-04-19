@@ -1,2 +1,63 @@
-<p>dashboard-page works!</p>
-<p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p><p>dashboard-page works!</p>
+<h1 class = "text-center" >DASHBOARD</h1>
+
+<div class="flex flex-col md:flex-row gap-4 mt-4">
+  <div class="bg-blue-100 rounded-lg p-4 flex-none">
+    <h2 class="text-3xl font-bold mb-4">Summary</h2>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-blue-200 rounded-lg p-4">
+        <p class="text-lg font-bold mb-2">Total stations</p>
+        <p class="text-2xl">{{ summaryStats.totalStations }}</p>
+      </div>
+      <div class="bg-blue-200 rounded-lg p-4">
+        <p class="text-lg font-bold mb-2">Total groups</p>
+        <p class="text-2xl">{{ summaryStats.totalGroups }}</p>
+      </div>
+      <div class="bg-blue-200 rounded-lg p-4">
+        <p class="text-lg font-bold mb-2">Total configs</p>
+        <p class="text-2xl">{{ summaryStats.totalConfigs }}</p>
+      </div>
+      <div class="bg-blue-200 rounded-lg p-4">
+        <p class="text-lg font-bold mb-2">Total reports</p>
+        <p class="text-2xl">{{ summaryStats.totalReports }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-blue-100 rounded-lg p-4 flex-1">
+    <h2 class="text-3xl font-bold mb-4">Latest backups</h2>
+    <table class="table-auto">
+      <thead>
+        <tr>
+          <th class="px-4 py-2">Station Name</th>
+          <th class="px-4 py-2">Backup Time</th>
+          <th class="px-4 py-2">Backup Type</th>
+          <th class="px-4 py-2">Backup Size</th>
+          <th class="px-4 py-2">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let backup of latestBackups">
+          <td class="border px-4 py-2">{{ backup.stationName }}</td>
+          <td class="border px-4 py-2">{{ backup.backupTime }}</td>
+          <td class="border px-4 py-2">{{ backup.backupType }}</td>
+          <td class="border px-4 py-2">{{ backup.backupSize }}</td>
+          <td class="border px-4 py-2">{{ backup.status }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+  <div class="bg-blue-100 rounded-lg p-4">
+    <h2 class="text-3xl font-bold mb-4">Graph 1</h2>
+    <!-- Add your code for the first graph here -->
+  </div>
+  <div class="bg-blue-100 rounded-lg p-4">
+    <h2 class="text-3xl font-bold mb-4">Graph 2</h2>
+    <!-- Add your code for the second graph here -->
+  </div>
+  <div class="bg-blue-100 rounded-lg p-4">
+    <h2 class="text-3xl font-bold mb-4">Graph 3</h2>
+    </div>
+</div>
