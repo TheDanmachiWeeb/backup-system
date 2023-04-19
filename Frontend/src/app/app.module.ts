@@ -11,6 +11,10 @@ import { UsersListPageComponent } from './pages/users-list-page/users-list-page.
 import {HttpClientModule} from "@angular/common/http";
 import { DashboardPageComponent } from './pages/dashboard-page/dashboard-page.component';
 import { StationsListPageComponent } from './pages/stations-list-page/stations-list-page.component';
+import { GroupsListPageComponent } from './pages/groups-list-page/groups-list-page.component';
+import { ConfigsListPageComponent } from './pages/configs-list-page/configs-list-page.component';
+import { ReportsListPageComponent } from './pages/reports-list-page/reports-list-page.component';
+import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
 
 
 @NgModule({
@@ -20,6 +24,10 @@ import { StationsListPageComponent } from './pages/stations-list-page/stations-l
     UsersListPageComponent,
     DashboardPageComponent,
     StationsListPageComponent,
+    GroupsListPageComponent,
+    ConfigsListPageComponent,
+    ReportsListPageComponent,
+    SettingsPageComponent,
 
   ],
   imports: [
