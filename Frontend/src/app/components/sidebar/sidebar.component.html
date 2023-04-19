@@ -1,31 +1,34 @@
-<aside class="text-center flex flex-col px-10 py-8">
+<aside class="text-center h-screen justify-between flex flex-col px-10 py-8">
     <h1 class="text-2xl font-bold">Backitty</h1>
 
     <div class="flex flex-col text-center items-center">
-        <div class="rounded-full bg-black w-20 h-20"></div>
+        <div class="rounded-full bg-black w-20 h-20 mb-1"></div>
         <p class="text-lg font-semibold">czechcoder</p>
     </div>
     <ul class="flex flex-col children:text-left children:px-4 children:py-2 children:rounded-md">
       <li class="hover:bg-slate-100" routerLink="/dashboard" routerLinkActive="active">
-        <i class="fa-solid fa-house"></i> Dashboard
+        <i class="fa-solid fa-house mr-1.5"></i> Dashboard
       </li>
       <li class="hover:bg-slate-100" routerLink="/StationsListPage" routerLinkActive="active">
-        <i class="fa-solid fa-computer"></i> Stations
+        <i class="fa-solid fa-computer mr-1.5"></i> Stations
       </li>
       <li class="hover:bg-slate-100" routerLink="/groups" routerLinkActive="active">
-        <i class="fa-solid fa-layer-group"></i> Groups
+        <i class="fa-solid fa-layer-group mr-1.5"></i> Groups
       </li>
       <li class="hover:bg-slate-100" routerLink="/configs" routerLinkActive="active">
-        <i class="fa-solid fa-sliders"></i> Configs
+        <i class="fa-solid fa-sliders mr-1.5"></i> Configs
       </li>
       <li class="hover:bg-slate-100" routerLink="/reports" routerLinkActive="active">
-        <i class="fa-solid fa-file"></i> Reports
+        <i class="fa-solid fa-file mr-1.5"></i> Reports
       </li>
       <li class="hover:bg-slate-100" routerLink="/users" routerLinkActive="active">
-        <i class="fa-solid fa-user"></i> Users
+        <i class="fa-solid fa-user mr-1.5"></i> Users
       </li>
       <li class="hover:bg-slate-100" routerLink="/settings" routerLinkActive="active">
-        <i class="fa-solid fa-gear"></i> Settings
+        <i class="fa-solid fa-gear mr-1.5"></i> Settings
+      </li>
+      <li class="hover:bg-slate-100 opacity-60 mt-10" routerLink="/logout" routerLinkActive="active">
+        <i class="fa-solid fa-right-from-bracket mr-1.5"></i> Log out
       </li>
     </ul>
 </aside>
