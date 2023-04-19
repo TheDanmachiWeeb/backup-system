@@ -8,7 +8,7 @@ import { StationsListPageComponent } from './pages/stations-list-page/stations-l
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: DashboardPageComponent }, // Redirect to the dashboard component
-  { path: 'StationsListPage', component: StationsListPageComponent},
+  { path: 'stations', component: StationsListPageComponent},
 
 ];
 
