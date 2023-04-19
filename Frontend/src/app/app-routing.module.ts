@@ -8,7 +8,7 @@ import { GroupsListPageComponent } from './pages/groups-list-page/groups-list-pa
 import { ReportsListPageComponent } from './pages/reports-list-page/reports-list-page.component';
 import {SettingsPageComponent} from './pages/settings-page/settings-page.component'
 
-
+//d
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: DashboardPageComponent }, // Redirect to the dashboard component
   { path: 'stations', component: StationsListPageComponent},
