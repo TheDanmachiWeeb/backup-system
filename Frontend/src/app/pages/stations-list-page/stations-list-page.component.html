@@ -11,7 +11,13 @@
     </tr>
 </thead>
 <tbody>
-    <td>{{ item.email }}</td>
+    <tr *ngFor="let item of data">
+    <td>{{ item.name }}</td>
+    <td>{{ item.ipAdress }}</td>
+    <td>{{ item.active }}</td>
+    <td>{{ item.lastBackup }}</td>
+    <td>{{ item.status }}</td>
+    </tr>
 </tbody>
 </table>
 
