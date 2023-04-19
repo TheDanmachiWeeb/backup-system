@@ -15,6 +15,9 @@ import { GroupsListPageComponent } from './pages/groups-list-page/groups-list-pa
 import { ConfigsListPageComponent } from './pages/configs-list-page/configs-list-page.component';
 import { ReportsListPageComponent } from './pages/reports-list-page/reports-list-page.component';
 import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
+import { SuccessComponent } from './components/backup-status/success/success.component';
+import { FailureComponent } from './components/backup-status/failure/failure.component';
+import { WarningComponent } from './components/backup-status/warning/warning.component';
 
 
 @NgModule({
@@ -28,6 +31,9 @@ import { SettingsPageComponent } from './pages/settings-page/settings-page.compo
     ConfigsListPageComponent,
     ReportsListPageComponent,
     SettingsPageComponent,
+    SuccessComponent,
+    FailureComponent,
+    WarningComponent,
 
   ],
   imports: [
