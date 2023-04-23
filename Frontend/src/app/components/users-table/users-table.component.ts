@@ -24,6 +24,4 @@ export class UsersTableComponent implements OnInit {
   public ngOnInit(): void {
 
   }
-
-
 }

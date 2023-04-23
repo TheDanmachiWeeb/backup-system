@@ -27,6 +27,9 @@ namespace BackupSystem.Controllers
             {
                 StationId = s.StationId,
                 StationName = s.StationName,
+                IpAddress = s.IpAddress,
+                macAddress = s.MacAddress,
+                active = s.Active,
                 Groups = include.Contains("Groups") ? s.StationGroups.Select(sg => new GroupDto
                 {
                     GroupId = sg.Group.GroupId,

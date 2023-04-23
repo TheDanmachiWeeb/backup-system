@@ -16,6 +16,14 @@ import { ConfigsListPageComponent } from './pages/configs-list-page/configs-list
 import { ReportsListPageComponent } from './pages/reports-list-page/reports-list-page.component';
 import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
 import { UsersTableComponent } from './components/users-table/users-table.component';
+import { ButtonComponent } from './components/button/button.component';
+import { UsersEditPageComponent } from './pages/users-edit-page/users-edit-page.component';
+import { UsersCreatePageComponent } from './pages/users-create-page/users-create-page.component';
+import { ConfigsTableComponent } from './components/configs-table/configs-table.component';
+import { GroupsTableComponent } from './components/groups-table/groups-table.component';
+import { StationsTableComponent } from './components/stations-table/stations-table.component';
+import { ReportsTableComponent } from './components/reports-table/reports-table.component';
+
 
 
 @NgModule({
@@ -29,8 +37,14 @@ import { UsersTableComponent } from './components/users-table/users-table.compon
     ConfigsListPageComponent,
     ReportsListPageComponent,
     SettingsPageComponent,
-    UsersTableComponent
-
+    UsersTableComponent,
+    ButtonComponent,
+    UsersEditPageComponent,
+    UsersCreatePageComponent,
+    ConfigsTableComponent,
+    GroupsTableComponent,
+    StationsTableComponent,
+    ReportsTableComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,45 +1,5 @@
-
-<div class="bg-pinky rounded-2xl min-h-screen p-10 m-5">
+<div class="bg-pinky rounded-2xl min-h-full p-10 m-5">
   <h2 class="text-xl font-semibold mb-5">Users</h2>
-  <!-- <app-users-table [users]="data" (edited)="edit($event)" (deleted)="delete($event)"></app-users-table> -->
-  <app-users-table [users]="data"></app-users-table>
-  
-<!-- <div class="card">
-  <div class="card-header">
-    <div class="row align-items-center">
-      <div class="col">
-        Seznam uživatelů
-      </div>
-
-      <div class="col text-end">
-        <a routerLink="/users/edit" class="btn btn-primary">
-          <i class="bi bi-person-plus"></i>
-          Přidat
-        </a>
-      </div>
-    </div>
-  </div>
-  <div class="card-body">
- 
-
-    <table class="table">
-      <thead>
-      <tr>
-        <th>Email</th>
-        <th>Jméno</th>
-        <th>Příjmení</th>
-        <th style="width: 8rem">Akce</th>
-      </tr>
-      </thead>
-    
-      <tbody>
-        <tr>
-          <td> item.email</td>
-        
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div> -->
-
+  <app-button variant="primary" link="" text="Add User"></app-button>
+  <app-users-table [users]="data" (edited)="editUser($event)" (deleted)="deleteUser($event)"></app-users-table>
 </div>
