@@ -78,13 +78,13 @@ namespace BackupSystem.Controllers
                             Retention = sc.Config.Retention,
                             PackageSize = sc.Config.PackageSize,
                             PeriodCron = sc.Config.PeriodCron,
-                            BackupSources = sc.Config.BackupSources
+                            Sources = sc.Config.BackupSources
                                 .Where(bd => bd.ConfigId == sc.Config.ConfigId)
                                 .Select(bd => new BackupSourceDto
                                 {
                                     SourcePath = bd.SourcePath,
                                 }).ToList(),
-                            BackupDestinations = sc.Config.BackupDestinations
+                            Destinations = sc.Config.BackupDestinations
                                 .Where(bd => bd.ConfigId == sc.Config.ConfigId)
                                 .Select(bd => new BackupDestinationDto
                                 {

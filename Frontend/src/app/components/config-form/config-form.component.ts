@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Config } from '../../models/config';
 
 @Component({
@@ -10,6 +10,9 @@ import { Config } from '../../models/config';
 export class ConfigFormComponent {
   @Input()
   form: FormGroup;
+
+  @Input()
+  config: Config;
 
   @Output()
   saved: EventEmitter<any> = new EventEmitter<any>();
@@ -35,5 +38,15 @@ export class ConfigFormComponent {
 
   public delete(): void {
     this.deleted.emit(this.form.value);
+  }
+
+  public deleteStation(id: number): void {
+    this.config.stations = this.config.stations.filter(
+      (s) => s.stationId != id
+    );
+  }
+
+  public deleteGroup(id: number): void {
+    this.config.groups = this.config.groups.filter((s) => s.groupId != id);
   }
 }

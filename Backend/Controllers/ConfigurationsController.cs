@@ -78,17 +78,17 @@ namespace BackupSystem.Controllers
                     Retention = c.Retention,
                     PackageSize = c.PackageSize,
                     PeriodCron = c.PeriodCron,
-                    BackupSources = c.BackupSources
+                    Sources = c.BackupSources
                         .Select(bs => new
                         {
-                            SourcePath = bs.SourcePath
+                            Path = bs.SourcePath
                         })
                         .ToList(),
-                    BackupDestinations = c.BackupDestinations
+                    Destinations = c.BackupDestinations
                         .Select(bs => new
                         {
-                            DestinationPath = bs.DestinationPath,
-                            DestinationType = bs.DestinationType
+                            Path = bs.DestinationPath,
+                            Type = bs.DestinationType
                         })
                         .ToList(),
                     Groups = c.StationConfigurations!
@@ -104,7 +104,7 @@ namespace BackupSystem.Controllers
                            StationName = sc.Station.StationName
                        }).ToList()
 
-                }).ToListAsync();
+                }).FirstOrDefaultAsync();
 
             if (config == null)
                 return NotFound();
@@ -130,7 +130,7 @@ namespace BackupSystem.Controllers
             context.Configurations.Add(config);
 
             // Create new BackupSources records
-            foreach (BackupSourceDto source in req.BackupSources)
+            foreach (BackupSourceDto source in req.Sources)
             {
                 context.BackupSources.Add(new BackupSource
                 {
@@ -140,7 +140,7 @@ namespace BackupSystem.Controllers
             }
 
             // Create new BackupDestinations records
-            foreach (BackupDestinationDto destination in req.BackupDestinations)
+            foreach (BackupDestinationDto destination in req.Destinations)
             {
                 context.BackupDestinations.Add(new BackupDestination
                 {
@@ -214,7 +214,7 @@ namespace BackupSystem.Controllers
             var existingSources = await context.BackupSources.Where(bs => bs.ConfigId == config.ConfigId).ToListAsync();
             context.BackupSources.RemoveRange(existingSources);
 
-            foreach (BackupSourceDto source in req.BackupSources)
+            foreach (BackupSourceDto source in req.Sources)
             {
                 context.BackupSources.Add(new BackupSource
                 {
@@ -227,7 +227,7 @@ namespace BackupSystem.Controllers
             var existingDestinations = await context.BackupDestinations.Where(d => d.ConfigId == config.ConfigId).ToListAsync();
             context.BackupDestinations.RemoveRange(existingDestinations);
 
-            foreach (BackupDestinationDto destination in req.BackupDestinations)
+            foreach (BackupDestinationDto destination in req.Destinations)
             {
                 context.BackupDestinations.Add(new BackupDestination
                 {

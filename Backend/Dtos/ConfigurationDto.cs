@@ -15,8 +15,8 @@ public partial class ConfigurationDto
     public int Retention { get; set; }
     public int PackageSize { get; set; }
     public string? PeriodCron { get; set; }
-    public virtual ICollection<BackupDestinationDto> BackupDestinations { get; set; } = new List<BackupDestinationDto>();
-    public virtual ICollection<BackupSourceDto> BackupSources { get; set; } = new List<BackupSourceDto>();
+    public virtual ICollection<BackupDestinationDto> Destinations { get; set; } = new List<BackupDestinationDto>();
+    public virtual ICollection<BackupSourceDto> Sources { get; set; } = new List<BackupSourceDto>();
     public virtual ICollection<StationDto> Stations { get; set; } = new List<StationDto>();
     public virtual ICollection<GroupDto> Groups { get; set; } = new List<GroupDto>();
 }

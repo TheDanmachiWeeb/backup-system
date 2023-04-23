@@ -6,27 +6,31 @@ export class Station {
 
   public stationName: string;
 
-  public ipAddress: string;
+  public ipAddress: string = '';
 
-  public macAddress: string;
+  public macAddress: string = '';
 
-  public active: boolean;
+  public active: boolean = false;
 
-  public groups: Group[];
+  public groups: Group[] = [];
 
-  public configs: Config[];
+  public configs: Config[] = [];
 
   public constructor(
     id: number,
     name: string,
-    ip: string,
-    mac: string,
-    active: boolean
+    ip: string = '',
+    mac: string = '',
+    active: boolean = false,
+    groups: Group[] = [],
+    configs: Config[] = []
   ) {
     this.stationId = id;
     this.stationName = name;
     this.ipAddress = ip;
     this.macAddress = mac;
     this.active = active;
+    this.groups = groups;
+    this.configs = configs;
   }
 }

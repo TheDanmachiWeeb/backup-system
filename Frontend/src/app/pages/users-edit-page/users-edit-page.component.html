@@ -3,7 +3,7 @@
 >
   <h1 class="py-4 text-3xl font-semibold block text-center mb-8">
     Editing
-    <span class="tracking-wider underline decoration-sky-400">{{
+    <span *ngIf="user" class="tracking-wider underline decoration-sky-400">{{
       user.username
     }}</span>
   </h1>

@@ -45,6 +45,6 @@ export class Config {
     this.sources = sources;
     this.destinations = destinations;
     this.stations = stations;
-    this.destinations = destinations;
+    this.groups = groups;
   }
 }

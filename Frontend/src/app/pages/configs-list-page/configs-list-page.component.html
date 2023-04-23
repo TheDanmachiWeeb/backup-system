@@ -1,8 +1,10 @@
 <div class="bg-pinky rounded-2xl min-h-full p-10 m-5">
   <h2 class="text-xl font-semibold mb-5">Configs</h2>
-  <app-button variant="primary"
-    ><i class="fa-solid fa-plus"></i> Add Config</app-button
-  >
+  <div class="text-right mr-[10%] mb-5">
+    <app-button variant="primary" link="/configs/create"
+      ><i class="fa-solid fa-plus"></i> Add Config</app-button
+    >
+  </div>
   <app-configs-table
     [configs]="data"
     (edited)="editConfig($event)"
