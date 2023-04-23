@@ -1,0 +1,16 @@
+<div
+  class="p-8 rounded-md min-h-full bg-gradient-to-br from-purple-100 to-sky-100"
+>
+  <h1 class="py-4 text-3xl font-semibold block text-center mb-8">
+    Editing
+    <span class="tracking-wider underline decoration-sky-400">{{
+      user.username
+    }}</span>
+  </h1>
+  <app-user-form
+    [form]="form"
+    (saved)="saveUser($event)"
+    (deleted)="deleteUser()"
+    *ngIf="form"
+  ></app-user-form>
+</div>
