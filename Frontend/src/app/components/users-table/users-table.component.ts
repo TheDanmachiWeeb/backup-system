@@ -1,13 +1,12 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {User} from "../../models/user";
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { User } from '../../models/user';
 
 @Component({
   selector: 'app-users-table',
   templateUrl: './users-table.component.html',
-  styleUrls: ['./users-table.component.scss']
+  styleUrls: ['./users-table.component.scss'],
 })
 export class UsersTableComponent implements OnInit {
-
   @Input()
   public users: User[];
 
@@ -17,11 +16,7 @@ export class UsersTableComponent implements OnInit {
   @Output()
   edited: EventEmitter<User> = new EventEmitter<User>();
 
-  public constructor() {
+  public constructor() {}
 
-  }
-
-  public ngOnInit(): void {
-
-  }
+  public ngOnInit(): void {}
 }

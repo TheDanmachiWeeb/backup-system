@@ -1,8 +1,7 @@
-import {Group} from "./group";
-import { Config } from "./config";
+import { Group } from './group';
+import { Config } from './config';
 
-export class Station
-{
+export class Station {
   public stationId: number;
 
   public stationName: string;
@@ -17,7 +16,13 @@ export class Station
 
   public configs: Config[];
 
-  public constructor(id: number, name: string, ip: string, mac: string, active: boolean) {
+  public constructor(
+    id: number,
+    name: string,
+    ip: string,
+    mac: string,
+    active: boolean
+  ) {
     this.stationId = id;
     this.stationName = name;
     this.ipAddress = ip;

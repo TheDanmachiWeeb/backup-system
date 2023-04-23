@@ -1,6 +1,4 @@
-
-export class Report
-{
+export class Report {
   public reportId: number;
 
   public stationId: number;
@@ -17,7 +15,16 @@ export class Report
 
   public success: boolean;
 
-  public constructor(reportId: number, stationId: number, stationName: string, configId: number, configName: string, reportTime: string, backupSize: number, success: boolean) {
+  public constructor(
+    reportId: number,
+    stationId: number,
+    stationName: string,
+    configId: number,
+    configName: string,
+    reportTime: string,
+    backupSize: number,
+    success: boolean
+  ) {
     this.reportId = reportId;
     this.stationId = stationId;
     this.configId = configId;
@@ -25,5 +32,4 @@ export class Report
     this.backupSize = backupSize;
     this.success = success;
   }
-
 }

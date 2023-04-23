@@ -1,8 +1,7 @@
-import {Station} from "./station";
-import { Config } from "./config";
+import { Station } from './station';
+import { Config } from './config';
 
-export class Group
-{
+export class Group {
   public groupId: number;
 
   public groupName: string;

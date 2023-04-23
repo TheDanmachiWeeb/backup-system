@@ -1,27 +1,24 @@
-import {Component, OnInit} from '@angular/core';
-import {GroupsService} from "../../services/groups.service";
-import {Group} from "../../models/group";
-import {Router} from "@angular/router";
+import { Component, OnInit } from '@angular/core';
+import { GroupsService } from '../../services/groups.service';
+import { Group } from '../../models/group';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-groups-list-page',
   templateUrl: './groups-list-page.component.html',
-  styleUrls: ['./groups-list-page.component.scss']
+  styleUrls: ['./groups-list-page.component.scss'],
 })
 export class GroupsListPageComponent implements OnInit {
-
   public data: Group[];
 
-  public constructor(private service: GroupsService,
-                     private router: Router) {
-  }
+  public constructor(private service: GroupsService, private router: Router) {}
 
   public ngOnInit(): void {
     this.refresh();
   }
 
   public editGroup(group: Group): void {
-    this.router.navigate(['/groups/edit', group.groupId])
+    this.router.navigate(['/groups/edit', group.groupId]);
   }
 
   public deleteGroup(group: Group): void {
@@ -29,6 +26,6 @@ export class GroupsListPageComponent implements OnInit {
   }
 
   private refresh(): void {
-    this.service.findAll().subscribe(result => this.data = result);
+    this.service.findAll().subscribe((result) => (this.data = result));
   }
 }

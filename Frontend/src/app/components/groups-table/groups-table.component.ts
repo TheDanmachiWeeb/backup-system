@@ -1,13 +1,12 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Group} from "../../models/group";
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Group } from '../../models/group';
 
 @Component({
   selector: 'app-groups-table',
   templateUrl: './groups-table.component.html',
-  styleUrls: ['./groups-table.component.scss']
+  styleUrls: ['./groups-table.component.scss'],
 })
 export class GroupsTableComponent implements OnInit {
-
   @Input()
   public groups: Group[];
 
@@ -17,11 +16,7 @@ export class GroupsTableComponent implements OnInit {
   @Output()
   edited: EventEmitter<Group> = new EventEmitter<Group>();
 
-  public constructor() {
+  public constructor() {}
 
-  }
-
-  public ngOnInit(): void {
-
-  }
+  public ngOnInit(): void {}
 }

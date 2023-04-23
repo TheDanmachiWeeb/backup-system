@@ -1,13 +1,12 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Config} from "../../models/config";
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Config } from '../../models/config';
 
 @Component({
   selector: 'app-configs-table',
   templateUrl: './configs-table.component.html',
-  styleUrls: ['./configs-table.component.scss']
+  styleUrls: ['./configs-table.component.scss'],
 })
 export class ConfigsTableComponent implements OnInit {
-
   @Input()
   public configs: Config[];
 
@@ -17,11 +16,7 @@ export class ConfigsTableComponent implements OnInit {
   @Output()
   edited: EventEmitter<Config> = new EventEmitter<Config>();
 
-  public constructor() {
+  public constructor() {}
 
-  }
-
-  public ngOnInit(): void {
-
-  }
+  public ngOnInit(): void {}
 }

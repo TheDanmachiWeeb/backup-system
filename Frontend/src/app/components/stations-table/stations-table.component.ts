@@ -1,13 +1,12 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Station} from "../../models/station";
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Station } from '../../models/station';
 
 @Component({
   selector: 'app-stations-table',
   templateUrl: './stations-table.component.html',
-  styleUrls: ['./stations-table.component.scss']
+  styleUrls: ['./stations-table.component.scss'],
 })
 export class StationsTableComponent implements OnInit {
-
   @Input()
   public stations: Station[];
 
@@ -17,11 +16,7 @@ export class StationsTableComponent implements OnInit {
   @Output()
   edited: EventEmitter<Station> = new EventEmitter<Station>();
 
-  public constructor() {
+  public constructor() {}
 
-  }
-
-  public ngOnInit(): void {
-
-  }
+  public ngOnInit(): void {}
 }

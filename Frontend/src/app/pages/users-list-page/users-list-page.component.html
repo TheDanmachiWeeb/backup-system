@@ -1,5 +1,11 @@
 <div class="bg-pinky rounded-2xl min-h-full p-10 m-5">
   <h2 class="text-xl font-semibold mb-5">Users</h2>
-  <app-button variant="primary" link="" text="Add User"></app-button>
-  <app-users-table [users]="data" (edited)="editUser($event)" (deleted)="deleteUser($event)"></app-users-table>
+  <app-button variant="primary" link="/users/create"
+    ><i class="fa-solid fa-plus"></i> Add User</app-button
+  >
+  <app-users-table
+    [users]="data"
+    (edited)="editUser($event)"
+    (deleted)="deleteUser($event)"
+  ></app-users-table>
 </div>

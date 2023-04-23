@@ -5,10 +5,9 @@ import { CommonModule } from '@angular/common';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { UsersListPageComponent } from './pages/users-list-page/users-list-page.component';
-import {HttpClientModule} from "@angular/common/http";
+import { HttpClientModule } from '@angular/common/http';
 import { DashboardPageComponent } from './pages/dashboard-page/dashboard-page.component';
 import { StationsListPageComponent } from './pages/stations-list-page/stations-list-page.component';
 import { GroupsListPageComponent } from './pages/groups-list-page/groups-list-page.component';
@@ -23,8 +22,10 @@ import { ConfigsTableComponent } from './components/configs-table/configs-table.
 import { GroupsTableComponent } from './components/groups-table/groups-table.component';
 import { StationsTableComponent } from './components/stations-table/stations-table.component';
 import { ReportsTableComponent } from './components/reports-table/reports-table.component';
-
-
+import { UserFormComponent } from './components/user-form/user-form.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ConfigsEditPageComponent } from './pages/configs-edit-page/configs-edit-page.component';
+import { ConfigFormComponent } from './components/config-form/config-form.component';
 
 @NgModule({
   declarations: [
@@ -45,14 +46,18 @@ import { ReportsTableComponent } from './components/reports-table/reports-table.
     GroupsTableComponent,
     StationsTableComponent,
     ReportsTableComponent,
+    UserFormComponent,
+    ConfigsEditPageComponent,
+    ConfigFormComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    CommonModule
+    CommonModule,
+    ReactiveFormsModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

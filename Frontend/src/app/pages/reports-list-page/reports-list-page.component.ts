@@ -1,20 +1,17 @@
-import {Component, OnInit} from '@angular/core';
-import {ReportsService} from "../../services/reports.service";
-import {Report} from "../../models/report";
-import {Router} from "@angular/router";
+import { Component, OnInit } from '@angular/core';
+import { ReportsService } from '../../services/reports.service';
+import { Report } from '../../models/report';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-reports-list-page',
   templateUrl: './reports-list-page.component.html',
-  styleUrls: ['./reports-list-page.component.scss']
+  styleUrls: ['./reports-list-page.component.scss'],
 })
 export class ReportsListPageComponent implements OnInit {
-
   public data: Report[];
 
-  public constructor(private service: ReportsService,
-                     private router: Router) {
-  }
+  public constructor(private service: ReportsService, private router: Router) {}
 
   public ngOnInit(): void {
     this.refresh();
@@ -25,6 +22,6 @@ export class ReportsListPageComponent implements OnInit {
   }
 
   private refresh(): void {
-    this.service.findAll().subscribe(result => this.data = result);
+    this.service.findAll().subscribe((result) => (this.data = result));
   }
 }
