@@ -91,20 +91,22 @@ namespace BackupSystem.Controllers
                             Type = bs.DestinationType
                         })
                         .ToList(),
-                    Groups = c.StationConfigurations!
+                        Groups = c.StationConfigurations
                         .Select(sc => new
                         {
                             GroupId = sc.GroupId,
                             GroupName = sc.Group!.GroupName
                         }).ToList(),
-                    Stations = c.StationConfigurations!
+                    Stations = c.StationConfigurations.Where(sc => (sc.GroupId ?? -100) == -100)
                        .Select(sc => new
                        {
                            StationId = sc.StationId,
-                           StationName = sc.Station.StationName
+                           StationName = sc.Station.StationName,
                        }).ToList()
 
                 }).FirstOrDefaultAsync();
+
+
 
             if (config == null)
                 return NotFound();

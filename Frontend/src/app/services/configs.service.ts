@@ -21,7 +21,14 @@ export class ConfigsService {
   }
 
   public findById(id: number): Observable<Config> {
-    return this.http.get<Config>(`${this.apiUrl}/${id}`);
+    return this.http.get<Config>(`${this.apiUrl}/${id}`).pipe(
+      map((config: Config) => {
+        config.groups = Array.from(
+          new Set(config.groups.map((group) => JSON.stringify(group)))
+        ).map((group) => JSON.parse(group));
+        return config;
+      })
+    );
   }
   public insert(config: Config): Observable<Config> {
     return this.http.post<Config>(this.apiUrl, config);

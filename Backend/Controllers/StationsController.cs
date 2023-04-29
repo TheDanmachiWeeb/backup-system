@@ -140,10 +140,6 @@ namespace BackupSystem.Controllers
             if (station == null)
                 return NotFound("Station with this ID not found.");
 
-            // Delete existing StationConfiguration records for the station
-            var existingStationConfigs = await context.StationConfiguration.Where(sc => sc.StationId == station.StationId).ToListAsync();
-            context.StationConfiguration.RemoveRange(existingStationConfigs);
-
             // Delete existing StationGroup records for the station
             var existingStationGroups = await context.StationGroup.Where(sg => sg.StationId == station.StationId).ToListAsync();
             context.StationGroup.RemoveRange(existingStationGroups);
