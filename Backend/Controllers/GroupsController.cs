@@ -3,6 +3,7 @@ using BackupSystem.Dtos;
 using Microsoft.EntityFrameworkCore;
 using BackupSystem.Models;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -134,28 +135,25 @@ namespace BackupSystem.Controllers
             return Content(json, "application/json");
         }
 
-        // DELETE api/<GroupsController>/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult<Group>> Delete(int id)
         {
-            // Find the group to delete
-            Group? group = await context.Groups.FindAsync(id);
+            //// Find the group to delete
+            //var group = await context.Groups.Where(g => g.GroupId == id).FirstOrDefaultAsync();
 
-            if (group == null)
-                return NotFound("Group not found.");
+            //if (group == null)
+            //    return NotFound("Group not found.");
 
-            // Remove all StationGroup records associated with the group
-            context.StationGroup.RemoveRange(context.StationGroup.Where(sg => sg.GroupId == id));
+            //// Remove the group
+            //context.Groups.Remove(group);
 
-            // Remove all StationConfiguration records associated with the group
-            context.StationConfiguration.RemoveRange(context.StationConfiguration.Where(sc => sc.GroupId == id));
-
-            // Remove the group
-            context.Groups.Remove(group);
+            context.Database.ExecuteSqlRaw(
+             $"DELETE FROM Groups WHERE GroupId = {id};");
 
             await context.SaveChangesAsync();
 
             return Ok();
+
         }
     }
 }

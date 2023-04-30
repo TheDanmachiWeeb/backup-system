@@ -22,14 +22,11 @@ export class GroupsService {
     return this.http.post<Group>(this.apiUrl, group);
   }
 
-  
   public update(group: Group): Observable<Group> {
     return this.http.put<Group>(`${this.apiUrl}/${group.groupId}`, group);
   }
 
   public delete(group: Group): Observable<Group> {
-    return this.http.delete<Group>(
-      this.apiUrl + "/" + group.groupId
-    );
+    return this.http.delete<Group>(`${this.apiUrl}/${group.groupId}`);
   }
 }
