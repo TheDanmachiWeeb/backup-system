@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 })
 export class ConfigsListPageComponent implements OnInit {
   public data: Config[];
+  public filteredData: Config[];
 
   public constructor(private service: ConfigsService, private router: Router) {}
 
@@ -26,6 +27,13 @@ export class ConfigsListPageComponent implements OnInit {
   }
 
   private refresh(): void {
-    this.service.findAll().subscribe((result) => (this.data = result));
+    this.service.findAll().subscribe((result) => {
+      this.data = result;
+      this.filteredData = [...this.data];
+    });
+  }
+
+  onFiltered(filteredOptions: Config[]) {
+    this.filteredData = filteredOptions;
   }
 }

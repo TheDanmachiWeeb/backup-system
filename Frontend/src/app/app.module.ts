@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -26,6 +27,7 @@ import { UserFormComponent } from './components/user-form/user-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ConfigsEditPageComponent } from './pages/configs-edit-page/configs-edit-page.component';
 import { ConfigFormComponent } from './components/config-form/config-form.component';
+import { InputAutocompleteComponent } from './components/input-autocomplete/input-autocomplete.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +51,7 @@ import { ConfigFormComponent } from './components/config-form/config-form.compon
     UserFormComponent,
     ConfigsEditPageComponent,
     ConfigFormComponent,
+    InputAutocompleteComponent,
   ],
   imports: [
     BrowserModule,
@@ -56,6 +59,7 @@ import { ConfigFormComponent } from './components/config-form/config-form.compon
     HttpClientModule,
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

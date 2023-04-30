@@ -1,12 +1,18 @@
 <div class="bg-pinky rounded-2xl min-h-full p-10 m-5">
   <h2 class="text-xl font-semibold mb-5">Configs</h2>
-  <div class="text-right mr-[10%] mb-5">
+  <div class="flex mb-7 gap-8 justify-center">
+    <app-input-autocomplete
+      [options]="data"
+      [property]="'configName'"
+      [placeholder]="'Search by name'"
+      (filtered)="onFiltered($event)"
+    ></app-input-autocomplete>
     <app-button variant="primary" link="/configs/create"
       ><i class="fa-solid fa-plus"></i> Add Config</app-button
     >
   </div>
   <app-configs-table
-    [configs]="data"
+    [configs]="filteredData"
     (edited)="editConfig($event)"
     (deleted)="deleteConfig($event)"
   ></app-configs-table>
