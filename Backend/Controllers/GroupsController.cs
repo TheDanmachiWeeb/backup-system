@@ -43,7 +43,7 @@ namespace BackupSystem.Controllers
                     GroupId = g.GroupId,
                     GroupName = g.GroupName,
                     Stations = g.StationGroups.Select(sg => sg.StationId).ToList()
-                }).ToListAsync();
+                }).FirstAsync();
 
             if (group == null)
                 return NotFound();

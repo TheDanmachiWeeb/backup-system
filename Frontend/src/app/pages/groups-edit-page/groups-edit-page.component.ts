@@ -8,9 +8,8 @@ import { GroupFormComponent } from '../../components/group-form/group-form.compo
 @Component({
   selector: 'app-groups-edit-page',
   templateUrl: './groups-edit-page.component.html',
-  styleUrls: ['./groups-edit-page.component.scss']
+  styleUrls: ['./groups-edit-page.component.scss'],
 })
-
 export class GroupsEditPageComponent implements OnInit {
   form: FormGroup;
 
@@ -29,6 +28,7 @@ export class GroupsEditPageComponent implements OnInit {
     this.service.findById(Number(id)).subscribe((group) => {
       this.group = group;
       this.form = GroupFormComponent.createForm(this.fb, group);
+      console.log(this.group);
     });
   }
 

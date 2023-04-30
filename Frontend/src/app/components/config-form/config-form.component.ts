@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Config } from '../../models/config';
+import { Station } from '../../models/station';
+import { Group } from '../../models/group';
 
 @Component({
   selector: 'app-config-form',
@@ -13,6 +15,12 @@ export class ConfigFormComponent {
 
   @Input()
   config: Config;
+
+  @Input()
+  stations: Station[];
+
+  @Input()
+  groups: Group[];
 
   @Output()
   saved: EventEmitter<any> = new EventEmitter<any>();

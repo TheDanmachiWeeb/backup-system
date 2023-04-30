@@ -10,6 +10,7 @@ export class InputAutocompleteComponent<T extends { [key: string]: any }> {
   @Input() property: keyof T;
   @Input() size: 'lg' | 'md' | 'sm' = 'lg';
   @Input() placeholder: string = 'Search';
+  @Input() dropdown: boolean = false;
   @Output() filtered: EventEmitter<T[]> = new EventEmitter();
 
   value: string = '';
