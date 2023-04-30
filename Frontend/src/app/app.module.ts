@@ -28,6 +28,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ConfigsEditPageComponent } from './pages/configs-edit-page/configs-edit-page.component';
 import { ConfigFormComponent } from './components/config-form/config-form.component';
 import { InputAutocompleteComponent } from './components/input-autocomplete/input-autocomplete.component';
+import { GroupsEditPageComponent } from './pages/groups-edit-page/groups-edit-page.component';
+import { GroupFormComponent } from './components/group-form/group-form.component';
 
 @NgModule({
   declarations: [
@@ -52,6 +54,8 @@ import { InputAutocompleteComponent } from './components/input-autocomplete/inpu
     ConfigsEditPageComponent,
     ConfigFormComponent,
     InputAutocompleteComponent,
+    GroupsEditPageComponent,
+    GroupFormComponent,
   ],
   imports: [
     BrowserModule,

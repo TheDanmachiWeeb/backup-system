@@ -1,0 +1,60 @@
+<form [formGroup]="form" class="p-8 max-w-5xl mx-auto bg-indigo-200">
+<div class="grid grid-cols-3 gap-10">
+      <div class="mb-4">
+        <label
+          for="control-groupName"
+          class="block text-gray-700 font-bold mb-2"
+          >Group name</label
+        >
+        <input
+          type="text"
+          class="form-control appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          id="control-groupName"
+          formControlName="groupName"
+        />
+      </div>
+
+  <div class="flex flex-col gap-3">
+      <div class="flex flex-col grow">
+        <h3 class="font-bold text-gray-700 mb-2">Stations</h3>
+        <ul class="grow bg-white border">
+          <li
+            *ngFor="let station of group.stations"
+            class="flex m-3 justify-between bg-purple-200 py-1 px-5 text-gray-700 rounded-sm"
+          >
+            {{ station.stationName }}
+            <button (click)="deleteStation(station.stationId)">
+              <i class="fas fa-trash"></i>
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col grow">
+        <h3 class="font-bold text-gray-700 mb-2">Configs</h3>
+        <ul class="grow bg-white border">
+          <li
+            *ngFor="let config of group.configs"
+            class="flex m-3 justify-between bg-purple-200 py-1 px-5 text-gray-700 rounded-sm"
+          >
+            {{ config.configName }}
+            <button (click)="deleteConfig(config.configId)">
+              <i class="fas fa-trash"></i>
+            </button>
+          </li>
+        </ul>
+    </div>
+  </div>
+</div>
+</form>
+
+   
+  <div class="flex justify-center gap-10 mt-10">
+    <app-button variant="success" size="md" (click)="save()"
+      >Save Changes</app-button
+    >
+    <app-button variant="danger" size="md" (click)="delete()"
+      >Delete Group</app-button
+    >
+  </div>
+  
