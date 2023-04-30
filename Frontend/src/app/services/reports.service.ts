@@ -8,18 +8,26 @@ import { Report } from '../models/report';
 })
 export class ReportsService {
   constructor(private http: HttpClient) {}
-
+  private apiUrl = 'http://localhost:5666/api/reports';
   public findAll(): Observable<Report[]> {
-    return this.http.get<Report[]>('http://localhost:5666/api/reports');
+    return this.http.get<Report[]>(this.apiUrl);
+  }
+
+  public findById(id: number): Observable<Report> {
+    return this.http.get<Report>(this.apiUrl + '/' + id);
   }
 
   public insert(report: Report): Observable<Report> {
-    return this.http.post<Report>('http://localhost:5666/api/reports', report);
+    return this.http.post<Report>(this.apiUrl, report);
+  }
+
+  public update(report: Report): Observable<Report> {
+    return this.http.put<Report>(`${this.apiUrl}/${report.reportId}`, report);
   }
 
   public delete(report: Report): Observable<Report> {
     return this.http.delete<Report>(
-      'http://localhost:5666/api/reports/' + report.reportId
+      this.apiUrl + report.reportId
     );
   }
 }

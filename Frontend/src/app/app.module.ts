@@ -30,6 +30,7 @@ import { ConfigFormComponent } from './components/config-form/config-form.compon
 import { InputAutocompleteComponent } from './components/input-autocomplete/input-autocomplete.component';
 import { GroupsEditPageComponent } from './pages/groups-edit-page/groups-edit-page.component';
 import { GroupFormComponent } from './components/group-form/group-form.component';
+import { ReportFormComponent } from './components/report-form/report-form.component';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import { GroupFormComponent } from './components/group-form/group-form.component
     InputAutocompleteComponent,
     GroupsEditPageComponent,
     GroupFormComponent,
+    ReportFormComponent,
   ],
   imports: [
     BrowserModule,

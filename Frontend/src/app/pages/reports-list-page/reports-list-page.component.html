@@ -1,7 +1,4 @@
 <div class="bg-pinky rounded-2xl min-h-full p-10 m-5">
   <h2 class="text-xl font-semibold mb-5">Reports</h2>
-  <app-reports-table
-    [reports]="data"
-    (deleted)="deleteReport($event)"
-  ></app-reports-table>
+  <app-reports-table [reports]="data" (deleted)="deleteReport($event)"></app-reports-table>
 </div>
