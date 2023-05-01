@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AutocompleteLibModule } from 'angular-ng-autocomplete';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -66,6 +67,7 @@ import { ReportFormComponent } from './components/report-form/report-form.compon
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
+    AutocompleteLibModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

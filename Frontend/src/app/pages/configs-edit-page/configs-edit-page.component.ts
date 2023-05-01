@@ -31,20 +31,28 @@ export class ConfigsEditPageComponent implements OnInit {
     private GroupsService: GroupsService
   ) {}
 
-  public async ngOnInit(): Promise<void> {
+  public ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
 
     this.ConfigsService.findById(Number(id)).subscribe((config) => {
       this.config = config;
       this.form = ConfigFormComponent.createForm(this.fb, config);
-    });
 
-    this.StationsService.findAll().subscribe((stations) => {
-      this.stations = stations;
-    });
+      this.StationsService.findAll().subscribe((stations) => {
+        this.stations = stations;
+        this.config.stations.forEach((station) => {
+          this.stations = this.stations.filter(
+            (s) => s.stationId !== station.stationId
+          );
+        });
+      });
 
-    this.GroupsService.findAll().subscribe((groups) => {
-      this.groups = groups;
+      this.GroupsService.findAll().subscribe((groups) => {
+        this.groups = groups;
+        this.config.groups.forEach((group) => {
+          this.groups = this.groups.filter((s) => s.groupId !== group.groupId);
+        });
+      });
     });
   }
 

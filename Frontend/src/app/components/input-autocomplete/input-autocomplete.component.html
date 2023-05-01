@@ -1,7 +1,31 @@
 <input
+  *ngIf="!dropdown"
   type="text"
-  [class]="getClass()"
+  [ngClass]="getClass()"
+  class="w-full"
   [placeholder]="placeholder"
   [(ngModel)]="value"
-  (input)="filter()"
+  (input)="filterOptions()"
 />
+
+<div *ngIf="dropdown" class="ng-autocomplete w-full">
+  <ng-autocomplete
+    [data]="options"
+    [searchKeyword]="property.toString()"
+    (selected)="selectEvent($event)"
+    [focusFirst]="true"
+    [placeholder]="placeholder"
+    [itemTemplate]="itemTemplate"
+    [notFoundTemplate]="notFoundTemplate"
+    [ngStyle]="{ background: 'red !important' }"
+  >
+  </ng-autocomplete>
+
+  <ng-template #itemTemplate let-item>
+    <a [innerHTML]="item[property]"></a>
+  </ng-template>
+
+  <ng-template #notFoundTemplate let-notFound>
+    <div [innerHTML]="notFound"></div>
+  </ng-template>
+</div>

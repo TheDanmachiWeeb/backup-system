@@ -12,18 +12,19 @@ export class InputAutocompleteComponent<T extends { [key: string]: any }> {
   @Input() placeholder: string = 'Search';
   @Input() dropdown: boolean = false;
   @Output() filtered: EventEmitter<T[]> = new EventEmitter();
+  @Output() selected: EventEmitter<T> = new EventEmitter();
 
   value: string = '';
   filteredOptions: T[];
 
-  filter() {
+  filterOptions() {
     this.filteredOptions = this.options.filter(
       (option) =>
         option[this.property]
           .toLowerCase()
           .indexOf(this.value.toLowerCase()) !== -1
     );
-
+    console.log(this.filteredOptions);
     this.filtered.emit(this.filteredOptions);
   }
 
@@ -44,5 +45,9 @@ export class InputAutocompleteComponent<T extends { [key: string]: any }> {
     }
 
     return className;
+  }
+
+  selectEvent(item: T) {
+    this.selected.emit(item);
   }
 }
