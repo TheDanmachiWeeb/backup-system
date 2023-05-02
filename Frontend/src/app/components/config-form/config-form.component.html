@@ -95,7 +95,7 @@
       </div>
     </div>
     <div class="flex flex-col gap-3">
-      <div class="flex flex-col grow">
+      <div formArrayName="stations" class="flex flex-col grow">
         <h3 class="font-bold text-gray-700 mb-2">Stations</h3>
         <ul class="grow bg-white border">
           <app-input-autocomplete
@@ -107,7 +107,7 @@
           ></app-input-autocomplete>
 
           <li
-            *ngFor="let station of config.stations"
+            *ngFor="let station of form.get('stations')?.value"
             class="flex m-3 justify-between bg-purple-200 py-1 px-5 text-gray-700 rounded-sm"
           >
             {{ station.stationName }}
@@ -118,7 +118,7 @@
         </ul>
       </div>
 
-      <div class="flex flex-col grow">
+      <div formArrayName="groups" class="flex flex-col grow">
         <h3 class="font-bold text-gray-700 mb-2">Groups</h3>
         <ul class="grow bg-white border">
           <app-input-autocomplete
@@ -129,7 +129,7 @@
             (selected)="addGroup($event)"
           ></app-input-autocomplete>
           <li
-            *ngFor="let group of config.groups"
+            *ngFor="let group of form.get('groups')?.value"
             class="flex m-3 justify-between bg-purple-200 py-1 px-5 text-gray-700 rounded-sm"
           >
             {{ group.groupName }}
@@ -150,6 +150,7 @@
               type="text"
               placeholder="Add a new source"
               class="w-full py-2 px-4 focus:outline-none shadow-md focus:shadow-lg"
+              formControlName="sourceInput"
             />
             <button
               (click)="addSource()"
@@ -161,17 +162,21 @@
           </div>
           <li
             *ngFor="let source of form.get('sources')?.value"
-            class="flex m-3 justify-between bg-purple-200 py-1 px-5 text-gray-700 rounded-sm"
+            class="flex m-3 bg-purple-200 text-gray-700 rounded-sm"
           >
-            {{ source.path }}
-            <button type="button" (click)="deleteSource(source)">
+            <input
+              class="w-full bg-transparent px-5 py-1 outline-none focus:bg-gray-100"
+              type="text"
+              [value]="source.path"
+            />
+            <button class="mx-5" type="button" (click)="deleteSource(source)">
               <i class="fas fa-trash"></i>
             </button>
           </li>
         </ul>
       </div>
 
-      <div class="flex flex-col grow">
+      <div formArrayName="destinations" class="flex flex-col grow">
         <h3 class="font-bold text-gray-700 mb-2">Destinations</h3>
         <ul class="grow bg-white border">
           <li

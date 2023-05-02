@@ -32,6 +32,7 @@ import { InputAutocompleteComponent } from './components/input-autocomplete/inpu
 import { GroupsEditPageComponent } from './pages/groups-edit-page/groups-edit-page.component';
 import { GroupFormComponent } from './components/group-form/group-form.component';
 import { ReportFormComponent } from './components/report-form/report-form.component';
+import { FtpFormComponent } from './components/ftp-form/ftp-form.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { ReportFormComponent } from './components/report-form/report-form.compon
     GroupsEditPageComponent,
     GroupFormComponent,
     ReportFormComponent,
+    FtpFormComponent,
   ],
   imports: [
     BrowserModule,

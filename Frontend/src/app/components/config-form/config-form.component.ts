@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, FormArray } from '@angular/forms';
 import { Config } from '../../models/config';
 import { Station } from '../../models/station';
 import { Group } from '../../models/group';
@@ -32,6 +32,8 @@ export class ConfigFormComponent {
 
   sourceInput: string = '';
 
+  constructor(private fb: FormBuilder) {}
+
   public static createForm(fb: FormBuilder, config: Config): FormGroup {
     return fb.group({
       configName: config.configName,
@@ -39,13 +41,28 @@ export class ConfigFormComponent {
       retention: config.retention,
       packageSize: config.packageSize,
       periodCron: config.periodCron,
-      sources: fb.array(
-        config.sources.map((source) =>
+      stations: fb.array(
+        config.stations.map((station) =>
           fb.group({
-            path: [source.path],
+            stationName: station.stationName,
           })
         )
       ),
+      groups: fb.array(
+        config.groups.map((group) =>
+          fb.group({
+            groupName: group.groupName,
+          })
+        )
+      ),
+      sources: fb.array(
+        config.sources.map((source) =>
+          fb.group({
+            path: source.path,
+          })
+        )
+      ),
+      sourceInput: '',
       destinations: fb.array(
         config.destinations.map((destination) =>
           fb.group({
@@ -54,6 +71,7 @@ export class ConfigFormComponent {
           })
         )
       ),
+      destinationInput: '',
     });
   }
 
@@ -66,42 +84,88 @@ export class ConfigFormComponent {
   }
 
   public addStation(item: Station): void {
-    this.config.stations.push(item);
-    this.stations = this.stations.filter((s) => s.stationId != item.stationId);
+    const stations = this.form.get('stations') as FormArray;
+    const station = this.fb.group({
+      stationName: [item.stationName],
+    });
+    stations.push(station);
+    const index = this.stations.findIndex((s) => s.stationId == item.stationId);
+    if (index !== -1) {
+      this.stations.splice(index, 1);
+    }
   }
 
   public deleteStation(item: Station): void {
-    this.config.stations = this.config.stations.filter(
-      (s) => s.stationId != item.stationId
+    const stations = this.form.get('stations') as FormArray;
+    const index = stations.controls.findIndex(
+      (control) => (control as FormGroup).value.stationId == item.stationId
     );
+    if (index !== -1) {
+      stations.removeAt(index);
+    }
     this.stations.push(item);
   }
+
   public addGroup(item: Group): void {
-    this.config.groups.push(item);
-    this.groups = this.groups.filter((s) => s.groupId != item.groupId);
+    const groups = this.form.get('groups') as FormArray;
+    const group = this.fb.group({
+      groupName: [item.groupName],
+      groupId: [item.groupId],
+    });
+    groups.push(group);
+    const index = this.groups.findIndex((g) => g.groupId == item.groupId);
+    if (index !== -1) {
+      this.groups.splice(index, 1);
+    }
   }
 
   public deleteGroup(item: Group): void {
-    this.config.groups = this.config.groups.filter(
-      (s) => s.groupId != item.groupId
+    const groups = this.form.get('groups') as FormArray;
+    const index = groups.controls.findIndex(
+      (group) => (group as FormGroup).value.groupName == item.groupName
     );
+    if (index !== -1) {
+      groups.removeAt(index);
+    }
+
     this.groups.push(item);
   }
 
   public deleteSource(item: Source): void {
-    this.config.sources.filter((s) => s.path != item.path);
+    const sources = this.form.get('sources') as FormArray;
+    const index = sources.controls.findIndex(
+      (control) => (control as FormGroup).value.path === item.path
+    );
+    if (index >= 0) {
+      sources.removeAt(index);
+    }
   }
 
   public deleteDestination(item: Destination): void {
-    this.config.destinations.filter((d) => d.path != item.path);
+    const destinations = this.form.get('destinations') as FormArray;
+    destinations.controls = destinations.controls.filter(
+      (control) =>
+        (control as FormGroup).value.path != item.path ||
+        (control as FormGroup).value.type != item.type
+    );
   }
 
-  public addSource(): void {
-    console.log(this.sourceInput);
-    this.config.sources.push(new Source(this.sourceInput));
+  addSource() {
+    const sources = this.form.get('sources') as FormArray;
+    sources.push(
+      this.fb.group({
+        path: this.form.get('sourceInput')?.value,
+      })
+    );
+    this.form.get('sourceInput')?.reset();
   }
 
   public addDestination(path: string, type: 'full' | 'diff' | 'inc'): void {
-    this.config.sources.push(new Destination(path, type));
+    const destinations = this.form.get('destinations') as FormArray;
+    const destination = this.fb.group({
+      path: [path],
+      type: [type],
+    });
+    destinations.push(destination);
   }
 }
