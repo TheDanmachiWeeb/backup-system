@@ -11,6 +11,7 @@ import { SettingsPageComponent } from './pages/settings-page/settings-page.compo
 import { UsersCreatePageComponent } from './pages/users-create-page/users-create-page.component';
 import { UsersEditPageComponent } from './pages/users-edit-page/users-edit-page.component';
 import { GroupsEditPageComponent } from './pages/groups-edit-page/groups-edit-page.component';
+import {LoginPageComponent} from './pages/login-page/login-page.component';
 
 //d
 const routes: Routes = [
@@ -24,7 +25,8 @@ const routes: Routes = [
   { path: 'groups', component: GroupsListPageComponent },
   { path: 'reports', component: ReportsListPageComponent },
   { path: 'settings', component: SettingsPageComponent },
-  { path: 'groups/edit/:id', component: GroupsEditPageComponent}
+  { path: 'groups/edit/:id', component: GroupsEditPageComponent},
+  {path: 'login', component: LoginPageComponent}
 ];
 
 @NgModule({

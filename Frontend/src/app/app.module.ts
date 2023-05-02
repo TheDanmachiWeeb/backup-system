@@ -33,6 +33,8 @@ import { GroupsEditPageComponent } from './pages/groups-edit-page/groups-edit-pa
 import { GroupFormComponent } from './components/group-form/group-form.component';
 import { ReportFormComponent } from './components/report-form/report-form.component';
 import { FtpFormComponent } from './components/ftp-form/ftp-form.component';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { InterceptorService } from './services/interceptor.service';
 
 @NgModule({
   declarations: [
@@ -71,7 +73,9 @@ import { FtpFormComponent } from './components/ftp-form/ftp-form.component';
     FormsModule,
     AutocompleteLibModule,
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
