@@ -61,7 +61,7 @@ import { InterceptorService } from './services/interceptor.service';
     GroupsEditPageComponent,
     GroupFormComponent,
     ReportFormComponent,
-    FtpFormComponent,
+    FtpFormComponent
   ],
   imports: [
     BrowserModule,
@@ -70,7 +70,7 @@ import { InterceptorService } from './services/interceptor.service';
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    AutocompleteLibModule,
+    AutocompleteLibModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true },
