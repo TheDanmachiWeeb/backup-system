@@ -9,7 +9,6 @@ import { AppComponent } from './app.component';
 
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { UsersListPageComponent } from './pages/users-list-page/users-list-page.component';
-import { HttpClientModule } from '@angular/common/http';
 import { DashboardPageComponent } from './pages/dashboard-page/dashboard-page.component';
 import { StationsListPageComponent } from './pages/stations-list-page/stations-list-page.component';
 import { GroupsListPageComponent } from './pages/groups-list-page/groups-list-page.component';
