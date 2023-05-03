@@ -157,7 +157,7 @@ namespace BackupSystem.Controllers
             // Create new StationConfiguration records for Groups
             foreach (StationDto station in req.Stations)
             {
-                var dbStation = await context.Stations.Where(s => s.StationId == station.StationId).FirstOrDefaultAsync();
+                var dbStation = await context.Stations.Where(s => s.StationId == station.StationId || s.StationName == station.StationName).FirstOrDefaultAsync();
                 if (dbStation == null)
                     return NotFound("Station not found.");
 
@@ -202,8 +202,12 @@ namespace BackupSystem.Controllers
                 return NotFound();
 
             // Delete existing StationConfiguration records for the configuration
-            var existingStationConfigs = await context.StationConfiguration.Where(sc => sc.ConfigId == config.ConfigId).ToListAsync();
-            context.StationConfiguration.RemoveRange(existingStationConfigs);
+            try { var existingStationConfigs = await context.StationConfiguration.Where(sc => sc.ConfigId == id).ToListAsync();
+                context.StationConfiguration.RemoveRange(existingStationConfigs);
+            }
+            catch { }
+           
+            
 
             // Update the configuration
             config.ConfigName = req.ConfigName;

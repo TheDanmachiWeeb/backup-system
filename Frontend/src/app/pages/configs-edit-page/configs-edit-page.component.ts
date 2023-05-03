@@ -62,16 +62,6 @@ export class ConfigsEditPageComponent implements OnInit {
     });
   }
 
-  // public async getConfig(id: number): Promise<Config | undefined> {
-  //   const config = await this.ConfigsService.findById(Number(id)).toPromise();
-  //   if (config) {
-  //     this.config = config;
-  //     this.form = ConfigFormComponent.createForm(this.fb, config);
-  //     return config;
-  //   }
-  //   return new Config() as Config;
-  // }
-
   public saveConfig(values: any): void {
     Object.assign(this.config, values);
     this.ConfigsService.update(this.config).subscribe(() =>

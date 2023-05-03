@@ -1,0 +1,16 @@
+.items-grid {
+  @apply grid grid-cols-3 max-h-full gap-10;
+}
+
+.items-col {
+  @apply flex flex-col gap-3;
+  height: calc(100vh - 20rem);
+}
+
+.items-container {
+  @apply flex flex-col max-h-[50%];
+}
+
+ul {
+  @apply flex-1 py-2 overflow-scroll bg-white border;
+}

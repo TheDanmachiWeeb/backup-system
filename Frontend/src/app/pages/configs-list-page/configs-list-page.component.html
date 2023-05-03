@@ -1,5 +1,5 @@
-<div class="bg-pinky rounded-2xl min-h-full p-10 m-5">
-  <h2 class="text-xl font-semibold mb-5">Configs</h2>
+<div class="container">
+  <h2 class="text-2xl font-semibold mb-5">Configs</h2>
   <div class="flex mb-7 gap-8 justify-center">
     <app-input-autocomplete
       [options]="data"
@@ -12,6 +12,7 @@
     >
   </div>
   <app-configs-table
+    class="grow overflow-y-scroll"
     [configs]="filteredData"
     (edited)="editConfig($event)"
     (deleted)="deleteConfig($event)"

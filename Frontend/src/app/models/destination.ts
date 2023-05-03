@@ -1,8 +1,8 @@
 export class Destination {
-  type: 'full' | 'inc' | 'diff';
+  type: 'ftp' | 'local' | 'network';
   path: string;
 
-  public constructor(path: string, type: 'full' | 'inc' | 'diff') {
+  public constructor(path: string, type: 'ftp' | 'local' | 'network') {
     this.path = path;
     this.type = type;
   }

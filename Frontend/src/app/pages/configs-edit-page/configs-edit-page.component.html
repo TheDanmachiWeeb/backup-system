@@ -1,13 +1,12 @@
-<div
-  class="p-8 rounded-md min-h-full bg-gradient-to-br from-purple-100 to-sky-100"
->
-  <h1 class="py-4 text-3xl font-semibold block text-center mb-8">
+<div class="container flex">
+  <h1 class="py-4 text-2xl font-semibold block text-center mb-3">
     Editing
     <span *ngIf="config" class="tracking-wider underline decoration-sky-400">{{
       config.configName
     }}</span>
   </h1>
   <app-config-form
+    class="grow"
     [form]="form"
     (saved)="saveConfig($event)"
     (deleted)="deleteConfig()"

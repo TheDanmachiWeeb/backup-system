@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, FormArray } from '@angular/forms';
 import { Config } from '../../models/config';
 import { Station } from '../../models/station';
@@ -34,6 +34,13 @@ export class ConfigFormComponent {
 
   constructor(private fb: FormBuilder) {}
 
+  ngOnInit() {
+    this.form.get('destinationInput')?.setValue({
+      path: '',
+      type: 'local',
+    });
+  }
+
   public static createForm(fb: FormBuilder, config: Config): FormGroup {
     return fb.group({
       configName: config.configName,
@@ -66,12 +73,15 @@ export class ConfigFormComponent {
       destinations: fb.array(
         config.destinations.map((destination) =>
           fb.group({
-            path: [destination.path],
-            type: [destination.type],
+            path: destination.path,
+            type: destination.type,
           })
         )
       ),
-      destinationInput: '',
+      destinationInput: fb.group({
+        path: '',
+        type: "'ftp' | 'local' | 'network'",
+      }),
     });
   }
 
@@ -81,6 +91,13 @@ export class ConfigFormComponent {
 
   public delete(): void {
     this.deleted.emit(this.form.value);
+  }
+
+  public destinations(): FormArray {
+    return this.form.get('destinations') as FormArray;
+  }
+  public sources(): FormArray {
+    return this.form.get('sources') as FormArray;
   }
 
   public addStation(item: Station): void {
@@ -132,7 +149,7 @@ export class ConfigFormComponent {
   }
 
   public deleteSource(item: Source): void {
-    const sources = this.form.get('sources') as FormArray;
+    const sources = this.sources();
     const index = sources.controls.findIndex(
       (control) => (control as FormGroup).value.path === item.path
     );
@@ -142,7 +159,7 @@ export class ConfigFormComponent {
   }
 
   public deleteDestination(item: Destination): void {
-    const destinations = this.form.get('destinations') as FormArray;
+    const destinations = this.destinations();
     destinations.controls = destinations.controls.filter(
       (control) =>
         (control as FormGroup).value.path != item.path ||
