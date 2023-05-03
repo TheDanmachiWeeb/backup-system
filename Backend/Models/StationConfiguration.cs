@@ -12,6 +12,7 @@ public partial class StationConfiguration
 
     public int ConfigId { get; set; }
 
+    [ForeignKey("ConfigId")]
     public virtual Configuration Config { get; set; } = null!;
 
     public virtual Group? Group { get; set; } = null!;

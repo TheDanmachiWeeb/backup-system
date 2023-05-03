@@ -21,6 +21,6 @@ public class Station
     public virtual ICollection<StationGroup> StationGroups { get; set; } = new List<StationGroup>();
     public virtual ICollection<StationConfiguration> StationConfigurations { get; set; } = new List<StationConfiguration>();
 
-    public virtual ICollection<Configuration> Configs { get; set; } = new List<Configuration>();
-    public virtual ICollection<Group> Groups { get; set; } = new List<Group>();
+    //public virtual ICollection<Configuration> Configs { get; set; } = new List<Configuration>();
+    //public virtual ICollection<Group> Groups { get; set; } = new List<Group>();
 }

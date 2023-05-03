@@ -138,21 +138,24 @@ namespace BackupSystem.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Group>> Delete(int id)
         {
-            //// Find the group to delete
-            //var group = await context.Groups.Where(g => g.GroupId == id).FirstOrDefaultAsync();
+            // Find the group to delete
+            var group = await context.Groups.Where(g => g.GroupId == id).FirstOrDefaultAsync();
+            return NotFound(group);
 
-            //if (group == null)
-            //    return NotFound("Group not found.");
+            /*
+            if (group == null)
+                return NotFound("Group not found.");
 
-            //// Remove the group
-            //context.Groups.Remove(group);
+            // Remove the group
+            context.Groups.Remove(group);
 
-            context.Database.ExecuteSqlRaw(
-             $"DELETE FROM Groups WHERE GroupId = {id};");
+            //context.Database.ExecuteSqlRaw(
+            // $"DELETE FROM Groups WHERE GroupId = {id};");
 
             await context.SaveChangesAsync();
 
             return Ok();
+            */
 
         }
     }

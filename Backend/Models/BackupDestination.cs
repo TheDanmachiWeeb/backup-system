@@ -13,5 +13,6 @@ public partial class BackupDestination
 
     public string DestinationPath { get; set; } = null!;
 
+    [ForeignKey("ConfigId")]
     public virtual Configuration Config { get; set; } = null!;
 }

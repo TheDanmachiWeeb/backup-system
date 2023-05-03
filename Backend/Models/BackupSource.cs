@@ -10,5 +10,6 @@ public partial class BackupSource
 {
     public int ConfigId { get; set; }
     public string SourcePath { get; set; } = null!;
+    [ForeignKey("ConfigId")]
     public virtual Configuration Config { get; set; } = null!;
 }

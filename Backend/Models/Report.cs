@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BackupSystem.Models;
 
@@ -18,6 +19,7 @@ public partial class Report
 
     public Boolean Success { get; set; }
 
+    [ForeignKey("ConfigId")]
     public virtual Configuration Config { get; set; } = null!;
 
     public virtual Station Station { get; set; } = null!;
