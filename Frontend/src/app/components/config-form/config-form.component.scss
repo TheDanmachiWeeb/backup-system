@@ -12,5 +12,5 @@
 }
 
 ul {
-  @apply flex-1 py-2 overflow-scroll bg-white border;
+  @apply flex-1 py-2 overflow-y-auto bg-white border;
 }
