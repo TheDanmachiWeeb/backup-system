@@ -1,1 +1,26 @@
-<p>login-page works!</p>
+<div class=" center bg-pinky rounded-2xl min-h-full p-10 m-5">
+    <div class="grid h-96 place-items-center">
+        <h2 class="text-xl font-semibold mb-5">Log in</h2>
+        <form>
+            <div class="mb-6 w-96">
+                <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your
+                    username</label>
+                <input type="username" id="username"
+                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                    placeholder="backuper123" required>
+            </div>
+            <div class="mb-6 w-96">
+                <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your
+                    password</label>
+                <input type="password" id="password"
+                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                    required>
+            </div>
+
+            <div class="flex justify-center">
+                <button class="bg-green-500 hover:bg-green-600 px-4 h-9 rounded-md text-white" (click)="login()">Log
+                    in</button>
+            </div>
+        </form>
+    </div>
+</div>
