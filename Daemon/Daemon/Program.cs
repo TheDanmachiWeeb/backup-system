@@ -9,9 +9,9 @@ namespace Daemon
             List<string> sources = new List<string> { "C:\\Users\\dima\\Pictures\\Source3", "C:\\Users\\dima\\Pictures\\Source2", "C:\\Users\\dima\\Pictures\\Source1" };
            List<string> destinations = new List<string> { "C:\\Users\\dima\\Pictures\\Destination1", "C:\\Users\\dima\\Pictures\\Destination2" };
 
-           // List<string> sources = new List<string> { "C:\\Users\\dima\\Pictures\\Screenshots" };
-           // List<string> destinations = new List<string> { "C:\\Users\\dima\\Pictures\\Camera Roll" };
-
+            // List<string> sources = new List<string> { "C:\\Users\\dima\\Pictures\\Screenshots" };
+            // List<string> destinations = new List<string> { "C:\\Users\\dima\\Pictures\\Camera Roll" };
+            FileManager manager = new FileManager();
             Backup MyBackup = new Backup();
             BackupLogger logger = MyBackup.logger;
             BackupReport Report = new BackupReport();
@@ -22,23 +22,34 @@ namespace Daemon
             config.ID = 4;
 
 
-            for (int i = 0; i < 5; i++)
-            {
+            //for (int i = 0; i < 5; i++)
+            //{
 
-                MyBackup.PerformBackup(config);
-
-
-                string file = config.SourcePaths[0] + "\\file" + "10"+i*10;
-                File.Create(file).Close();
-                StreamWriter sw = new StreamWriter(file);
-                sw.WriteLine("bruh");
-                sw.Close();
-                Console.WriteLine(Report.GenerateBackupReport(logger.LogEntries));
-
-                Thread.Sleep(1000);
+            //    MyBackup.PerformBackup(config);
 
 
-            }
+            //    string file = config.SourcePaths[0] + "\\file" + "10" + i * 10;
+            //    File.Create(file).Close();
+            //    StreamWriter sw = new StreamWriter(file);
+            //    sw.WriteLine("bruh");
+            //    sw.Close();
+            //    Console.WriteLine(Report.GenerateBackupReport(logger.LogEntries));
+
+            //    Thread.Sleep(1000);
+
+
+            //}
+
+            //for (int i = 0; i < 3; i++)
+            //{
+            //    manager.CheckIDFile();
+            //    Console.WriteLine("file test");
+            //}
+
+            ApiHandler api = new ApiHandler();
+            api.Connect();
+            Console.ReadKey();
         }
+        
     }
 }
