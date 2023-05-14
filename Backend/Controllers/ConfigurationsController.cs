@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 
 namespace BackupSystem.Controllers
 {
-
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ConfigurationsController : ControllerBase

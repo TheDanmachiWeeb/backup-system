@@ -8,6 +8,7 @@ using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace BackupSystem.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class BackupSourcesController : ControllerBase

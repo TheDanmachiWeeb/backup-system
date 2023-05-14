@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, FormArray } from '@angular/forms';
 import { SessionsService } from '../../services/sessions.service';
 import { Router } from '@angular/router';
 import { catchError, of } from 'rxjs';
@@ -21,14 +21,18 @@ export class LoginPageComponent implements OnInit {
 
   public ngOnInit(): void {
     this.form = this.fb.group({
-      username: '',
-      password: '',
+      credentials: this.fb.group({
+        username: '',
+        passwordHash: '',
+      }),
+      savePassword: false,
     });
   }
 
   public login(): void {
+    const { credentials, savePassword } = this.form.value;
     this.sessions
-      .login(this.form.value)
+      .login(credentials, savePassword)
       .pipe(
         catchError(() => {
           this.error = true;

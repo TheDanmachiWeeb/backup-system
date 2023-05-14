@@ -1,30 +1,37 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {Observable, tap} from "rxjs";
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
+import { User } from '../models/user';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SessionsService {
+  constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient) { }
-
-  public login(model: any): Observable<any> {
-    return this.http.post<any>('http://localhost:5666//api/sessions', model).pipe(
-      tap(result => sessionStorage.setItem('token', result.token))
+  public login(user: any, savePassword: boolean): Observable<any> {
+    return this.http.post<any>('http://localhost:5666/api/sessions', user).pipe(
+      tap((result) => {
+        savePassword
+          ? localStorage.setItem('token', result.token)
+          : sessionStorage.setItem('token', result.token);
+      })
     );
   }
 
   public logout(): void {
-    sessionStorage.removeItem('token');
+    sessionStorage.getItem('token')
+      ? sessionStorage.removeItem('token')
+      : localStorage.removeItem('token');
   }
 
-  public getToken(): string|null  {
-    return sessionStorage.getItem('token');
+  public getToken(): string | null {
+    return sessionStorage.getItem('token')
+      ? sessionStorage.getItem('token')
+      : localStorage.getItem('token');
   }
 
   public authenticated(): boolean {
     return !!this.getToken();
   }
-
 }

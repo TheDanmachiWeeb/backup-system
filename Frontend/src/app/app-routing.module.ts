@@ -11,22 +11,69 @@ import { SettingsPageComponent } from './pages/settings-page/settings-page.compo
 import { UsersCreatePageComponent } from './pages/users-create-page/users-create-page.component';
 import { UsersEditPageComponent } from './pages/users-edit-page/users-edit-page.component';
 import { GroupsEditPageComponent } from './pages/groups-edit-page/groups-edit-page.component';
-import {LoginPageComponent} from './pages/login-page/login-page.component';
+import { LoginPageComponent } from './pages/login-page/login-page.component';
+import { AuthGuard } from './services/auth.guard';
 
 //d
 const routes: Routes = [
-  { path: '', pathMatch: 'full', component: DashboardPageComponent }, // Redirect to the dashboard component
-  { path: 'stations', component: StationsListPageComponent },
-  { path: 'users', component: UsersListPageComponent },
-  { path: 'users/create', component: UsersCreatePageComponent },
-  { path: 'users/edit/:id', component: UsersEditPageComponent },
-  { path: 'configs', component: ConfigsListPageComponent },
-  { path: 'configs/edit/:id', component: ConfigsEditPageComponent },
-  { path: 'groups', component: GroupsListPageComponent },
-  { path: 'reports', component: ReportsListPageComponent },
-  { path: 'settings', component: SettingsPageComponent },
-  { path: 'groups/edit/:id', component: GroupsEditPageComponent},
-  {path: 'login', component: LoginPageComponent}
+  {
+    path: '',
+    pathMatch: 'full',
+    component: DashboardPageComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'stations',
+    component: StationsListPageComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'users',
+    component: UsersListPageComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'users/create',
+    component: UsersCreatePageComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'users/edit/:id',
+    component: UsersEditPageComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'configs',
+    component: ConfigsListPageComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'configs/edit/:id',
+    component: ConfigsEditPageComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'groups',
+    component: GroupsListPageComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'reports',
+    component: ReportsListPageComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'settings',
+    component: SettingsPageComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'groups/edit/:id',
+    component: GroupsEditPageComponent,
+    canActivate: [AuthGuard],
+  },
+
+  { path: 'login', component: LoginPageComponent },
 ];
 
 @NgModule({

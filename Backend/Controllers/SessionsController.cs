@@ -13,19 +13,6 @@ namespace BackupSystem.Controllers
     public class SessionsController : ControllerBase
     {
         private MyContext context = new MyContext();
-        // GET: api/<SessionsController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/<SessionsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
 
         // POST api/<SessionsController>
         [HttpPost]
@@ -39,7 +26,7 @@ namespace BackupSystem.Controllers
                 {
                     string token = JwtBuilder.Create()
                       .WithAlgorithm(new HMACSHA256Algorithm())
-                      .WithSecret("super-secret-foobar")
+                      .WithSecret("backpussy69")
                       .AddClaim("exp", DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds())
                       .AddClaim("login", user.Username)
                       .Encode();
@@ -53,18 +40,6 @@ namespace BackupSystem.Controllers
             {
                 return Unauthorized(new { message = "Invalid credentials" });
             }
-        }
-
-        // PUT api/<SessionsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<SessionsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }

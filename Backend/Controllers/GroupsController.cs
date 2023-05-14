@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BackupSystem.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class GroupsController : ControllerBase

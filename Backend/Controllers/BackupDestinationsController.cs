@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace BackupSystem.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class BackupDestinationsController : ControllerBase
