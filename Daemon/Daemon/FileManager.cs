@@ -46,11 +46,10 @@ namespace Daemon
         }
 
         public void SaveID(string id)
-        {
+        {   
+
             string filePath = Path.Combine(programFolder, fileName);
-            StreamWriter writer = new StreamWriter(filePath);
-            writer.WriteAsync(id);
-            writer.Close();
+            File.WriteAllText(filePath, id);
         }
 
         public string getID()

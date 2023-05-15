@@ -85,7 +85,7 @@ namespace Daemon
             string ID = await api.PostStation();
             Console.Clear();
             Console.WriteLine("Saving response data...");
-            manager.SaveID(ID);
+            manager.SaveID(ID.ToString());
             Console.WriteLine("ID saved");
         }
 
