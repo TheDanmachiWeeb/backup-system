@@ -25,7 +25,7 @@ namespace Daemon
             {
                 try
                 {
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODQxNDA1ODYsImxvZ2luIjoiYWRtaW4ifQ.xBeHNiIwspdEHhd-95TrXp-lIjyY5sefoboA6YZT0Xk");
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODQxNjU2MDYsImxvZ2luIjoiYWRtaW4ifQ.gUI5pau7qFN2i--x3R1vn-GjhJGGb-w0F0JMzUstPKE");
                     var response = await httpClient.GetAsync(apiUrl + "/users"); // Replace with your endpoint path
                     if (response.IsSuccessStatusCode)
                     {
@@ -49,7 +49,7 @@ namespace Daemon
         {
             using (var httpClient = new HttpClient())
             {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODQxNTAyNjMsImxvZ2luIjoiYWRtaW4ifQ.WL959yjhY2ubQGo1njWPKbUwbobFJXeLbgnymOsnMkc");
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODQxNjgyNjEsImxvZ2luIjoiYWRtaW4ifQ.eu0wZuUOVmOu3GYYNDTboRWUgtMeEFsbb-6rcX6wgaM");
 
                 var station = new Station();
                 var response = await httpClient.PostAsJsonAsync($"{apiUrl}/stations", station);
@@ -81,8 +81,10 @@ namespace Daemon
             FileManager manager = new FileManager();
             ApiHandler api = new ApiHandler();
             Station station = new Station();
-            Console.WriteLine("Registering the station");
+            Console.WriteLine("Registering the station...");
             string ID = await api.PostStation();
+            Console.Clear();
+            Console.WriteLine("Saving response data...");
             manager.SaveID(ID);
             Console.WriteLine("ID saved");
         }
@@ -104,7 +106,7 @@ namespace Daemon
                 }
                 else
                 {
-                    Console.WriteLine("No ID given to the station.");
+                    Console.WriteLine("No ID given to the station...");
                 }
 
             return ID;

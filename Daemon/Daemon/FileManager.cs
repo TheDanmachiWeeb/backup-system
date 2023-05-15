@@ -10,17 +10,30 @@ namespace Daemon
     public class FileManager
     {
         private string fileName = "database_secret.txt";
-        private string programFolder = AppDomain.CurrentDomain.BaseDirectory + "/secret";
-      
-
+        private string programFolder = AppDomain.CurrentDomain.BaseDirectory + "\\secret";
         public FileManager() { }
 
         public bool CheckIDFile() {
-            Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "/secret");
+            if (Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\secret"))
+            {
+
+            }
+            else
+            {
+                Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "\\secret");
+            }
             string filePath = Path.Combine(programFolder,fileName);
             Console.WriteLine(filePath);
             if (File.Exists(filePath))
             {
+
+                string id = getID();
+                if (id == "") { 
+                    Rollback();
+                    Console.WriteLine("id file empty");
+                    return false;
+                }
+
                 Console.WriteLine("ID file exists");
                 return true;
             }
@@ -29,6 +42,7 @@ namespace Daemon
 
                 File.Create(filePath);
                 Console.WriteLine(File.GetCreationTime(filePath).ToString());
+                
                 return false;
             }
         }
@@ -48,7 +62,6 @@ namespace Daemon
 
             StreamReader reader = new StreamReader(filePath);
             ID = reader.ReadToEnd();
-            Console.WriteLine("id is " + ID);
             reader.Close();
             return ID;
 
@@ -56,9 +69,11 @@ namespace Daemon
 
         public void Rollback()
         {
-            string filePath = Path.Combine(programFolder, fileName);
+
+            string filePath = Path.Combine(programFolder, fileName);  
              File.Delete(filePath);
-             
+            Directory.Delete(AppDomain.CurrentDomain.BaseDirectory + "\\secret", true);
+
         }
 
 public void SaveSnapshot(BackupConfiguration config, Snapshot snapshot)
