@@ -6,7 +6,7 @@ namespace Daemon
     {
         static void Main(string[] args)
         {
-            List<string> sources = new List<string> { "C:\\Users\\dima\\Pictures\\Source3", "C:\\Users\\dima\\Pictures\\Source2", "C:\\Users\\dima\\Pictures\\Source1" };
+           List<string> sources = new List<string> { "C:\\Users\\dima\\Pictures\\Source3", "C:\\Users\\dima\\Pictures\\Source2", "C:\\Users\\dima\\Pictures\\Source1" };
            List<string> destinations = new List<string> { "C:\\Users\\dima\\Pictures\\Destination1", "C:\\Users\\dima\\Pictures\\Destination2" };
 
             // List<string> sources = new List<string> { "C:\\Users\\dima\\Pictures\\Screenshots" };
@@ -47,8 +47,8 @@ namespace Daemon
             //}
 
             ApiHandler api = new ApiHandler();
-            api.Connect();
-            Console.ReadKey();
+            api.RegisterStation();
+            Console.ReadLine();
         }
         
     }

@@ -7,6 +7,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using static System.Collections.Specialized.BitVector32;
 using System.Net.Http.Json;
+using System.Net.Http.Headers;
+
 
 namespace Daemon
 {
@@ -22,6 +24,7 @@ namespace Daemon
             {
                 try
                 {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODQxNDA1ODYsImxvZ2luIjoiYWRtaW4ifQ.xBeHNiIwspdEHhd-95TrXp-lIjyY5sefoboA6YZT0Xk");
                     var response = await httpClient.GetAsync(apiUrl + "/users"); // Replace with your endpoint path
                     if (response.IsSuccessStatusCode)
                     {
@@ -41,12 +44,12 @@ namespace Daemon
             }
         }
 
-        public async Task RegisterStation(string name, string macAddress)
+        public async Task PostStation(string name, string ipadress, string macAddress)
         {
             using (var httpClient = new HttpClient())
             {
-
-                var station = new Station { name = name, macAdress = macAddress };
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODQxNDA1ODYsImxvZ2luIjoiYWRtaW4ifQ.xBeHNiIwspdEHhd-95TrXp-lIjyY5sefoboA6YZT0Xk");
+                var station = new Station { StationName = name,IpAddress = ipadress, MacAddress = macAddress };
                 var response = await httpClient.PostAsJsonAsync($"{apiUrl}/stations", station);
 
                 if (response.IsSuccessStatusCode)
@@ -59,8 +62,17 @@ namespace Daemon
                 }
 
             }
-    }
-
         }
+
+        public async Task RegisterStation()
+        {
+            ApiHandler api = new ApiHandler();
+            Station station = new Station();
+            Console.WriteLine("Registering the station");
+            await api.PostStation(station.getStationName(), station.GetIPAddress(), station.GetMACAddress());
+        }
+
+
     }
 }
+
