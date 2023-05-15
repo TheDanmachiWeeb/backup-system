@@ -13,65 +13,6 @@ namespace Daemon
         private string programFolder = AppDomain.CurrentDomain.BaseDirectory + "\\secret";
         public FileManager() { }
 
-        public bool CheckIDFile() {
-            if (Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\secret"))
-            {
-
-            }
-            else
-            {
-                Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "\\secret");
-            }
-            string filePath = Path.Combine(programFolder,fileName);
-            Console.WriteLine(filePath);
-            if (File.Exists(filePath))
-            {
-
-                string id = getID();
-                if (id == "") { 
-                    Rollback();
-                    return false;
-                }
-
-                return true;
-            }
-            else
-            {
-
-                File.Create(filePath);
-                Console.WriteLine(File.GetCreationTime(filePath).ToString());
-                
-                return false;
-            }
-        }
-
-        public void SaveID(string id)
-        {   
-
-            string filePath = Path.Combine(programFolder, fileName);
-            File.WriteAllText(filePath, id);
-        }
-
-        public string getID()
-        {
-            string ID = string.Empty;
-            string filePath = Path.Combine(programFolder, fileName);
-
-            StreamReader reader = new StreamReader(filePath);
-            ID = reader.ReadToEnd();
-            reader.Close();
-            return ID;
-
-        }
-
-        public void Rollback()
-        {
-
-            string filePath = Path.Combine(programFolder, fileName);  
-             File.Delete(filePath);
-            Directory.Delete(AppDomain.CurrentDomain.BaseDirectory + "\\secret", true);
-
-        }
 
 public void SaveSnapshot(BackupConfiguration config, Snapshot snapshot)
         {
@@ -100,6 +41,7 @@ public void SaveSnapshot(BackupConfiguration config, Snapshot snapshot)
             string filename = "Snapshot_" + config.ID.ToString();
             string directoryname = "Snapshots";
 
+
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, directoryname, filename);
 
             StreamReader streamReader = new StreamReader(filePath);
@@ -110,7 +52,73 @@ public void SaveSnapshot(BackupConfiguration config, Snapshot snapshot)
             string[] data = line.Split(';');
             snapshot = new Snapshot(data);
 
+
             return snapshot;
+        }
+
+        public bool CheckIDFile()
+        {
+            if (Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\secret"))
+            {
+
+            }
+            else
+            {
+                Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "\\secret");
+            }
+            string filePath = Path.Combine(programFolder, fileName);
+            Console.WriteLine(filePath);
+            if (File.Exists(filePath))
+            {
+
+                string id = getID();
+                if (id == "")
+                {
+                    Rollback();
+                    return false;
+                }
+
+                return true;
+            }
+            else
+
+
+
+            {
+
+                File.Create(filePath);
+                Console.WriteLine(File.GetCreationTime(filePath).ToString());
+
+                return false;
+            }
+        }
+
+        public void SaveID(string id)
+        {
+
+            string filePath = Path.Combine(programFolder, fileName);
+            File.WriteAllText(filePath, id);
+        }
+
+        public string getID()
+        {
+            string ID = string.Empty;
+            string filePath = Path.Combine(programFolder, fileName);
+
+            StreamReader reader = new StreamReader(filePath);
+            ID = reader.ReadToEnd();
+            reader.Close();
+            return ID;
+
+        }
+
+        public void Rollback()
+        {
+
+            string filePath = Path.Combine(programFolder, fileName);
+            File.Delete(filePath);
+            Directory.Delete(AppDomain.CurrentDomain.BaseDirectory + "\\secret", true);
+
         }
     }
 }

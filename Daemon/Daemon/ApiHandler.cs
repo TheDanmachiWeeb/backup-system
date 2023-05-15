@@ -24,11 +24,13 @@ namespace Daemon
             using (var httpClient = new HttpClient())
             {
                 try
+
                 {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODQxNjU2MDYsImxvZ2luIjoiYWRtaW4ifQ.gUI5pau7qFN2i--x3R1vn-GjhJGGb-w0F0JMzUstPKE");
                     var response = await httpClient.GetAsync(apiUrl + "/users"); // Replace with your endpoint path
                     if (response.IsSuccessStatusCode)
                     {
+
                         var responseContent = await response.Content.ReadAsStringAsync();
                         Console.WriteLine(responseContent);
                     }
@@ -49,7 +51,7 @@ namespace Daemon
         {
             using (var httpClient = new HttpClient())
             {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODQxNjgyNjEsImxvZ2luIjoiYWRtaW4ifQ.eu0wZuUOVmOu3GYYNDTboRWUgtMeEFsbb-6rcX6wgaM");
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODQxNzM4MDksImxvZ2luIjoiYWRtaW4ifQ.eht_d-r1PB8etwbVK5Rn2-fqtuxr9ATmEyzFGikGxGc");
 
                 var station = new Station();
                 var response = await httpClient.PostAsJsonAsync($"{apiUrl}/stations", station);
@@ -57,20 +59,25 @@ namespace Daemon
                 if (response.IsSuccessStatusCode)
                 {
 
+
                     string responseContent = await response.Content.ReadAsStringAsync();
                     string stationId = String.Empty;
 
                     stationId = RegexID(responseContent);
 
+
                     Console.WriteLine("Station registered successfully. Station ID: " + stationId);
                     return stationId;
+
                 }
                 else
                 {
+
                     Console.WriteLine($"Failed to register station with status code {response.StatusCode}");
                     FileManager manager = new FileManager();
                     manager.Rollback();
                     return string.Empty;
+
                 }
 
             }

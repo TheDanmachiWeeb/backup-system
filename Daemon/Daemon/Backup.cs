@@ -21,9 +21,12 @@ namespace Daemon
         private DateTime BackupStartTime;
         public Snapshot snapshot;
         private DateTime lastBackupTime;
+
         private DateTime lastFullBackupTime;
 
+
         private FileManager fileManager = new FileManager();
+
 
 
 
@@ -46,6 +49,7 @@ namespace Daemon
             this.type = config.BackupType;
             List<string> sourcePaths = config.SourcePaths; 
             List<string> destinationPaths = config.DestinationPaths;
+
             BackupStartTime = DateTime.Now;
 
             for (int sID = 0; sID < sourcePaths.Count; sID++)
@@ -53,9 +57,13 @@ namespace Daemon
                 for (int dID = 0; dID < destinationPaths.Count; dID++)
                 {
                     string sourcePath = sourcePaths[sID];
+
                     string destinationPath = destinationPaths[dID];
+
                     ProcessBackup(sourcePath, destinationPath, type);
+
                     logger.LogBackup(config);
+
                 }
                 if (type != BackupType.Differential)
                 {
