@@ -30,11 +30,9 @@ namespace Daemon
                 string id = getID();
                 if (id == "") { 
                     Rollback();
-                    Console.WriteLine("id file empty");
                     return false;
                 }
 
-                Console.WriteLine("ID file exists");
                 return true;
             }
             else
@@ -51,7 +49,7 @@ namespace Daemon
         {
             string filePath = Path.Combine(programFolder, fileName);
             StreamWriter writer = new StreamWriter(filePath);
-            writer.Write(id);
+            writer.WriteAsync(id);
             writer.Close();
         }
 
