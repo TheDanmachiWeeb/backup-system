@@ -9,28 +9,56 @@ namespace Daemon
 {
     public class FileManager
     {
+        private string fileName = "database_secret.txt";
+        private string programFolder = AppDomain.CurrentDomain.BaseDirectory + "/secret";
+      
 
         public FileManager() { }
 
         public bool CheckIDFile() {
-            
-
-            string fileName = "database secret";
-            string programFolder = AppDomain.CurrentDomain.BaseDirectory;
-            string filePath = Path.Combine(programFolder, fileName);
-
+            Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "/secret");
+            string filePath = Path.Combine(programFolder,fileName);
+            Console.WriteLine(filePath);
             if (File.Exists(filePath))
             {
-                Console.WriteLine("tru");
+                Console.WriteLine("ID file exists");
                 return true;
             }
             else
             {
+
                 File.Create(filePath);
                 Console.WriteLine(File.GetCreationTime(filePath).ToString());
-
-               return false;
+                return false;
             }
+        }
+
+        public void SaveID(string id)
+        {
+            string filePath = Path.Combine(programFolder, fileName);
+            StreamWriter writer = new StreamWriter(filePath);
+            writer.Write(id);
+            writer.Close();
+        }
+
+        public string getID()
+        {
+            string ID = string.Empty;
+            string filePath = Path.Combine(programFolder, fileName);
+
+            StreamReader reader = new StreamReader(filePath);
+            ID = reader.ReadToEnd();
+            Console.WriteLine("id is " + ID);
+            reader.Close();
+            return ID;
+
+        }
+
+        public void Rollback()
+        {
+            string filePath = Path.Combine(programFolder, fileName);
+             File.Delete(filePath);
+             
         }
 
 public void SaveSnapshot(BackupConfiguration config, Snapshot snapshot)

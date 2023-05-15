@@ -11,6 +11,7 @@ namespace Daemon
 {
     public class Station
     {
+        public int ID { get; set; }
 
         public string StationName { get; set; }
 
@@ -18,6 +19,12 @@ namespace Daemon
 
         public string MacAddress { get; set; }
 
+        public Station()
+        {
+            this.StationName = getStationName();
+            this.IpAddress = GetIPAddress();
+            this.MacAddress = GetMACAddress();
+        }
 
         public string getStationName()
         {
@@ -56,13 +63,17 @@ namespace Daemon
             string macAddress = string.Empty;
 
             try
-            {   
-                foreach (NetworkInterface nic in NetworkInterface.GetAllNetworkInterfaces())
+            {
+                foreach (NetworkInterface n in NetworkInterface.GetAllNetworkInterfaces())
                 {
-                    if (nic.NetworkInterfaceType != NetworkInterfaceType.Loopback && nic.NetworkInterfaceType != NetworkInterfaceType.Tunnel)
+                    if (n.OperationalStatus == OperationalStatus.Up)
                     {
-                        macAddress = nic.GetPhysicalAddress().ToString();
-                        break;
+                        macAddress += n.GetPhysicalAddress().ToString();
+                        if (macAddress != "00090FAA0001")
+                        {
+                            break;
+                        }
+                        macAddress = "";
                     }
                 }
             }

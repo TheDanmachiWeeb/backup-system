@@ -9,7 +9,7 @@ using static System.Collections.Specialized.BitVector32;
 using System.Net.Http.Json;
 using System.Net.Http.Headers;
 using System.Xml.Linq;
-
+using System.Text.RegularExpressions;
 
 namespace Daemon
 {
@@ -45,26 +45,31 @@ namespace Daemon
             }
         }
 
-        public async Task<string> PostStation(string name, string ipadress, string macAddress)
+        public async Task<string> PostStation()
         {
             using (var httpClient = new HttpClient())
             {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODQxNDQ5NjMsImxvZ2luIjoiYWRtaW4ifQ.ZMxqly0yu0hjr1FXrbvOxYcvKfugjC1yK7C0ipzG2WM");
-                var station = new Station { StationName = name,IpAddress = ipadress, MacAddress = macAddress };
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODQxNTAyNjMsImxvZ2luIjoiYWRtaW4ifQ.WL959yjhY2ubQGo1njWPKbUwbobFJXeLbgnymOsnMkc");
+
+                var station = new Station();
                 var response = await httpClient.PostAsJsonAsync($"{apiUrl}/stations", station);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine("Station registered successfully");
 
-                    var responseContent = await response.Content.ReadAsStringAsync();
-                    var stationId = responseContent.Trim('"');
+                    string responseContent = await response.Content.ReadAsStringAsync();
+                    string stationId = String.Empty;
+
+                    stationId = RegexID(responseContent);
+
                     Console.WriteLine("Station registered successfully. Station ID: " + stationId);
                     return stationId;
                 }
                 else
                 {
                     Console.WriteLine($"Failed to register station with status code {response.StatusCode}");
+                    FileManager manager = new FileManager();
+                    manager.Rollback();
                     return string.Empty;
                 }
 
@@ -73,10 +78,36 @@ namespace Daemon
 
         public async Task RegisterStation()
         {
+            FileManager manager = new FileManager();
             ApiHandler api = new ApiHandler();
             Station station = new Station();
             Console.WriteLine("Registering the station");
-            await api.PostStation(station.getStationName(), station.GetIPAddress(), station.GetMACAddress());
+            string ID = await api.PostStation();
+            manager.SaveID(ID);
+            Console.WriteLine("ID saved");
+        }
+
+        public string RegexID(string response)
+        {
+                string ID = string.Empty;
+                string input = response;
+
+                // Regex pattern to match the number after "stationId":
+                string pattern = "\"stationId\":(\\d+)";
+
+                Match match = Regex.Match(input, pattern);
+
+                if (match.Success)
+                {
+                    // Extract the number captured in the first group.
+                    ID = match.Groups[1].Value;
+                }
+                else
+                {
+                    Console.WriteLine("No ID given to the station.");
+                }
+
+            return ID;
         }
 
 
