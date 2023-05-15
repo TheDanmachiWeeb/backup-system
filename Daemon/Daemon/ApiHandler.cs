@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using static System.Collections.Specialized.BitVector32;
 using System.Net.Http.Json;
 using System.Net.Http.Headers;
+using System.Xml.Linq;
 
 
 namespace Daemon
@@ -44,21 +45,27 @@ namespace Daemon
             }
         }
 
-        public async Task PostStation(string name, string ipadress, string macAddress)
+        public async Task<string> PostStation(string name, string ipadress, string macAddress)
         {
             using (var httpClient = new HttpClient())
             {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODQxNDA1ODYsImxvZ2luIjoiYWRtaW4ifQ.xBeHNiIwspdEHhd-95TrXp-lIjyY5sefoboA6YZT0Xk");
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODQxNDQ5NjMsImxvZ2luIjoiYWRtaW4ifQ.ZMxqly0yu0hjr1FXrbvOxYcvKfugjC1yK7C0ipzG2WM");
                 var station = new Station { StationName = name,IpAddress = ipadress, MacAddress = macAddress };
                 var response = await httpClient.PostAsJsonAsync($"{apiUrl}/stations", station);
 
                 if (response.IsSuccessStatusCode)
                 {
                     Console.WriteLine("Station registered successfully");
+
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    var stationId = responseContent.Trim('"');
+                    Console.WriteLine("Station registered successfully. Station ID: " + stationId);
+                    return stationId;
                 }
                 else
                 {
                     Console.WriteLine($"Failed to register station with status code {response.StatusCode}");
+                    return string.Empty;
                 }
 
             }
