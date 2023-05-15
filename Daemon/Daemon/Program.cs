@@ -49,22 +49,26 @@ namespace Daemon
 
 
 
-            
-            Station station = new Station();
-            ApiHandler api = new ApiHandler();
-            bool file = manager.CheckIDFile();
-            if (file == false)
+            for (int i = 0; i < 5; i++)
             {
-                api.RegisterStation();
-                Console.WriteLine("You werent registered yet");
+
+
+                Station station = new Station();
+                ApiHandler api = new ApiHandler();
+                bool file = manager.CheckIDFile();
+                if (file == false)
+                {
+                    api.RegisterStation();
+                    Console.WriteLine("You werent registered yet...");
+                }
+                else
+                {
+                    string IDString = manager.getID();
+                    Console.WriteLine("Your ID in the database: " +IDString);
+                }
+
+                Console.ReadLine();
             }
-            else
-            {
-                string IDString = manager.getID();
-                Console.WriteLine(IDString);
-            }
- 
-            Console.ReadLine();
         }
         
     }
