@@ -41,16 +41,18 @@ export class ConfigsEditPageComponent implements OnInit {
       this.StationsService.findAll().subscribe((stations) => {
         this.stations = stations;
         this.config.stations.forEach((station) => {
-          this.stations = this.stations.filter(
-            (s) => s.stationId !== station.stationId
-          );
+          this.stations = this.stations
+            .filter((s) => s.stationId !== station.stationId)
+            .sort((a, b) => a.stationName.localeCompare(b.stationName));
         });
       });
 
       this.GroupsService.findAll().subscribe((groups) => {
         this.groups = groups;
         this.config.groups.forEach((group) => {
-          this.groups = this.groups.filter((s) => s.groupId !== group.groupId);
+          this.groups = this.groups
+            .filter((s) => s.groupId !== group.groupId)
+            .sort((a, b) => a.groupName.localeCompare(b.groupName));
         });
       });
     });

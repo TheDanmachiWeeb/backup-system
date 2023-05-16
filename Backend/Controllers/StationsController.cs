@@ -84,14 +84,14 @@ namespace BackupSystem.Controllers
                                 .Where(bd => bd.ConfigId == sc.Config.ConfigId)
                                 .Select(bd => new BackupSourceDto
                                 {
-                                    SourcePath = bd.SourcePath,
+                                    Path = bd.SourcePath,
                                 }).ToList(),
                             Destinations = sc.Config.BackupDestinations
                                 .Where(bd => bd.ConfigId == sc.Config.ConfigId)
                                 .Select(bd => new BackupDestinationDto
                                 {
-                                    DestinationPath = bd.DestinationPath,
-                                    DestinationType = bd.DestinationType
+                                    Path = bd.DestinationPath,
+                                    Type = bd.DestinationType
                                 }).ToList()
                         }).ToList()
                         

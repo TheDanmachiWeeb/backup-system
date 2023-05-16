@@ -8,6 +8,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Diagnostics;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -117,79 +118,79 @@ namespace BackupSystem.Controllers
 
         // POST api/<ConfigurationsController>
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] ConfigurationDto req)
-        {
-            // Create new Configuration record
-            Configuration config = new Configuration
-            {
-                ConfigName = req.ConfigName,
-                BackupType = req.BackupType,
-                Retention = req.Retention,
-                PackageSize = req.PackageSize,
-                PeriodCron = req.PeriodCron
-            };
+        //public async Task<ActionResult> Post([FromBody] ConfigurationDto req)
+        //{
+        //    // Create new Configuration record
+        //    Configuration config = new Configuration
+        //    {
+        //        ConfigName = req.ConfigName,
+        //        BackupType = req.BackupType,
+        //        Retention = req.Retention,
+        //        PackageSize = req.PackageSize,
+        //        PeriodCron = req.PeriodCron
+        //    };
 
-            context.Configurations.Add(config);
+        //    context.Configurations.Add(config);
 
-            // Create new BackupSources records
-            foreach (BackupSourceDto source in req.Sources)
-            {
-                context.BackupSources.Add(new BackupSource
-                {
-                    Config = config,
-                    SourcePath = source.SourcePath
-                });
-            }
+        //    // Create new BackupSources records
+        //    foreach (BackupSourceDto source in req.Sources)
+        //    {
+        //        context.BackupSources.Add(new BackupSource
+        //        {
+        //            Config = config,
+        //            SourcePath = source.SourcePath
+        //        });
+        //    }
 
-            // Create new BackupDestinations records
-            foreach (BackupDestinationDto destination in req.Destinations)
-            {
-                context.BackupDestinations.Add(new BackupDestination
-                {
-                    Config = config,
-                    DestinationPath = destination.DestinationPath,
-                    DestinationType = destination.DestinationType,
-                });
-            }
+        //    // Create new BackupDestinations records
+        //    foreach (BackupDestinationDto destination in req.Destinations)
+        //    {
+        //        context.BackupDestinations.Add(new BackupDestination
+        //        {
+        //            Config = config,
+        //            DestinationPath = destination.DestinationPath,
+        //            DestinationType = destination.DestinationType,
+        //        });
+        //    }
 
-            await context.SaveChangesAsync();
+        //    await context.SaveChangesAsync();
 
-            // Create new StationConfiguration records for Groups
-            foreach (StationDto station in req.Stations)
-            {
-                var dbStation = await context.Stations.Where(s => s.StationId == station.StationId || s.StationName == station.StationName).FirstOrDefaultAsync();
-                if (dbStation == null)
-                    return NotFound("Station not found.");
+        //    // Create new StationConfiguration records for Groups
+        //    foreach (StationDto station in req.Stations)
+        //    {
+        //        var dbStation = await context.Stations.Where(s => s.StationId == station.StationId || s.StationName == station.StationName).FirstOrDefaultAsync();
+        //        if (dbStation == null)
+        //            return NotFound("Station not found.");
 
-                context.StationConfiguration.Add(new StationConfiguration()
-                {
-                    Config = config,
-                    StationId = station.StationId,
-                    GroupId = null
-                }); ;
-            }
+        //        context.StationConfiguration.Add(new StationConfiguration()
+        //        {
+        //            Config = config,
+        //            StationId = station.StationId,
+        //            GroupId = null
+        //        }); ;
+        //    }
 
-            // Create new StationConfiguration records for Stations
-            foreach (GroupDto group in req.Groups)
-            {
-                var dbGroup = await context.Groups.Where(g => group.GroupId == g.GroupId).FirstOrDefaultAsync();
-                if (dbGroup == null)
-                    return NotFound("Group not found.");
+        //    // Create new StationConfiguration records for Stations
+        //    foreach (GroupDto group in req.Groups)
+        //    {
+        //        var dbGroup = await context.Groups.Where(g => group.GroupId == g.GroupId).FirstOrDefaultAsync();
+        //        if (dbGroup == null)
+        //            return NotFound("Group not found.");
 
-                var stations = await context.StationGroup.Where(sg => sg.GroupId == group.GroupId).ToListAsync();
+        //        var stations = await context.StationGroup.Where(sg => sg.GroupId == group.GroupId).ToListAsync();
 
-                context.StationConfiguration.AddRange(stations.Select(s => new StationConfiguration
-                {
-                    ConfigId = config.ConfigId,
-                    StationId = s.StationId,
-                    GroupId = s.GroupId
-                }));
-            }
+        //        context.StationConfiguration.AddRange(stations.Select(s => new StationConfiguration
+        //        {
+        //            ConfigId = config.ConfigId,
+        //            StationId = s.StationId,
+        //            GroupId = s.GroupId
+        //        }));
+        //    }
 
-            await context.SaveChangesAsync();
+        //    await context.SaveChangesAsync();
 
-            return Ok(req);
-        }
+        //    return Ok(req);
+        //}
 
         // PUT api/<ConfigurationsController>/5
         [HttpPut("{id}")]
@@ -225,7 +226,7 @@ namespace BackupSystem.Controllers
                 context.BackupSources.Add(new BackupSource
                 {
                     Config = config,
-                    SourcePath = source.SourcePath
+                    SourcePath = source.Path
                 });
             }
 
@@ -238,34 +239,38 @@ namespace BackupSystem.Controllers
                 context.BackupDestinations.Add(new BackupDestination
                 {
                     Config = config,
-                    DestinationPath = destination.DestinationPath,
-                    DestinationType = destination.DestinationType,
+                    DestinationPath = destination.Path,
+                    DestinationType = destination.Type,
                 });
             }
 
             // Create new StationConfiguration records for Stations
-            foreach (StationDto station in req.Stations)
+            foreach (int stationId in req.Stations)
             {
-                var dbStation = await context.Stations.Where(s => s.StationId == station.StationId).FirstOrDefaultAsync();
+                var dbStation = await context.Stations.Where(s => s.StationId == stationId).FirstOrDefaultAsync();
                 if (dbStation == null)
                     return NotFound("Station not found.");
 
-                context.StationConfiguration.Add(new StationConfiguration()
+                StationConfiguration record = new StationConfiguration()
                 {
                     Config = config,
-                    StationId = station.StationId,
-                    GroupId = null
-                }); ;
+                    StationId = stationId,
+          GroupId = null
+                };
+
+                context.StationConfiguration.Add(record);
             }
 
+            await context.SaveChangesAsync();
+
             // Create new StationConfiguration records for Groups
-            foreach (GroupDto group in req.Groups)
+            foreach (int groupId in req.Groups)
             {
-                var dbGroup = await context.Groups.Where(g => group.GroupId == g.GroupId).FirstOrDefaultAsync();
+                var dbGroup = await context.Groups.Where(g => g.GroupId == groupId).FirstOrDefaultAsync();
                 if (dbGroup == null)
                     return NotFound("Group not found.");
 
-                var stations = await context.StationGroup.Where(sg => sg.GroupId == group.GroupId).ToListAsync();
+                var stations = await context.StationGroup.Where(sg => sg.GroupId == groupId).ToListAsync();
 
                 context.StationConfiguration.AddRange(stations.Select(s => new StationConfiguration
                 {

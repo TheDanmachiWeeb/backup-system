@@ -18,12 +18,14 @@ export class InputAutocompleteComponent<T extends { [key: string]: any }> {
   filteredOptions: T[];
 
   filterOptions() {
-    this.filteredOptions = this.options.filter(
-      (option) =>
-        option[this.property]
-          .toLowerCase()
-          .indexOf(this.value.toLowerCase()) !== -1
-    );
+    this.filteredOptions = this.options
+      .filter(
+        (option) =>
+          option[this.property]
+            .toLowerCase()
+            .indexOf(this.value.toLowerCase()) !== -1
+      )
+      .sort();
     this.filtered.emit(this.filteredOptions);
   }
 

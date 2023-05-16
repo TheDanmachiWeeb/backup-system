@@ -25,7 +25,7 @@ namespace BackupSystem.Controllers
 
             var destinations = await context.BackupDestinations
                 .Where(d => d.ConfigId == configId)
-                .Select(d => new BackupDestinationDto { DestinationPath = d.DestinationPath, DestinationType = d.DestinationType })
+                .Select(d => new BackupDestinationDto { Path = d.DestinationPath, Type = d.DestinationType })
                 .ToListAsync();
 
             return Ok(destinations);
@@ -44,8 +44,8 @@ namespace BackupSystem.Controllers
             var destinations = req.Select(d => new BackupDestination
             {
                 ConfigId = configId,
-                DestinationPath = d.DestinationPath,
-                DestinationType = d.DestinationType
+                DestinationPath = d.Path,
+                DestinationType = d.Type
             });
 
             await context.AddRangeAsync(destinations);
@@ -71,8 +71,8 @@ namespace BackupSystem.Controllers
             var newDestinations = destinations.Select(d => new BackupDestination
             {
                 ConfigId = configId,
-                DestinationPath = d.DestinationPath,
-                DestinationType = d.DestinationType
+                DestinationPath = d.Path,
+                DestinationType = d.Type
             });
 
             await context.AddRangeAsync(newDestinations);
@@ -91,7 +91,7 @@ namespace BackupSystem.Controllers
                 return BadRequest("Config with this id doesn't exist.");
             }
 
-            var destinationPaths = destinations.Select(dto => dto.DestinationPath).ToList();
+            var destinationPaths = destinations.Select(dto => dto.Path).ToList();
             var toRemove = await context.BackupDestinations
                 .Where(d => d.ConfigId == configId && destinationPaths.Contains(d.DestinationPath))
                 .ToListAsync();

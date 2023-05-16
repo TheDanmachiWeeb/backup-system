@@ -34,15 +34,9 @@ export class ConfigFormComponent {
 
   constructor(private fb: FormBuilder) {}
 
-  ngOnInit() {
-    this.form.get('destinationInput')?.setValue({
-      path: '',
-      type: 'local',
-    });
-  }
-
   public static createForm(fb: FormBuilder, config: Config): FormGroup {
     return fb.group({
+      configId: config.configId,
       configName: config.configName,
       backupType: config.backupType,
       retention: config.retention,
@@ -51,6 +45,7 @@ export class ConfigFormComponent {
       stations: fb.array(
         config.stations.map((station) =>
           fb.group({
+            stationId: station.stationId,
             stationName: station.stationName,
           })
         )
@@ -58,6 +53,7 @@ export class ConfigFormComponent {
       groups: fb.array(
         config.groups.map((group) =>
           fb.group({
+            groupId: group.groupId,
             groupName: group.groupName,
           })
         )
@@ -80,17 +76,24 @@ export class ConfigFormComponent {
       ),
       destinationInput: fb.group({
         path: '',
-        type: "'ftp' | 'local' | 'network'",
+        type: 'local',
       }),
     });
   }
 
   public save(): void {
-    this.saved.emit(this.form.value);
+    const req = { ...this.form.value };
+    req.stations = req.stations.map((s: { stationId: number }) => s.stationId);
+    req.groups = req.groups.map((g: { groupId: number }) => g.groupId);
+    delete req.destinationInput;
+    delete req.sourceInput;
+
+    this.saved.emit(req);
+    console.log(req);
   }
 
   public delete(): void {
-    this.deleted.emit(this.form.value);
+    this.deleted.emit(Number(this.form.value.configId));
   }
 
   public destinations(): FormArray {
@@ -121,6 +124,7 @@ export class ConfigFormComponent {
       stations.removeAt(index);
     }
     this.stations.push(item);
+    this.stations.sort((a, b) => a.stationName.localeCompare(b.stationName));
   }
 
   public addGroup(item: Group): void {
@@ -146,6 +150,7 @@ export class ConfigFormComponent {
     }
 
     this.groups.push(item);
+    this.groups.sort((a, b) => a.groupName.localeCompare(b.groupName));
   }
 
   public deleteSource(item: Source): void {
@@ -177,12 +182,15 @@ export class ConfigFormComponent {
     this.form.get('sourceInput')?.reset();
   }
 
-  public addDestination(path: string, type: 'full' | 'diff' | 'inc'): void {
+  public addDestination(): void {
     const destinations = this.form.get('destinations') as FormArray;
+    const destinationInput = this.form.get('destinationInput') as FormGroup;
+
     const destination = this.fb.group({
-      path: [path],
-      type: [type],
+      path: destinationInput.get('path')?.value,
+      type: destinationInput.get('type')?.value,
     });
+
     destinations.push(destination);
   }
 }

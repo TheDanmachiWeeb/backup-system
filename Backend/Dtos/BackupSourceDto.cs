@@ -8,5 +8,5 @@ namespace BackupSystem.Dtos;
 
 public partial class BackupSourceDto
 {
-    public string SourcePath { get; set; } = null!;
+    public string Path { get; set; } = null!;
 }

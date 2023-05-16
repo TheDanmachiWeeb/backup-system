@@ -57,8 +57,7 @@ namespace BackupSystem
             .WithMany(c => c.BackupSources)
             .HasForeignKey(bs => bs.ConfigId);
 
-            modelBuilder.Entity<StationConfiguration>()
-                .HasKey(sc => new { sc.StationId, sc.ConfigId, sc.GroupId });
+  
 
             modelBuilder.Entity<StationConfiguration>()
                 .HasOne(sc => sc.Config)
@@ -69,6 +68,7 @@ namespace BackupSystem
                 .HasOne(sc => sc.Group)
                 .WithMany(g => g.StationConfigurations)
                 .HasForeignKey(sc => sc.GroupId);
+   
 
             modelBuilder.Entity<StationConfiguration>()
                 .HasOne(sc => sc.Station)

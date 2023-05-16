@@ -8,14 +8,16 @@ public partial class StationConfiguration
 {
     public int StationId { get; set; }
 
-    public int? GroupId { get; set; }
+    public int? GroupId { get; set; } = null!;
 
     public int ConfigId { get; set; }
 
     [ForeignKey("ConfigId")]
     public virtual Configuration Config { get; set; } = null!;
 
+    [ForeignKey("GroupId")]
     public virtual Group? Group { get; set; } = null!;
 
+    [ForeignKey("StationId")]
     public virtual Station Station { get; set; } = null!;
 }

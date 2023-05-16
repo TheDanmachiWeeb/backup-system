@@ -8,6 +8,6 @@ namespace BackupSystem.Dtos;
 
 public partial class BackupDestinationDto
 {
-    public string DestinationPath { get; set; } = null!;
-    public string DestinationType { get; set; } = null!;
+    public string Path { get; set; } = null!;
+    public string Type { get; set; } = null!;
 }

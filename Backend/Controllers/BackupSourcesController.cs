@@ -27,7 +27,7 @@ namespace BackupSystem.Controllers
 
             var sources = await context.BackupSources
                 .Where(s => s.ConfigId == configId)
-                .Select(s => new BackupSourceDto { SourcePath = s.SourcePath })
+                .Select(s => new BackupSourceDto { Path = s.SourcePath })
                 .ToListAsync();
 
             return Ok(sources);
@@ -46,7 +46,7 @@ namespace BackupSystem.Controllers
             var sources = req.Select(s => new BackupSource
             {
                 ConfigId = configId,
-                SourcePath = s.SourcePath
+                SourcePath = s.Path
             });
 
             await context.AddRangeAsync(sources);
@@ -74,7 +74,7 @@ namespace BackupSystem.Controllers
             var newSources = sources.Select(s => new BackupSource
             {
                 ConfigId = configId,
-                SourcePath = s.SourcePath
+                SourcePath = s.Path
             });
 
             await context.AddRangeAsync(newSources);
@@ -92,7 +92,7 @@ namespace BackupSystem.Controllers
                 return BadRequest("Config with this id doesn't exist.");
             }
 
-            var sourcePaths = sources.Select(dto => dto.SourcePath).ToList();
+            var sourcePaths = sources.Select(dto => dto.Path).ToList();
             var toRemove = await context.BackupSources
                 .Where(s => s.ConfigId == configId && sourcePaths.Contains(s.SourcePath))
                 .ToListAsync();

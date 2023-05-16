@@ -17,6 +17,6 @@ public partial class ConfigurationDto
     public string? PeriodCron { get; set; }
     public virtual ICollection<BackupDestinationDto> Destinations { get; set; } = new List<BackupDestinationDto>();
     public virtual ICollection<BackupSourceDto> Sources { get; set; } = new List<BackupSourceDto>();
-    public virtual ICollection<StationDto> Stations { get; set; } = new List<StationDto>();
-    public virtual ICollection<GroupDto> Groups { get; set; } = new List<GroupDto>();
+    public virtual ICollection<int> Stations { get; set; } = new List<int>();
+    public virtual ICollection<int> Groups { get; set; } = new List<int>();
 }
