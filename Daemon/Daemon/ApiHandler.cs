@@ -10,29 +10,32 @@ using System.Net.Http.Json;
 using System.Net.Http.Headers;
 using System.Xml.Linq;
 using System.Text.RegularExpressions;
+using static Daemon.ApiHandler;
+using System.Text.Json.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Daemon
 {
     internal class ApiHandler
     {
+        private string token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODQyNDU3MDksImxvZ2luIjoiYWRtaW4ifQ.OdcwizowTYkJBSW_pt14wT_pwKT6oNk_kexBnx3nt-I";
         private string apiUrl = "http://localhost:5666/api";
 
-        public async Task Connect()
-        {
-            // Replace with your API URL
 
+
+        public async Task GetConfigsByID(string id)
+        {
             using (var httpClient = new HttpClient())
             {
                 try
-
                 {
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODQxNjU2MDYsImxvZ2luIjoiYWRtaW4ifQ.gUI5pau7qFN2i--x3R1vn-GjhJGGb-w0F0JMzUstPKE");
-                    var response = await httpClient.GetAsync(apiUrl + "/users"); // Replace with your endpoint path
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    var response = await httpClient.GetAsync($"{apiUrl}/stations/{id}");
                     if (response.IsSuccessStatusCode)
                     {
-
                         var responseContent = await response.Content.ReadAsStringAsync();
-                        Console.WriteLine(responseContent);
+                        CreateConfigs(responseContent);
                     }
                     else
                     {
@@ -43,7 +46,6 @@ namespace Daemon
                 {
                     Console.WriteLine($"Request failed: {ex.Message}");
                 }
-
             }
         }
 
@@ -51,35 +53,26 @@ namespace Daemon
         {
             using (var httpClient = new HttpClient())
             {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODQyMjQzMTYsImxvZ2luIjoiYWRtaW4ifQ.uyhg4sXAe9iJUbNQ_WrBHS091yp3wgyFzkgIB4Cd2kY");
+                Console.WriteLine("Registering the station...");
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
                 var station = new Station();
                 var response = await httpClient.PostAsJsonAsync($"{apiUrl}/stations", station);
 
                 if (response.IsSuccessStatusCode)
                 {
-
-
                     string responseContent = await response.Content.ReadAsStringAsync();
                     string stationId = String.Empty;
-
                     stationId = RegexID(responseContent);
-
-
                     Console.WriteLine("Station registered successfully. Station ID: " + stationId);
                     return stationId;
-
                 }
                 else
                 {
-
                     Console.WriteLine($"Failed to register station with status code {response.StatusCode}");
                     FileManager manager = new FileManager();
-                    manager.Rollback();
                     return string.Empty;
-
                 }
-
             }
         }
 
@@ -88,19 +81,22 @@ namespace Daemon
             FileManager manager = new FileManager();
             ApiHandler api = new ApiHandler();
             Station station = new Station();
-            Console.WriteLine("Registering the station...");
             string ID = await api.PostStation();
-            Console.Clear();
-            Console.WriteLine("Saving response data...");
-            manager.SaveID(ID.ToString());
-            Console.WriteLine("ID saved");
+
+            if (ID != "")
+            {
+                Console.WriteLine("Saving response data...");
+                manager.SaveID(ID.ToString());
+                Console.WriteLine("ID saved");
+            }
+
+            GetConfigsByID(ID);
         }
 
         public string RegexID(string response)
         {
                 string ID = string.Empty;
                 string input = response;
-
                 // Regex pattern to match the number after "stationId":
                 string pattern = "\"stationId\":(\\d+)";
 
@@ -108,18 +104,45 @@ namespace Daemon
 
                 if (match.Success)
                 {
-                    // Extract the number captured in the first group.
                     ID = match.Groups[1].Value;
                 }
                 else
                 {
-                    Console.WriteLine("No ID given to the station...");
+                throw new Exception("Response didn't contain ID");
                 }
 
             return ID;
         }
 
+        public List<BackupConfiguration> CreateConfigs(string jsonResponse)
+        {
+            try
+            {
+                JObject jsonObject = JObject.Parse(jsonResponse);
+                string config = jsonObject["configs"].ToString();
+                List<BackupConfiguration> configurations = JsonConvert.DeserializeObject<List<BackupConfiguration>>(config);
+
+                return configurations;
+            }
+            catch (Exception ex)
+            {
+                // write the exception
+                Console.WriteLine($"Serialization error: {ex.Message}");
+            }
+            List<BackupConfiguration> backupConfigurations1 = new List<BackupConfiguration>();
+            var backupConfiguration1 = new BackupConfiguration
+            {
+                configId = 4,
+                BackupType = BackupType.Full,
+                destinations = new List<destination>()
+            };
+            backupConfigurations1.Add(backupConfiguration1);
+            return backupConfigurations1;
+        }
+
 
     }
+
+
 }
 

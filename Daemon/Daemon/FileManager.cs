@@ -14,9 +14,9 @@ namespace Daemon
         public FileManager() { }
 
 
-public void SaveSnapshot(BackupConfiguration config, Snapshot snapshot)
+        public void SaveSnapshot(BackupConfiguration config, Snapshot snapshot)
         {
-            string filename = "Snapshot_" + config.ID.ToString();
+            string filename = "Snapshot_" + config.configId.ToString();
             string directoryname = "Snapshots";
             string directoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, directoryname);
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, directoryname, filename);
@@ -38,7 +38,7 @@ public void SaveSnapshot(BackupConfiguration config, Snapshot snapshot)
         public Snapshot ReadSnapshot(BackupConfiguration config)
         {
             Snapshot snapshot;
-            string filename = "Snapshot_" + config.ID.ToString();
+            string filename = "Snapshot_" + config.configId.ToString();
             string directoryname = "Snapshots";
 
 
@@ -87,15 +87,6 @@ public void SaveSnapshot(BackupConfiguration config, Snapshot snapshot)
             ID = reader.ReadToEnd();
             reader.Close();
             return ID;
-
-        }
-
-        public void Rollback()
-        {
-
-            string filePath = Path.Combine(programFolder, fileName);
-            Directory.Delete(AppDomain.CurrentDomain.BaseDirectory + "\\secret", true);
-
         }
     }
 }

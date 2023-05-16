@@ -9,7 +9,7 @@ namespace Daemon
     public enum BackupType
     {
         Full,
-        Differential,
-        Incremental
+        Diff,
+        Inc
     }
 }

@@ -23,16 +23,12 @@ namespace Daemon
         private DateTime lastBackupTime;
 
         private DateTime lastFullBackupTime;
-
-
         private FileManager fileManager = new FileManager();
-
-
 
 
         public void PerformBackup(BackupConfiguration config)
         {
-            string filename = "Snapshot_" + config.ID.ToString();
+            string filename = "Snapshot_" + config.configId.ToString();
             string directoryname = "Snapshots";
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, directoryname, filename);
 
@@ -47,8 +43,8 @@ namespace Daemon
 
             this.Config = config;
             this.type = config.BackupType;
-            List<string> sourcePaths = config.SourcePaths; 
-            List<string> destinationPaths = config.DestinationPaths;
+            List<source> sourcePaths = config.sources; 
+            List<destination> destinationPaths = config.destinations;
 
             BackupStartTime = DateTime.Now;
 
@@ -56,19 +52,19 @@ namespace Daemon
             {
                 for (int dID = 0; dID < destinationPaths.Count; dID++)
                 {
-                    string sourcePath = sourcePaths[sID];
+                    string sourcePath = sourcePaths[sID].sourcePath;
 
-                    string destinationPath = destinationPaths[dID];
+                    string destinationPath = destinationPaths[dID].destinationPath;
 
                     ProcessBackup(sourcePath, destinationPath, type);
 
                     logger.LogBackup(config);
 
                 }
-                if (type != BackupType.Differential)
+                if (type != BackupType.Diff)
                 {
                     Config.LastBackupPath = backupFolder;
-                } 
+                }
             }
         }
 
@@ -77,7 +73,7 @@ namespace Daemon
             string LastFullBackup = Config.LastBackupPath;
             string LastBackupPath = Config.LastBackupPath;
 
-            if ((backupType == BackupType.Differential || backupType == BackupType.Incremental) && !Directory.Exists(LastFullBackup))
+            if ((backupType == BackupType.Diff || backupType == BackupType.Diff) && !Directory.Exists(LastFullBackup))
             {
                 Console.WriteLine("Full backup does not exist > I will create one");
                 type = BackupType.Full;
@@ -89,7 +85,7 @@ namespace Daemon
             Directory.CreateDirectory(backupFolder);
             string[] filesToBackup = Directory.GetFiles(sourcePath, "*", SearchOption.AllDirectories);
 
-            if (backupType == BackupType.Differential) 
+            if (backupType == BackupType.Diff) 
             {
                 
                 foreach (string file in filesToBackup)
@@ -102,7 +98,7 @@ namespace Daemon
                     }
                 }
             }
-            else if (backupType == BackupType.Incremental)
+            else if (backupType == BackupType.Inc)
             {
                 foreach (string file in filesToBackup)
                 {
@@ -144,7 +140,7 @@ namespace Daemon
         private void CreateSnapshot(BackupConfiguration config)
         {
             DateTime fileLastModified = BackupStartTime;
-            string[] info = new string[] { fileLastModified.ToString(), config.ID.ToString()! };
+            string[] info = new string[] { fileLastModified.ToString(), config.configId.ToString()! };
             Snapshot snapshot = new Snapshot(info);
             fileManager.SaveSnapshot(Config, snapshot);
         }
