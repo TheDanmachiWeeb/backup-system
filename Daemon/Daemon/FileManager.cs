@@ -24,6 +24,7 @@ namespace Daemon
             if (!Directory.Exists(directoryPath))
             {
                 Directory.CreateDirectory(directoryPath);
+                File.Create(directoryPath + "\\" + filename);
             }
             if (File.Exists(filePath))
             {
@@ -73,7 +74,6 @@ namespace Daemon
 
         public void SaveID(string id)
         {
-
             string filePath = Path.Combine(programFolder, fileName);
             File.WriteAllText(filePath, id);
         }

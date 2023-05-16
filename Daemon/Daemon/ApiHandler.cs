@@ -19,7 +19,7 @@ namespace Daemon
 {
     internal class ApiHandler
     {
-        private string token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODQyNDU3MDksImxvZ2luIjoiYWRtaW4ifQ.OdcwizowTYkJBSW_pt14wT_pwKT6oNk_kexBnx3nt-I";
+        private string token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODQyNTgzNTYsImxvZ2luIjoiYWRtaW4ifQ.vsJUsgJ1Q3ul8zpW2SZ-si1dBlDwV3CUNPF-ZAR1Br8";
         private string apiUrl = "http://localhost:5666/api";
 
 
