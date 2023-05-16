@@ -12,7 +12,8 @@
     >
   </div>
   <app-configs-table
-    class="grow overflow-y-auto"
+    class="grow overflow-y-auto max-w-max mx-auto"
+    style="scrollbar-gutter: stable both-edges"
     [configs]="filteredData"
     (edited)="editConfig($event)"
     (deleted)="deleteConfig($event)"

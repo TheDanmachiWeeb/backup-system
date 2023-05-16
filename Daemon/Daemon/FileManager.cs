@@ -60,7 +60,7 @@ public void SaveSnapshot(BackupConfiguration config, Snapshot snapshot)
         {
             if (Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\secret"))
             {
-
+               
             }
             else
             {

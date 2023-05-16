@@ -56,10 +56,11 @@ namespace Daemon
                 Station station = new Station();
                 ApiHandler api = new ApiHandler();
                 bool file = manager.CheckIDFile();
+              
 
                 //manager.Rollback();
                 //Console.ReadLine();
-                if (file == false)
+                if (file == true)
                 {
                     api.RegisterStation();
                     Console.WriteLine("You werent registered yet...");

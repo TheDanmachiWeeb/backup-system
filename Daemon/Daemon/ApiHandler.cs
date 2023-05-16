@@ -51,7 +51,7 @@ namespace Daemon
         {
             using (var httpClient = new HttpClient())
             {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODQxNzM4MDksImxvZ2luIjoiYWRtaW4ifQ.eht_d-r1PB8etwbVK5Rn2-fqtuxr9ATmEyzFGikGxGc");
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODQyMjQzMTYsImxvZ2luIjoiYWRtaW4ifQ.uyhg4sXAe9iJUbNQ_WrBHS091yp3wgyFzkgIB4Cd2kY");
 
                 var station = new Station();
                 var response = await httpClient.PostAsJsonAsync($"{apiUrl}/stations", station);

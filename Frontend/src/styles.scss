@@ -6,5 +6,13 @@
 @import "~@fortawesome/fontawesome-free/css/all.min.css";
 
 .pinky-container {
-  @apply bg-pinky rounded-2xl h-full flex flex-col px-10 py-6;
+  @apply bg-pinky rounded-2xl h-full flex flex-col py-6 px-10;
+}
+
+::-webkit-scrollbar {
+  @apply w-2 h-2;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-purple-300 rounded;
 }
