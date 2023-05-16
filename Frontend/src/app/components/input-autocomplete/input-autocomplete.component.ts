@@ -24,7 +24,6 @@ export class InputAutocompleteComponent<T extends { [key: string]: any }> {
           .toLowerCase()
           .indexOf(this.value.toLowerCase()) !== -1
     );
-    console.log(this.filteredOptions);
     this.filtered.emit(this.filteredOptions);
   }
 

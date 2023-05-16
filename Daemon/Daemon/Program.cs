@@ -58,7 +58,7 @@ namespace Daemon
 
               //  manager.Rollback();
                 //Console.ReadLine();
-                if (file == true)
+                if (file == false)
                 {
                     Console.WriteLine("u WERENT REGISTERED YET");
                     api.RegisterStation();
@@ -68,7 +68,8 @@ namespace Daemon
                     string IDString = manager.getID();
                     if (IDString == null)
                     {
-                        api.RegisterStation();
+                        Console.WriteLine("yooo");
+                   
                     }
                     Console.WriteLine("Your ID in the database: " +IDString);
                 }

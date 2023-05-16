@@ -61,11 +61,8 @@ public void SaveSnapshot(BackupConfiguration config, Snapshot snapshot)
             string filePath = Path.Combine(programFolder, fileName);
             if (Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\secret"))
             {
-<<<<<<< HEAD
-               
-=======
                 return true;
->>>>>>> 07c1e38d52b5946cfa80d5b48a637e317501308b
+
             }
             else
             {
