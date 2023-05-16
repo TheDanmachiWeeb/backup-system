@@ -58,37 +58,18 @@ public void SaveSnapshot(BackupConfiguration config, Snapshot snapshot)
 
         public bool CheckIDFile()
         {
+            string filePath = Path.Combine(programFolder, fileName);
             if (Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\secret"))
             {
+<<<<<<< HEAD
                
+=======
+                return true;
+>>>>>>> 07c1e38d52b5946cfa80d5b48a637e317501308b
             }
             else
             {
                 Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "\\secret");
-            }
-            string filePath = Path.Combine(programFolder, fileName);
-            Console.WriteLine(filePath);
-            if (File.Exists(filePath))
-            {
-
-                string id = getID();
-                if (id == "")
-                {
-                    Rollback();
-                    return false;
-                }
-
-                return true;
-            }
-            else
-
-
-
-            {
-
-                File.Create(filePath);
-                Console.WriteLine(File.GetCreationTime(filePath).ToString());
-
                 return false;
             }
         }
@@ -116,7 +97,6 @@ public void SaveSnapshot(BackupConfiguration config, Snapshot snapshot)
         {
 
             string filePath = Path.Combine(programFolder, fileName);
-            File.Delete(filePath);
             Directory.Delete(AppDomain.CurrentDomain.BaseDirectory + "\\secret", true);
 
         }

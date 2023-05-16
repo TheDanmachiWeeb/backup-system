@@ -51,23 +51,25 @@ namespace Daemon
 
             for (int i = 0; i < 5; i++)
             {
-
-
                 Station station = new Station();
                 ApiHandler api = new ApiHandler();
                 bool file = manager.CheckIDFile();
               
 
-                //manager.Rollback();
+              //  manager.Rollback();
                 //Console.ReadLine();
                 if (file == true)
                 {
+                    Console.WriteLine("u WERENT REGISTERED YET");
                     api.RegisterStation();
-                    Console.WriteLine("You werent registered yet...");
                 }
                 else
                 {
                     string IDString = manager.getID();
+                    if (IDString == null)
+                    {
+                        api.RegisterStation();
+                    }
                     Console.WriteLine("Your ID in the database: " +IDString);
                 }
 
