@@ -13,6 +13,7 @@ import { UsersEditPageComponent } from './pages/users-edit-page/users-edit-page.
 import { GroupsEditPageComponent } from './pages/groups-edit-page/groups-edit-page.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { AuthGuard } from './services/auth.guard';
+import { ConfigsCreatePageComponent } from './pages/configs-create-page/configs-create-page.component';
 
 //d
 const routes: Routes = [
@@ -48,10 +49,16 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'configs/create',
+    component: ConfigsCreatePageComponent,
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'configs/edit/:id',
     component: ConfigsEditPageComponent,
     canActivate: [AuthGuard],
   },
+
   {
     path: 'groups',
     component: GroupsListPageComponent,

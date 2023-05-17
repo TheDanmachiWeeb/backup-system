@@ -1,15 +1,11 @@
 <div class="flex flex-col">
   <h1 class="py-4 text-2xl font-semibold block text-center mb-3">
-    Editing
-    <span *ngIf="config" class="tracking-wider underline decoration-sky-400">{{
-      config.configName
-    }}</span>
+    Creating a new config
   </h1>
   <app-config-form
     class="grow"
     [form]="form"
-    (saved)="saveConfig($event)"
-    (deleted)="deleteConfig()"
+    (saved)="createConfig($event)"
     [stations]="stations"
     [groups]="groups"
     *ngIf="form"

@@ -39,8 +39,8 @@ namespace BackupSystem
         {
             //Define primary keys
             modelBuilder.Entity<Configuration>().HasKey(c => c.ConfigId);
-            modelBuilder.Entity<BackupSource>().HasKey(bs => new { bs.ConfigId, bs.SourcePath});
-            modelBuilder.Entity<BackupDestination>().HasKey(bd =>new { bd.ConfigId, bd.DestinationPath });
+            modelBuilder.Entity<BackupSource>().HasKey(bs => new { bs.ConfigId, bs.SourcePath });
+            modelBuilder.Entity<BackupDestination>().HasKey(bd => new { bd.ConfigId, bd.DestinationPath });
             modelBuilder.Entity<Group>().HasKey(g => g.GroupId);
             modelBuilder.Entity<StationConfiguration>().HasKey(sc => new { sc.StationId, sc.ConfigId });
             modelBuilder.Entity<StationGroup>().HasKey(sg => new { sg.StationId, sg.GroupId });
@@ -57,7 +57,7 @@ namespace BackupSystem
             .WithMany(c => c.BackupSources)
             .HasForeignKey(bs => bs.ConfigId);
 
-  
+
 
             modelBuilder.Entity<StationConfiguration>()
                 .HasOne(sc => sc.Config)
@@ -68,15 +68,12 @@ namespace BackupSystem
                 .HasOne(sc => sc.Group)
                 .WithMany(g => g.StationConfigurations)
                 .HasForeignKey(sc => sc.GroupId);
-   
+
 
             modelBuilder.Entity<StationConfiguration>()
                 .HasOne(sc => sc.Station)
                 .WithMany(s => s.StationConfigurations)
                 .HasForeignKey(sc => sc.StationId);
-
-            modelBuilder.Entity<StationGroup>()
-                .HasKey(sg => new { sg.StationId, sg.GroupId });
 
             modelBuilder.Entity<StationGroup>()
                 .HasOne(sg => sg.Station)
@@ -87,87 +84,6 @@ namespace BackupSystem
                 .HasOne(sg => sg.Group)
                 .WithMany(g => g.StationGroups)
                 .HasForeignKey(sg => sg.GroupId);
-
-
-
-            //modelBuilder.Entity<StationConfiguration>().ToTable("StationConfiguration");
-
-            //modelBuilder.Entity<Configuration>()
-            //    .HasMany(c => c.StationConfigurations)
-            //    .WithOne(sc => sc.Config)
-            //    .HasForeignKey(sc => sc.ConfigId);
-
-            //modelBuilder.Entity<Group>()
-            //    .HasMany(g => g.StationConfigurations)
-            //    .WithOne(sc => sc.Group)
-            //    .HasForeignKey(sc => sc.GroupId);
-
-
-            //modelBuilder.Entity<Configuration>()
-            //    .HasMany(c => c.Stations)
-            //    .WithMany(s => s.Configurations)
-            //    .UsingEntity<StationConfiguration>(
-            //            /*"StationConfiguration",*/ // Specify the join table name
-            //        j => j.HasOne(sc => sc.Station).WithMany(),
-            //        j => j.HasOne(sc => sc.Config).WithMany());
-
-            //modelBuilder.Entity<StationConfiguration>()
-            //    .HasKey(sc => new { sc.ConfigId, sc.StationId });
-
-            //modelBuilder.Entity<StationConfiguration>()
-            //    .HasOne<Configuration>(sc => sc.Config)
-            //    .WithMany(s => s.StationConfigurations)
-            //    .HasForeignKey(sc => sc.ConfigId);
-
-            //modelBuilder.Entity<StationConfiguration>()
-            //    .HasOne<Station>(sc => sc.Station)
-            //    .WithMany(s => s.StationConfigurations)
-            //    .HasForeignKey(sc => sc.StationId);
-
-            //modelBuilder.Entity<StationConfiguration>()
-            //    .HasKey(sc => new { sc.ConfigId, sc.GroupId, sc.StationId });
-
-            //modelBuilder.Entity<StationConfiguration>()
-            //    .HasOne(sc => sc.Config)
-            //    .WithMany(c => c.StationConfigurations)
-            //    .HasForeignKey(sc => sc.ConfigId);
-
-            //modelBuilder.Entity<StationConfiguration>()
-            //    .HasOne(sc => sc.Group)
-            //    .WithMany(g => g.StationConfigurations)
-            //    .HasForeignKey(sc => sc.GroupId);
-
-            //modelBuilder.Entity<StationConfiguration>()
-            //    .HasOne(sc => sc.Station)
-            //    .WithMany(s => s.StationConfigurations)
-            //    .HasForeignKey(sc => sc.StationId);
-
-
-            //modelBuilder.Entity<StationConfiguration>()
-            //    .HasMany<Group>(sc => sc.Groups)
-            //    .WithMany(g => g.StationConfigurations)
-            //    .UsingEntity<StationGroup>(
-            //        sg => sg.HasOne(sg => sg.Group).WithMany(),
-            //        sg => sg.HasOne(sg => sg.Station).WithMany(),
-            //        sg => sg.HasKey(sg => new { sg.StationId, sg.GroupId })
-            //    );
         }
-
-
-        // Define foreign key relationships
-        //modelBuilder.Entity<BackupSource>()
-        //    .HasOne(bs => bs.Config)
-        //    .WithMany(c => c.BackupSources)
-        //    .HasForeignKey(bs => bs.ConfigId)
-        //    .OnDelete(DeleteBehavior.Cascade);
-
-        //modelBuilder.Entity<BackupDestinations>()
-        //    .HasOne(bd => bd.Configuration)
-        //    .WithMany(c => c.BackupDestinations)
-        //    .HasForeignKey(bd => bd.configId)
-        //    .OnDelete(DeleteBehavior.Cascade);
-
-
-
     }
 }

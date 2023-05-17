@@ -58,12 +58,6 @@ export class ConfigsEditPageComponent implements OnInit {
     });
   }
 
-  private getStations(): void {
-    this.StationsService.findAll().subscribe((result) => {
-      this.stations = result;
-    });
-  }
-
   public saveConfig(values: any): void {
     Object.assign(this.config, values);
     this.ConfigsService.update(this.config).subscribe(() =>

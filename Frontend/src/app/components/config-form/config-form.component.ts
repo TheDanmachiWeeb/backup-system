@@ -16,9 +16,6 @@ export class ConfigFormComponent {
   form: FormGroup;
 
   @Input()
-  config: Config;
-
-  @Input()
   stations: Station[];
 
   @Input()
@@ -89,7 +86,6 @@ export class ConfigFormComponent {
     delete req.sourceInput;
 
     this.saved.emit(req);
-    console.log(req);
   }
 
   public delete(): void {
@@ -106,6 +102,7 @@ export class ConfigFormComponent {
   public addStation(item: Station): void {
     const stations = this.form.get('stations') as FormArray;
     const station = this.fb.group({
+      stationId: [item.stationId],
       stationName: [item.stationName],
     });
     stations.push(station);
@@ -130,8 +127,8 @@ export class ConfigFormComponent {
   public addGroup(item: Group): void {
     const groups = this.form.get('groups') as FormArray;
     const group = this.fb.group({
-      groupName: [item.groupName],
       groupId: [item.groupId],
+      groupName: [item.groupName],
     });
     groups.push(group);
     const index = this.groups.findIndex((g) => g.groupId == item.groupId);

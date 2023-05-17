@@ -33,6 +33,7 @@ import { GroupFormComponent } from './components/group-form/group-form.component
 import { ReportFormComponent } from './components/report-form/report-form.component';
 import { FtpFormComponent } from './components/ftp-form/ftp-form.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
+import { ConfigsCreatePageComponent } from './pages/configs-create-page/configs-create-page.component';
 
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { InterceptorService } from './services/interceptor.service';
@@ -65,6 +66,7 @@ import { InterceptorService } from './services/interceptor.service';
     ReportFormComponent,
     FtpFormComponent,
     LoginPageComponent,
+    ConfigsCreatePageComponent,
   ],
   imports: [
     BrowserModule,

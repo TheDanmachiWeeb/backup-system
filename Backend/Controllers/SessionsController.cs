@@ -27,7 +27,7 @@ namespace BackupSystem.Controllers
                     string token = JwtBuilder.Create()
                       .WithAlgorithm(new HMACSHA256Algorithm())
                       .WithSecret("backpussy69")
-                      .AddClaim("exp", DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds())
+                      .AddClaim("exp", DateTimeOffset.UtcNow.AddHours(69).ToUnixTimeSeconds())
                       .AddClaim("login", user.Username)
                       .Encode();
 

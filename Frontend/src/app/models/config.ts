@@ -25,16 +25,16 @@ export class Config {
   public groups: Group[];
 
   public constructor(
-    id: number,
-    name: string,
-    backupType: string,
-    retention: number,
-    packageSize: number,
-    periodCron: string,
-    sources: Source[],
-    destinations: Destination[],
-    stations: Station[],
-    groups: Group[]
+    id: number = 0,
+    name: string = '',
+    backupType: string = 'full',
+    retention: number = 10,
+    packageSize: number = 10,
+    periodCron: string = '',
+    sources: Source[] = [],
+    destinations: Destination[] = [],
+    stations: Station[] = [],
+    groups: Group[] = []
   ) {
     this.configId = id;
     this.configName = name;
