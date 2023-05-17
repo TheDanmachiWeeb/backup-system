@@ -32,10 +32,6 @@ export class UsersEditPageComponent implements OnInit {
   }
 
   public saveUser(values: any): void {
-    /*this.user.name = values.name;
-    this.user.surname = values.surname;
-    this.user.email = values.email;*/
-
     Object.assign(this.user, values);
     this.service
       .update(this.user)

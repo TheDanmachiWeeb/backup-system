@@ -8,10 +8,10 @@ export class User {
   public passwordHash: string;
 
   public constructor(
-    id: number,
-    username: string,
-    email: string,
-    passwordHash: string
+    id: number = 0,
+    username: string = '',
+    email: string = '',
+    passwordHash: string = ''
   ) {
     this.userId = id;
     this.username = username;

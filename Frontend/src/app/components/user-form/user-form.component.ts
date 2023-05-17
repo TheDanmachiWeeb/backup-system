@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { User } from '../../models/user';
 
 @Component({
@@ -19,8 +19,10 @@ export class UserFormComponent {
 
   public static createForm(fb: FormBuilder, user: User): FormGroup {
     return fb.group({
-      username: user.username,
-      email: user.email,
+      userId: user.userId,
+      username: [user.username, Validators.required],
+      passwordHash: [user.passwordHash],
+      email: [user.email, Validators.required],
     });
   }
 

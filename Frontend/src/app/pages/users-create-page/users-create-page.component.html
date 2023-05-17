@@ -1,1 +1,11 @@
-<p>users-create-page works!</p>
+<div class="flex flex-col">
+  <h1 class="py-4 text-2xl font-semibold block text-center mb-3">
+    Creating a new user
+  </h1>
+  <app-user-form
+    class="grow"
+    [form]="form"
+    (saved)="createUser($event)"
+    *ngIf="form"
+  ></app-user-form>
+</div>

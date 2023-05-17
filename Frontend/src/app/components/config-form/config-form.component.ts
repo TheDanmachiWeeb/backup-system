@@ -1,5 +1,11 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, FormArray } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormControl,
+  FormArray,
+  Validators,
+} from '@angular/forms';
 import { Config } from '../../models/config';
 import { Station } from '../../models/station';
 import { Group } from '../../models/group';
@@ -34,11 +40,11 @@ export class ConfigFormComponent {
   public static createForm(fb: FormBuilder, config: Config): FormGroup {
     return fb.group({
       configId: config.configId,
-      configName: config.configName,
-      backupType: config.backupType,
-      retention: config.retention,
-      packageSize: config.packageSize,
-      periodCron: config.periodCron,
+      configName: [config.configName, Validators.required],
+      backupType: [config.backupType, Validators.required],
+      retention: [config.retention, Validators.required],
+      packageSize: [config.packageSize, Validators.required],
+      periodCron: [config.periodCron, Validators.required],
       stations: fb.array(
         config.stations.map((station) =>
           fb.group({

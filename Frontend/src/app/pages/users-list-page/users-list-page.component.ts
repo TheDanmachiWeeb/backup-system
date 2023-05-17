@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 })
 export class UsersListPageComponent implements OnInit {
   public data: User[];
+  public filteredData: User[];
 
   public constructor(private service: UsersService, private router: Router) {}
 
@@ -26,6 +27,13 @@ export class UsersListPageComponent implements OnInit {
   }
 
   private refresh(): void {
-    this.service.findAll().subscribe((result) => (this.data = result));
+    this.service.findAll().subscribe((result) => {
+      this.data = result;
+      this.filteredData = [...this.data];
+    });
+  }
+
+  onFiltered(filteredOptions: User[]) {
+    this.filteredData = filteredOptions;
   }
 }
