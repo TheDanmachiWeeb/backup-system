@@ -9,11 +9,14 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using static System.Net.WebRequestMethods;
 using File = System.IO.File;
+using Quartz;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Daemon
 {
-    public class Backup
+    public class Backup  : IJob
     {
+        private object MyLock = new object();
         public BackupLogger logger = new BackupLogger();
         private BackupConfiguration Config;
         private BackupType type;
@@ -25,6 +28,12 @@ namespace Daemon
         private DateTime lastFullBackupTime;
         private FileManager fileManager = new FileManager();
 
+        public async Task Execute(IJobExecutionContext context)
+        {
+            BackupConfiguration config = context.JobDetail.JobDataMap.Get("config") as BackupConfiguration;
+
+            PerformBackup(config);
+        }
 
         public void PerformBackup(BackupConfiguration config)
         {
@@ -35,15 +44,15 @@ namespace Daemon
             if (File.Exists(filePath))
             {
                 snapshot = fileManager.ReadSnapshot(config);
-                Console.WriteLine(snapshot.Data[0]);
-                Console.WriteLine(snapshot.Data[1]);
+                Console.WriteLine($"Last backup time: {snapshot.Data[0]}");
+                Console.WriteLine($"Config ID: {snapshot.Data[1]}");
                 lastFullBackupTime = DateTime.Parse(snapshot.Data[0]);
                 lastBackupTime = DateTime.Parse(snapshot.Data[0]);
             }
 
             this.Config = config;
             this.type = config.BackupType;
-            List<source> sourcePaths = config.sources; 
+            List<source> sourcePaths = config.sources;
             List<destination> destinationPaths = config.destinations;
 
             BackupStartTime = DateTime.Now;
@@ -52,10 +61,9 @@ namespace Daemon
             {
                 for (int dID = 0; dID < destinationPaths.Count; dID++)
                 {
-                    string sourcePath = sourcePaths[sID].sourcePath;
+                    string sourcePath = sourcePaths[sID].path;
 
-                    string destinationPath = destinationPaths[dID].destinationPath;
-
+                    string destinationPath = destinationPaths[dID].path;
                     ProcessBackup(sourcePath, destinationPath, type);
 
                     logger.LogBackup(config);
@@ -70,6 +78,7 @@ namespace Daemon
 
         private void ProcessBackup(string sourcePath, string destinationPath, BackupType backupType)
         {
+
             string LastFullBackup = Config.LastBackupPath;
             string LastBackupPath = Config.LastBackupPath;
 
@@ -80,10 +89,11 @@ namespace Daemon
                 ProcessBackup(sourcePath, destinationPath, BackupType.Full);
                 return;
             }
+      
+             backupFolder = Path.Combine(destinationPath, backupType +"Backup_" + BackupStartTime.ToString("yyyy-MM-dd-HH-mm-ss"));
+             Directory.CreateDirectory(backupFolder);
 
-            backupFolder = Path.Combine(destinationPath, backupType +"Backup_" + BackupStartTime.ToString("yyyy-MM-dd-HH-mm-ss"));
-            Directory.CreateDirectory(backupFolder);
-            string[] filesToBackup = Directory.GetFiles(sourcePath, "*", SearchOption.AllDirectories);
+             string[] filesToBackup = Directory.GetFiles(sourcePath, "*", SearchOption.AllDirectories);
 
             if (backupType == BackupType.Diff) 
             {
@@ -109,7 +119,7 @@ namespace Daemon
                         MyCopy(sourcePath, file, backupFolder);
                     }
                 }
-                CreateSnapshot(Config);
+                    CreateSnapshot(Config);
             }
             else
             {
@@ -117,9 +127,9 @@ namespace Daemon
                 {
                     MyCopy(sourcePath, file, backupFolder);
                 }
-                CreateSnapshot(Config);
-            }
+                    CreateSnapshot(Config);
 
+            }
             Console.WriteLine("{1} backup completed: {0} files backed up.", filesToBackup.Length, backupType);
             
         }
@@ -127,7 +137,6 @@ namespace Daemon
         {
             string relativePath = file.Substring(sourcePath.Length + 1);
             string backupFilePath = Path.Combine(backupFolder, relativePath);
-
             string backupDirectory = Path.GetDirectoryName(backupFilePath);
             if (!Directory.Exists(backupDirectory))
             {

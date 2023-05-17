@@ -24,7 +24,7 @@ namespace Daemon
             //        new source() { sourcePath = "C:\\Users\\dima\\Pictures\\Source2" },
             //        new source() { sourcePath = "C:\\Users\\dima\\Pictures\\Source3" }
             //    };
-
+            
             //List<destination> destinations = new List<destination>()
             //    {
             //        new destination() { destinationPath = "C:\\Users\\dima\\Pictures\\Destination1" },
@@ -59,34 +59,37 @@ namespace Daemon
             //}
 
 
-            FileManager manager = new FileManager();
+            //FileManager manager = new FileManager();
+            //Station station = new Station();
+            //ApiHandler api = new ApiHandler();
+            //List<BackupConfiguration> configs = new List<BackupConfiguration>();
+            //for (int i = 0; i < 5; i++)
+            //{
+            //    bool file = manager.CheckIDFile();
 
-            for (int i = 0; i < 5; i++)
-            {
-                Station station = new Station();
-                ApiHandler api = new ApiHandler();
-                bool file = manager.CheckIDFile();
+            //    if (file == false)
+            //    {
+            //        api.RegisterStation();
+            //    }
+            //    else
+            //    {
+            //        string IDString = manager.getID();
+            //        if (IDString == "")
+            //        {
+            //            api.RegisterStation();
+            //        }
+            //        Console.WriteLine("Your ID in the database: " + IDString);
+            //        api.GetConfigsByID(IDString);
+            //    }
 
-
-                //  manager.Rollback();
-                //Console.ReadLine();
-                if (file == false)
-                {
-                    api.RegisterStation();
-                }
-                else
-                {
-                    string IDString = manager.getID();
-                    if (IDString == "")
-                    {
-                        api.RegisterStation();
-                    }
-                    Console.WriteLine("Your ID in the database: " + IDString);
-                }
-
-                Console.ReadLine();
-            }
-        }
+            //    Console.ReadLine();
+            //}
+            //
+            Console.WriteLine("starting program");
+            BackupScheduler scheduler = new BackupScheduler();
+            scheduler.ScheduleBackupProcesses().Wait();
+            Console.ReadLine();
+           }
         
     }
 }

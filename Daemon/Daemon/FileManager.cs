@@ -20,18 +20,10 @@ namespace Daemon
             string directoryname = "Snapshots";
             string directoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, directoryname);
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, directoryname, filename);
+            Directory.CreateDirectory(directoryPath);
+            File.Create(filePath).Close();
 
-            if (!Directory.Exists(directoryPath))
-            {
-                Directory.CreateDirectory(directoryPath);
-                File.Create(directoryPath + "\\" + filename);
-            }
-            if (File.Exists(filePath))
-            {
-                File.Delete(filePath);
-            }
-
-            StreamWriter streamWriter = new StreamWriter(filePath);
+            StreamWriter streamWriter = new StreamWriter(filePath, false);
             streamWriter.Write(snapshot.Data[0] + ";" + snapshot.Data[1]);
             streamWriter.Close();
         }
@@ -68,6 +60,7 @@ namespace Daemon
             else
             {
                 Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "\\secret");
+                File.Create(programFolder + "\\" + fileName).Close();
                 return false;
             }
         }

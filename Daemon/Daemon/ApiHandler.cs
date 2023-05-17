@@ -19,15 +19,16 @@ namespace Daemon
 {
     internal class ApiHandler
     {
-        private string token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODQyNTgzNTYsImxvZ2luIjoiYWRtaW4ifQ.vsJUsgJ1Q3ul8zpW2SZ-si1dBlDwV3CUNPF-ZAR1Br8";
+        private string token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODQ1ODIyMjIsImxvZ2luIjoiYWRtaW4ifQ.P19sXJ1_73RqtKvm-IF-rJVokQBF2tle8s_HcyJ62eQ";
         private string apiUrl = "http://localhost:5666/api";
 
 
 
-        public async Task GetConfigsByID(string id)
+        public async Task<List<BackupConfiguration>> GetConfigsByID(string id)
         {
             using (var httpClient = new HttpClient())
             {
+                List<BackupConfiguration> configs = new List<BackupConfiguration>();
                 try
                 {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -35,7 +36,7 @@ namespace Daemon
                     if (response.IsSuccessStatusCode)
                     {
                         var responseContent = await response.Content.ReadAsStringAsync();
-                        CreateConfigs(responseContent);
+                        configs = CreateConfigs(responseContent);
                     }
                     else
                     {
@@ -46,6 +47,7 @@ namespace Daemon
                 {
                     Console.WriteLine($"Request failed: {ex.Message}");
                 }
+                return configs;
             }
         }
 
@@ -89,8 +91,6 @@ namespace Daemon
                 manager.SaveID(ID.ToString());
                 Console.WriteLine("ID saved");
             }
-
-            GetConfigsByID(ID);
         }
 
         public string RegexID(string response)
@@ -116,28 +116,19 @@ namespace Daemon
 
         public List<BackupConfiguration> CreateConfigs(string jsonResponse)
         {
+            List<BackupConfiguration> configurations = new List<BackupConfiguration>();
             try
             {
                 JObject jsonObject = JObject.Parse(jsonResponse);
                 string config = jsonObject["configs"].ToString();
-                List<BackupConfiguration> configurations = JsonConvert.DeserializeObject<List<BackupConfiguration>>(config);
-
-                return configurations;
+                configurations = JsonConvert.DeserializeObject<List<BackupConfiguration>>(config);
             }
             catch (Exception ex)
             {
                 // write the exception
                 Console.WriteLine($"Serialization error: {ex.Message}");
             }
-            List<BackupConfiguration> backupConfigurations1 = new List<BackupConfiguration>();
-            var backupConfiguration1 = new BackupConfiguration
-            {
-                configId = 4,
-                BackupType = BackupType.Full,
-                destinations = new List<destination>()
-            };
-            backupConfigurations1.Add(backupConfiguration1);
-            return backupConfigurations1;
+            return configurations;
         }
 
 

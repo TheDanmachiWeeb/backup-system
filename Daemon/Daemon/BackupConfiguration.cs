@@ -14,14 +14,15 @@ namespace Daemon
         public List<destination> destinations { get; set; }
         public BackupType BackupType { get; set; }
         public string LastBackupPath { get; set; }
+        public string periodCron { get; set; }  
     }
     public class destination
     {
-        public string destinationPath { get; set; } 
+        public string path { get; set; } 
     }
     public class source
     {
-        public string sourcePath { get; set; }  
+        public string path { get; set; }  
     }
 
 }
