@@ -90,10 +90,16 @@ namespace Daemon
                 return;
             }
       
-             backupFolder = Path.Combine(destinationPath, backupType +"Backup_" + BackupStartTime.ToString("yyyy-MM-dd-HH-mm-ss"));
-             Directory.CreateDirectory(backupFolder);
+            backupFolder = Path.Combine(destinationPath, backupType +"Backup_" + BackupStartTime.ToString("yyyy-MM-dd-HH-mm-ss"));
+            Directory.CreateDirectory(backupFolder);
 
-             string[] filesToBackup = Directory.GetFiles(sourcePath, "*", SearchOption.AllDirectories);
+            string[] files = Directory.GetFiles(sourcePath, "*", SearchOption.AllDirectories);
+            string[] directories = Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories);
+            string[] filesToBackup = files.Concat(directories).ToArray();
+
+   //         string[] filesToBackup = Directory.GetFiles(sourcePath, "*", SearchOption.AllDirectories);
+
+
 
             if (backupType == BackupType.Diff) 
             {
