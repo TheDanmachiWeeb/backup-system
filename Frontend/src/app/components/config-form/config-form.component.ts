@@ -1,16 +1,8 @@
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormControl,
-  FormArray,
-  Validators,
-} from '@angular/forms';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Config } from '../../models/config';
 import { Station } from '../../models/station';
 import { Group } from '../../models/group';
-import { Source } from 'src/app/models/source';
-import { Destination } from 'src/app/models/destination';
 
 @Component({
   selector: 'app-config-form',
@@ -33,9 +25,15 @@ export class ConfigFormComponent {
   @Output()
   deleted: EventEmitter<any> = new EventEmitter<any>();
 
-  sourceInput: string = '';
-
   constructor(private fb: FormBuilder) {}
+
+  getSourceControls() {
+    return (this.form.get('sources') as FormArray).controls;
+  }
+
+  getDestinationControls() {
+    return (this.form.get('destinations') as FormArray).controls;
+  }
 
   public static createForm(fb: FormBuilder, config: Config): FormGroup {
     return fb.group({
@@ -156,23 +154,12 @@ export class ConfigFormComponent {
     this.groups.sort((a, b) => a.groupName.localeCompare(b.groupName));
   }
 
-  public deleteSource(item: Source): void {
-    const sources = this.sources();
-    const index = sources.controls.findIndex(
-      (control) => (control as FormGroup).value.path === item.path
-    );
-    if (index >= 0) {
-      sources.removeAt(index);
-    }
+  public deleteSource(index: number): void {
+    this.sources().removeAt(index);
   }
 
-  public deleteDestination(item: Destination): void {
-    const destinations = this.destinations();
-    destinations.controls = destinations.controls.filter(
-      (control) =>
-        (control as FormGroup).value.path != item.path ||
-        (control as FormGroup).value.type != item.type
-    );
+  public deleteDestination(index: number): void {
+    this.destinations().removeAt(index);
   }
 
   addSource() {

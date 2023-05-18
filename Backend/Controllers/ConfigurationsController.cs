@@ -268,7 +268,7 @@ namespace BackupSystem.Controllers
                 if (dbGroup == null)
                     return NotFound("Group not found.");
 
-                var stations = await context.StationGroup.Where(sg => sg.GroupId == groupId).ToListAsync();
+                var stations = await context.StationGroup.Where(sg => sg.GroupId == groupId && !req.Stations.Contains(sg.StationId)).ToListAsync();
 
                 context.StationConfiguration.AddRange(stations.Select(s => new StationConfiguration
                 {
