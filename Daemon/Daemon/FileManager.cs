@@ -64,6 +64,11 @@ namespace Daemon
                 return false;
             }
         }
+        public int GetStationID()
+        {
+            int id = int.Parse(File.ReadAllText(programFolder + "\\" + fileName).ToString());
+            return id;
+        }
 
         public void SaveID(string id)
         {

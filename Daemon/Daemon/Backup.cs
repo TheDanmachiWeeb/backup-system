@@ -16,7 +16,6 @@ namespace Daemon
 {
     public class Backup  : IJob
     {
-        private object MyLock = new object();
         public BackupLogger logger = new BackupLogger();
         private BackupConfiguration Config;
         private BackupType type;
@@ -24,9 +23,10 @@ namespace Daemon
         private DateTime BackupStartTime;
         public Snapshot snapshot;
         private DateTime lastBackupTime;
-
+        public BackupReport report = new BackupReport();
         private DateTime lastFullBackupTime;
         private FileManager fileManager = new FileManager();
+        private bool backupSuccess = true;
 
         public async Task Execute(IJobExecutionContext context)
         {
@@ -44,10 +44,9 @@ namespace Daemon
             if (File.Exists(filePath))
             {
                 snapshot = fileManager.ReadSnapshot(config);
-                Console.WriteLine($"Last backup time: {snapshot.Data[0]}");
-                Console.WriteLine($"Config ID: {snapshot.Data[1]}");
                 lastFullBackupTime = DateTime.Parse(snapshot.Data[0]);
                 lastBackupTime = DateTime.Parse(snapshot.Data[0]);
+                Console.WriteLine($"Last backup time: {lastBackupTime}, with config ID: {snapshot.Data[1]} ");
             }
 
             this.Config = config;
@@ -65,79 +64,87 @@ namespace Daemon
 
                     string destinationPath = destinationPaths[dID].path;
                     ProcessBackup(sourcePath, destinationPath, type);
-
-                    logger.LogBackup(config);
-
+               
                 }
                 if (type != BackupType.Diff)
                 {
                     Config.LastBackupPath = backupFolder;
                 }
             }
+            logger.LogBackup(config, backupSuccess);
+            Console.WriteLine(report.GenerateBackupReport(logger.LogEntries));
         }
 
         private void ProcessBackup(string sourcePath, string destinationPath, BackupType backupType)
         {
-
-            string LastFullBackup = Config.LastBackupPath;
-            string LastBackupPath = Config.LastBackupPath;
-
-            if ((backupType == BackupType.Diff || backupType == BackupType.Diff) && !Directory.Exists(LastFullBackup))
+            try
             {
-                Console.WriteLine("Full backup does not exist > I will create one");
-                type = BackupType.Full;
-                ProcessBackup(sourcePath, destinationPath, BackupType.Full);
-                return;
-            }
-      
-            backupFolder = Path.Combine(destinationPath, backupType +"Backup_" + BackupStartTime.ToString("yyyy-MM-dd-HH-mm-ss"));
-            Directory.CreateDirectory(backupFolder);
 
-            string[] files = Directory.GetFiles(sourcePath, "*", SearchOption.AllDirectories);
-            string[] directories = Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories);
-            string[] filesToBackup = files.Concat(directories).ToArray();
+                string LastFullBackup = Config.LastBackupPath;
+                string LastBackupPath = Config.LastBackupPath;
 
-   //         string[] filesToBackup = Directory.GetFiles(sourcePath, "*", SearchOption.AllDirectories);
-
-
-
-            if (backupType == BackupType.Diff) 
-            {
-                
-                foreach (string file in filesToBackup)
+                if ((backupType == BackupType.Diff || backupType == BackupType.Inc) && !Directory.Exists(LastFullBackup))
                 {
-                    DateTime fileLastModified = File.GetLastWriteTime(file);
+                    Console.WriteLine("Full backup does not exist > I will create one");
+                    type = BackupType.Full;
+                    ProcessBackup(sourcePath, destinationPath, BackupType.Full);
+                    Config.LastBackupPath = destinationPath;
+                    return;
+                }
 
-                    if (fileLastModified > lastFullBackupTime)
+                backupFolder = Path.Combine(destinationPath, backupType + "Backup_" + BackupStartTime.ToString("yyyy-MM-dd-HH-mm-ss"));
+                Directory.CreateDirectory(backupFolder);
+
+
+
+                string[] filesToBackup = Directory.GetFiles(sourcePath, "*", SearchOption.AllDirectories);
+
+
+
+                if (backupType == BackupType.Diff)
+                {
+
+                    foreach (string file in filesToBackup)
+                    {
+                        DateTime fileLastModified = File.GetLastWriteTime(file);
+
+                        if (fileLastModified > lastFullBackupTime)
+                        {
+                            MyCopy(sourcePath, file, backupFolder);
+                        }
+                    }
+                }
+                else if (backupType == BackupType.Inc)
+                {
+                    foreach (string file in filesToBackup)
+                    {
+                        DateTime fileLastModified = File.GetLastWriteTime(file);
+
+                        if (fileLastModified > lastBackupTime)
+                        {
+                            MyCopy(sourcePath, file, backupFolder);
+                        }
+                    }
+                    CreateSnapshot(Config);
+                }
+                else
+                {
+                    foreach (string file in filesToBackup)
                     {
                         MyCopy(sourcePath, file, backupFolder);
                     }
-                }
-            }
-            else if (backupType == BackupType.Inc)
-            {
-                foreach (string file in filesToBackup)
-                {
-                    DateTime fileLastModified = File.GetLastWriteTime(file);
-
-                    if (fileLastModified > lastBackupTime)
-                    {
-                        MyCopy(sourcePath, file, backupFolder);
-                    }
-                }
                     CreateSnapshot(Config);
-            }
-            else
-            {
-                foreach (string file in filesToBackup)
-                {
-                    MyCopy(sourcePath, file, backupFolder);
                 }
-                    CreateSnapshot(Config);
-
             }
-            Console.WriteLine("{1} backup completed: {0} files backed up.", filesToBackup.Length, backupType);
-            
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                backupSuccess = false;
+            }
+
+
+            //       Console.WriteLine("{1} backup completed: {0} files backed up.", filesToBackup.Length, backupType);
+
         }
         private void MyCopy(string sourcePath, string file, string backupFolder)
         {

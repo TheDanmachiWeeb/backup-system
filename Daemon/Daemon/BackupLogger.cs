@@ -9,13 +9,15 @@ namespace Daemon
     public class BackupLogger
     {
         public List<LogEntry> LogEntries { get; } = new List<LogEntry>();
+        private FileManager manager = new FileManager();
 
-        public void LogBackup(BackupConfiguration config)
+        public void LogBackup(BackupConfiguration config, bool backupSuccess)
         {
             LogEntry logEntry = new LogEntry
             {
-                SourcePaths = config.sources,
-                DestinationPaths = config.destinations,
+                ConfigId = config.configId,
+                StationId = manager.GetStationID(),
+                Success = backupSuccess,
             };
 
             LogEntries.Add(logEntry);

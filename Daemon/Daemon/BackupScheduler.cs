@@ -17,6 +17,7 @@ namespace Daemon
             IScheduler scheduler = await schedulerFactory.GetScheduler();
             ApiHandler api = new ApiHandler();
             List<BackupConfiguration> configs = new List<BackupConfiguration>();
+            BackupReport report = new BackupReport();
             await scheduler.Start(); 
             configs = await setup.SetupConfigs();
 
@@ -62,8 +63,7 @@ namespace Daemon
             // Schedule each backup process with a non-null cron expression
             foreach (var config in configs.Where(p => !string.IsNullOrEmpty(p.periodCron)))
             {
-                try
-                {
+    
                     // Create a job detail with the backup process information
                     JobDataMap jobDataMap = new JobDataMap();
                     jobDataMap.Put("config", config); // Store the backup process ID as a job data
@@ -77,11 +77,7 @@ namespace Daemon
 
                     // Schedule the job with the trigger
                     await scheduler.ScheduleJob(jobDetail, trigger);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Request failed: {ex.Message}");
-                }
+
             }
         }
     }
