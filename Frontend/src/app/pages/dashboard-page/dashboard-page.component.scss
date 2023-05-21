@@ -1,0 +1,32 @@
+.chart {
+    width: 200px;
+    height: 200px;
+    position: relative;
+    border-radius: 50%;
+    background-color: #f1f1f1;
+    overflow: hidden;
+  }
+  .chart::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #082f49;
+    transform: rotate(0deg);
+    transform-origin: center center;
+  }
+  .chart[data-value="25"]::before {
+    transform: rotate(90deg);
+  }
+  .chart[data-value="50"]::before {
+    transform: rotate(180deg);
+  }
+  .chart[data-value="75"]::before {
+    transform: rotate(270deg);
+  }
+  .chart[data-value="100"]::before {
+    transform: rotate(360deg);
+  }
