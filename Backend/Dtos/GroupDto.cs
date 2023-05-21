@@ -13,6 +13,6 @@ public partial class GroupDto
 
     public string? GroupName { get; set; }
 
-    public virtual ICollection<StationDto> Stations { get; set; } = new List<StationDto>();
-    public virtual ICollection<ConfigurationDto> Configs { get; set; } = new List<ConfigurationDto>();
+    public virtual ICollection<int> Stations { get; set; } = new List<int>();
+    public virtual ICollection<int> Configs { get; set; } = new List<int>();
 }

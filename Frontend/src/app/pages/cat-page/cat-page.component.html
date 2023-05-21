@@ -1,0 +1,9 @@
+<div class="pinky-container">
+  <img
+    class="object-cover"
+    (click)="fetchRandomCatImage()"
+    [src]="catImageUrl"
+    alt="Random Cat Image"
+    *ngIf="catImageUrl"
+  />
+</div>

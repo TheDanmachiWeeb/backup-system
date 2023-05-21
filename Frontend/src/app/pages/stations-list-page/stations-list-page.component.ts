@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 })
 export class StationsListPageComponent implements OnInit {
   public data: Station[];
+  public filteredData: Station[];
 
   public constructor(
     private service: StationsService,
@@ -29,6 +30,13 @@ export class StationsListPageComponent implements OnInit {
   }
 
   private refresh(): void {
-    this.service.findAll().subscribe((result) => (this.data = result));
+    this.service.findAll().subscribe((result) => {
+      this.data = result;
+      this.filteredData = [...this.data];
+    });
+  }
+
+  onFiltered(filteredOptions: Station[]) {
+    this.filteredData = filteredOptions;
   }
 }

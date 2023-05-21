@@ -14,6 +14,8 @@ import { GroupsEditPageComponent } from './pages/groups-edit-page/groups-edit-pa
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { AuthGuard } from './services/auth.guard';
 import { ConfigsCreatePageComponent } from './pages/configs-create-page/configs-create-page.component';
+import { GroupsCreatePageComponent } from './pages/groups-create-page/groups-create-page.component';
+import { CatPageComponent } from './pages/cat-page/cat-page.component';
 
 //d
 const routes: Routes = [
@@ -65,6 +67,16 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'groups/edit/:id',
+    component: GroupsEditPageComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'groups/create',
+    component: GroupsCreatePageComponent,
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'reports',
     component: ReportsListPageComponent,
     canActivate: [AuthGuard],
@@ -74,11 +86,7 @@ const routes: Routes = [
     component: SettingsPageComponent,
     canActivate: [AuthGuard],
   },
-  {
-    path: 'groups/edit/:id',
-    component: GroupsEditPageComponent,
-    canActivate: [AuthGuard],
-  },
+  { path: 'cat', component: CatPageComponent },
 
   { path: 'login', component: LoginPageComponent },
 ];

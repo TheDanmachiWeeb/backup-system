@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 })
 export class GroupsListPageComponent implements OnInit {
   public data: Group[];
+  public filteredData: Group[];
 
   public constructor(private service: GroupsService, private router: Router) {}
 
@@ -26,6 +27,13 @@ export class GroupsListPageComponent implements OnInit {
   }
 
   private refresh(): void {
-    this.service.findAll().subscribe((result) => (this.data = result));
+    this.service.findAll().subscribe((result) => {
+      this.data = result;
+      this.filteredData = [...this.data];
+    });
+  }
+
+  onFiltered(filteredOptions: Group[]) {
+    this.filteredData = filteredOptions;
   }
 }

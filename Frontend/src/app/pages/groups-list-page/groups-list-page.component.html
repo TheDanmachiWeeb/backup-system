@@ -1,12 +1,20 @@
-<div class="bg-pinky rounded-2xl min-h-full p-10 m-5">
-  <h2 class="text-xl font-semibold mb-5">Groups</h2>
-  <div class="text-right mr-[10%] mb-5">
+<div class="pinky-container">
+  <h2 class="text-2xl font-semibold mb-5">Groups</h2>
+  <div class="flex mb-7 gap-8 justify-center">
+    <app-input-autocomplete
+      [options]="data"
+      [property]="'groupName'"
+      [placeholder]="'Search by name'"
+      (filtered)="onFiltered($event)"
+    ></app-input-autocomplete>
     <app-button variant="primary" link="/groups/create"
       ><i class="fa-solid fa-plus"></i> Add Group</app-button
     >
   </div>
   <app-groups-table
-    [groups]="data"
+    class="grow overflow-y-auto max-w-max mx-auto"
+    style="scrollbar-gutter: stable both-edges"
+    [groups]="filteredData"
     (edited)="editGroup($event)"
     (deleted)="deleteGroup($event)"
   ></app-groups-table>

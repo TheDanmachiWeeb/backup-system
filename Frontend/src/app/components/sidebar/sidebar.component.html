@@ -56,6 +56,19 @@
       <i class="fa-solid fa-gear mr-1.5"></i> Settings
     </li>
     <li
+      class="hover:bg-slate-100 relative"
+      routerLink="/cat"
+      routerLinkActive="active"
+    >
+      <i class="fa-solid fa-cat mr-1.5"></i> Get a cat
+      <span
+        class="absolute top-[-5px] right-[-10px] text-green-600 px-2 py-1 transform rotate-[15deg]"
+      >
+        NEW!
+      </span>
+    </li>
+
+    <li
       (click)="logout()"
       class="hover:bg-slate-100 opacity-60 mt-10"
       routerLinkActive="active"

@@ -1,12 +1,20 @@
-<div class="bg-pinky rounded-2xl min-h-full p-10 m-5">
-  <h2 class="text-xl font-semibold mb-5">Stations</h2>
-  <div class="text-right mr-[10%] mb-5">
+<div class="pinky-container">
+  <h2 class="text-2xl font-semibold mb-5">Stations</h2>
+  <div class="flex mb-7 gap-8 justify-center">
+    <app-input-autocomplete
+      [options]="data"
+      [property]="'stationName'"
+      [placeholder]="'Search by name'"
+      (filtered)="onFiltered($event)"
+    ></app-input-autocomplete>
     <app-button variant="primary" link="/stations/create"
       ><i class="fa-solid fa-plus"></i> Add Station</app-button
     >
   </div>
   <app-stations-table
-    [stations]="data"
+    class="grow overflow-y-auto max-w-max mx-auto"
+    style="scrollbar-gutter: stable both-edges"
+    [stations]="filteredData"
     (edited)="editStation($event)"
     (deleted)="deleteStation($event)"
   ></app-stations-table>

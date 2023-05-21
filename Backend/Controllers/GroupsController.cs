@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using BackupSystem.Models;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
+using Org.BouncyCastle.Ocsp;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -26,7 +27,7 @@ namespace BackupSystem.Controllers
                     GroupId = g.GroupId,
                     GroupName = g.GroupName,
                     Stations = context.StationGroup
-                        .Where(sg => sg.GroupId == g.GroupId)
+                            .Where(sg => sg.GroupId == g.GroupId)
                         .Select(s => s.StationId)
                         .ToList()
                 })
@@ -39,21 +40,44 @@ namespace BackupSystem.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Group>> Get(int id)
         {
-            var group = await context.Groups.Where(g => g.GroupId == id)
-                .Select(g => new
-                {
-                    GroupId = g.GroupId,
-                    GroupName = g.GroupName,
-                    Stations = g.StationGroups.Select(sg => sg.StationId).ToList()
-                }).FirstAsync();
+            var group = await context.Groups
+            .Include(g => g.StationGroups)
+                .ThenInclude(sc => sc.Station)
+            .Include(g => g.StationConfigurations)
+                .ThenInclude(sc => sc.Config)
+            .Include(g => g.StationConfigurations)
+                .ThenInclude(sc => sc.Station)
+            .FirstOrDefaultAsync(g => g.GroupId == id);
 
             if (group == null)
                 return NotFound();
 
-            return Ok(group);
+            var result = new
+            {
+                GroupId = group.GroupId,
+                GroupName = group.GroupName,
+                Stations = group.StationGroups
+                    .Select(sc => new
+                    {
+                        StationId = sc.Station.StationId,
+                        StationName = sc.Station.StationName
+                    })
+
+                    .ToList(),
+                Configs = group.StationConfigurations
+                    .Select(sc => new
+                    {
+                        ConfigId = sc.Config.ConfigId,
+                        ConfigName = sc.Config.ConfigName
+                    })
+                    .Distinct()
+                    .ToList(),
+            };
+
+            return Ok(result);
         }
 
-        // POST api/<GroupsController>
+        //POST api/<GroupsController>
         [HttpPost]
         public async Task<ActionResult<Group>> Post(GroupDto req)
         {
@@ -68,21 +92,39 @@ namespace BackupSystem.Controllers
 
             await context.SaveChangesAsync();
 
-            // Add the stations to the StationGroup table
-            foreach (StationDto station in req.Stations)
+            foreach (var config in req.Configs)
             {
-                context.StationGroup.Add(new StationGroup { StationId = station.StationId, GroupId = group.GroupId });
+                StationConfiguration? record = await context.StationConfiguration.FirstOrDefaultAsync(sc => sc.ConfigId == config && req.Stations.Contains(sc.StationId));
+                if (record != null)
+                    context.StationConfiguration.Remove(record);
             }
 
             await context.SaveChangesAsync();
 
-            return Ok(group);
+
+            // Add the stations to the StationGroup table
+            foreach (int stationId in req.Stations)
+            {
+                context.StationGroup.Add(new StationGroup { StationId = stationId, GroupId = group.GroupId });
+                foreach (int configId in req.Configs)
+                {
+                    context.StationConfiguration.Add(new StationConfiguration { ConfigId = configId, StationId = stationId, GroupId = group.GroupId });
+                }
+            }
+
+            var settings = new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            };
+            string json = JsonConvert.SerializeObject(group, settings);
+
+            return Content(json, "application/json");
 
         }
 
         // PUT api/<GroupsController>/5
         [HttpPut("{id}")]
-        public async Task<ActionResult<Group>> Put(int id, GroupDto req)
+        public async Task<ActionResult<Group>> Put(int id, [FromBody] GroupDto req)
         {
             // Find the group to update
             Group? group = await context.Groups.FindAsync(id);
@@ -98,28 +140,24 @@ namespace BackupSystem.Controllers
 
 
             // Add the updated stations to the StationGroup table
-            foreach (StationDto station in req.Stations)
+            foreach (int stationId in req.Stations)
             {
-                context.StationGroup.Add(new StationGroup { StationId = station.StationId, GroupId = id });
+                context.StationGroup.Add(new StationGroup { StationId = stationId, GroupId = id });
             }
 
-            var stationIds = req.Stations.Select(s => s.StationId).ToList();
-
-            // Get all configs attached to this group
-            var configs = await context.StationConfiguration.Where(c => c.GroupId == id).Select(c => c.ConfigId).ToListAsync();
-
             // Remove all StationConfiguration records with the updated group ID
-            context.StationConfiguration.RemoveRange(context.StationConfiguration.Where(sc => sc.GroupId == id));
+            context.StationConfiguration.RemoveRange(context.StationConfiguration.Where(sc => sc.GroupId == id || req.Stations.Contains(sc.StationId)));
 
             await context.SaveChangesAsync();
 
             // Set the group
-            if (configs != null && stationIds != null)
+            if (req.Configs != null && req.Stations != null)
             {
-                foreach (int configId in configs)
+                foreach (int configId in req.Configs)
                 {
-                    foreach (int stationId in stationIds)
+                    foreach (int stationId in req.Stations)
                     {
+
                         context.StationConfiguration.Add(new StationConfiguration { ConfigId = configId, StationId = stationId, GroupId = id });
                     }
                 }
@@ -140,23 +178,20 @@ namespace BackupSystem.Controllers
         public async Task<ActionResult<Group>> Delete(int id)
         {
             // Find the group to delete
-            var group = await context.Groups.Where(g => g.GroupId == id).FirstOrDefaultAsync();
-            return NotFound(group);
+            Group? group = await context.Groups.Where(g => g.GroupId == id).FirstOrDefaultAsync();
 
-            /*
             if (group == null)
                 return NotFound("Group not found.");
+
+            context.StationConfiguration.RemoveRange(context.StationConfiguration.Where(sc => sc.GroupId == id));
 
             // Remove the group
             context.Groups.Remove(group);
 
-            //context.Database.ExecuteSqlRaw(
-            // $"DELETE FROM Groups WHERE GroupId = {id};");
-
             await context.SaveChangesAsync();
 
             return Ok();
-            */
+
 
         }
     }

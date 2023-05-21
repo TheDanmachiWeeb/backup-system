@@ -1,15 +1,11 @@
 <div class="flex flex-col">
   <h1 class="py-4 text-2xl font-semibold block text-center mb-3">
-    Editing
-    <span *ngIf="group" class="tracking-wider underline decoration-sky-400">{{
-      group.groupName
-    }}</span>
+    Creating a new group
   </h1>
   <app-group-form
     class="grow"
     [form]="form"
-    (saved)="saveGroup($event)"
-    (deleted)="deleteGroup()"
+    (saved)="createGroup($event)"
     [stations]="stations"
     [configs]="configs"
     *ngIf="form"

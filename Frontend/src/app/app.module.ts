@@ -36,6 +36,8 @@ import { ConfigsCreatePageComponent } from './pages/configs-create-page/configs-
 
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { InterceptorService } from './services/interceptor.service';
+import { GroupsCreatePageComponent } from './pages/groups-create-page/groups-create-page.component';
+import { CatPageComponent } from './pages/cat-page/cat-page.component';
 
 @NgModule({
   declarations: [
@@ -65,6 +67,8 @@ import { InterceptorService } from './services/interceptor.service';
     ReportFormComponent,
     LoginPageComponent,
     ConfigsCreatePageComponent,
+    GroupsCreatePageComponent,
+    CatPageComponent,
   ],
   imports: [
     BrowserModule,

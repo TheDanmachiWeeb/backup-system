@@ -9,6 +9,7 @@ import { Config } from '../../models/config';
 import { Station } from '../../models/station';
 import { Group } from '../../models/group';
 import { ConfigFormComponent } from '../../components/config-form/config-form.component';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-configs-edit-page',
@@ -38,22 +39,25 @@ export class ConfigsEditPageComponent implements OnInit {
       this.config = config;
       this.form = ConfigFormComponent.createForm(this.fb, config);
 
-      this.StationsService.findAll().subscribe((stations) => {
+      forkJoin([
+        this.StationsService.findAll(),
+        this.GroupsService.findAll(),
+      ]).subscribe(([stations, groups]) => {
         this.stations = stations;
         this.config.stations.forEach((station) => {
-          this.stations = this.stations
-            .filter((s) => s.stationId !== station.stationId)
-            .sort((a, b) => a.stationName.localeCompare(b.stationName));
+          this.stations = this.stations.filter(
+            (s) => s.stationId !== station.stationId
+          );
         });
-      });
+        this.stations.sort((a, b) =>
+          a.stationName.localeCompare(b.stationName)
+        );
 
-      this.GroupsService.findAll().subscribe((groups) => {
         this.groups = groups;
         this.config.groups.forEach((group) => {
-          this.groups = this.groups
-            .filter((s) => s.groupId !== group.groupId)
-            .sort((a, b) => a.groupName.localeCompare(b.groupName));
+          this.groups = this.groups.filter((g) => g.groupId !== group.groupId);
         });
+        this.groups.sort((a, b) => a.groupName.localeCompare(b.groupName));
       });
     });
   }
