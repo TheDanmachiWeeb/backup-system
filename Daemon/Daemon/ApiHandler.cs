@@ -86,10 +86,10 @@ namespace Daemon
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
 
-                Console.WriteLine(JsonConvert.SerializeObject(report));
+               // Console.WriteLine(JsonConvert.SerializeObject(report));
 
                 var response = await httpClient.PostAsJsonAsync($"{apiUrl}/Reports", report);
-                Console.WriteLine(response);
+               // Console.WriteLine(response);
                 if (response.IsSuccessStatusCode)
                 {
                     Console.WriteLine("Report sent");

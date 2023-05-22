@@ -34,22 +34,28 @@ namespace Daemon
 
             foreach (var source in config.sources)
             {
-                bool exists = FileOrDirectoryExists(source.path);
-                if (!exists)
-                {
-                    backupSuccess = false;
-                   await logger.LogBackup(config, backupSuccess);
-                }
+                    bool exists = FileOrDirectoryExists(source.path);
+                    if (!exists && backupSuccess == true)
+                    {
+                        backupSuccess = false;
+                        await logger.LogBackup(config, backupSuccess);
+                        Console.WriteLine("Bad source");
+                        Console.ReadLine();
+                    }
             }
             foreach (var destination in config.destinations)
             {
-                bool exists = FileOrDirectoryExists(destination.path);
-                if (!exists)
-                {
-                    backupSuccess = false;
-                    await logger.LogBackup(config, backupSuccess);
-                }
+       
+                    bool exists = FileOrDirectoryExists(destination.path);
+                    if (!exists && backupSuccess == true)
+                    {
+                        backupSuccess = false;
+                        await logger.LogBackup(config, backupSuccess);
+                        Console.WriteLine("Bad destination");
+                        Console.ReadLine();
+                    }
             }
+
             PerformBackup(config);
         }
 
