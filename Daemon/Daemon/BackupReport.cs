@@ -19,7 +19,7 @@ namespace Daemon
         public BackupReport GenerateBackupReport(LogEntry logEntry)
         {
             DateTime x = DateTime.Now;
-            string time = x.ToString("MM-dd-yyyy HH:mm:ss");
+            string time = x.ToString("yyyy-MM-ddTHH:mm:ss");
             BackupReport report = new BackupReport
             {
                 configId = logEntry.ConfigId,
