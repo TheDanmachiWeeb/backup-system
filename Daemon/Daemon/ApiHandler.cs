@@ -19,7 +19,7 @@ namespace Daemon
 {
     internal class ApiHandler
     {
-        private string token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODQ1ODIyMjIsImxvZ2luIjoiYWRtaW4ifQ.P19sXJ1_73RqtKvm-IF-rJVokQBF2tle8s_HcyJ62eQ";
+        private string token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODQ5OTc5NDQsImxvZ2luIjoiYWRtaW4ifQ.xGAXWRT8hr15jTaieirEcunSerD82HLoeIpaEzwHlrM";
         private string apiUrl = "http://localhost:5666/api";
 
 
@@ -78,7 +78,30 @@ namespace Daemon
             }
         }
 
-        public async Task RegisterStation()
+        public async Task PostReport(BackupReport report)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                Console.WriteLine("Sending report to the server...");
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+
+                Console.WriteLine(JsonConvert.SerializeObject(report));
+
+                var response = await httpClient.PostAsJsonAsync($"{apiUrl}/Reports", report);
+                Console.WriteLine(response);
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("Report sent");
+                }
+                else
+                {
+                    Console.WriteLine($"Failed to send report {response.StatusCode}");
+                }
+            }
+        }
+
+            public async Task RegisterStation()
         {
             FileManager manager = new FileManager();
             ApiHandler api = new ApiHandler();

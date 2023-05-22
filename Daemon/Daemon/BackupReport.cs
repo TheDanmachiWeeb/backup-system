@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,33 +9,27 @@ namespace Daemon
 {
     public class BackupReport
     {
-        public string GenerateBackupReport(List<LogEntry> logEntries)
+
+        public int stationId { get; set; }
+        public int configId { get; set; }
+        public string reportTime { get; set; }
+        public int backupSize { get; set; }
+        public bool success { get; set; }
+
+        public BackupReport GenerateBackupReport(LogEntry logEntry)
         {
-            string totalOperations = logEntries.Count.ToString();
-
-            bool success = IsReportSuccessful(logEntries);
-
-            var sb = new StringBuilder();
-            sb.AppendLine($"Total operations performed: {totalOperations}, ");
-            
-            return sb.ToString();
-        }
-
-        public bool IsReportSuccessful(List<LogEntry> logEntries)
-        {
-            var groupedEntries = logEntries.GroupBy(entry => entry.ConfigId);
-
-            foreach (var group in groupedEntries)
+            DateTime x = DateTime.Now;
+            string time = x.ToString("MM-dd-yyyy HH:mm:ss");
+            BackupReport report = new BackupReport
             {
-                bool hasFailure = group.Any(entry => !entry.Success);
-                if (hasFailure)
-                {
-                    return false; // Report has at least one failure
-                }
-            }
+                configId = logEntry.ConfigId,
+                stationId = logEntry.StationId,
+                success = logEntry.Success,
+                backupSize = 1,
+                reportTime = time
+            };
 
-            return true; // All groups have only successful entries
+            return report;
         }
-
     }
 }

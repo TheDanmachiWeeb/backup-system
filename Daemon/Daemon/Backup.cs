@@ -32,6 +32,24 @@ namespace Daemon
         {
             BackupConfiguration config = context.JobDetail.JobDataMap.Get("config") as BackupConfiguration;
 
+            foreach (var source in config.sources)
+            {
+                bool exists = FileOrDirectoryExists(source.path);
+                if (!exists)
+                {
+                    backupSuccess = false;
+                   await logger.LogBackup(config, backupSuccess);
+                }
+            }
+            foreach (var destination in config.destinations)
+            {
+                bool exists = FileOrDirectoryExists(destination.path);
+                if (!exists)
+                {
+                    backupSuccess = false;
+                    await logger.LogBackup(config, backupSuccess);
+                }
+            }
             PerformBackup(config);
         }
 
@@ -71,8 +89,10 @@ namespace Daemon
                     Config.LastBackupPath = backupFolder;
                 }
             }
-            logger.LogBackup(config, backupSuccess);
-            Console.WriteLine(report.GenerateBackupReport(logger.LogEntries));
+            if (backupSuccess == true)
+            {
+                logger.LogBackup(config, backupSuccess);
+            }
         }
 
         private void ProcessBackup(string sourcePath, string destinationPath, BackupType backupType)
@@ -165,6 +185,11 @@ namespace Daemon
             string[] info = new string[] { fileLastModified.ToString(), config.configId.ToString()! };
             Snapshot snapshot = new Snapshot(info);
             fileManager.SaveSnapshot(Config, snapshot);
+        }
+
+        private bool FileOrDirectoryExists(string name)
+        {
+            return (Directory.Exists(name) || File.Exists(name));
         }
     }
 }

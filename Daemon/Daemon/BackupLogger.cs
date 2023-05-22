@@ -10,8 +10,10 @@ namespace Daemon
     {
         public List<LogEntry> LogEntries { get; } = new List<LogEntry>();
         private FileManager manager = new FileManager();
+        private BackupReport report = new BackupReport();
+        private ApiHandler api = new ApiHandler();
 
-        public void LogBackup(BackupConfiguration config, bool backupSuccess)
+        public async Task LogBackup(BackupConfiguration config, bool backupSuccess)
         {
             LogEntry logEntry = new LogEntry
             {
@@ -19,8 +21,9 @@ namespace Daemon
                 StationId = manager.GetStationID(),
                 Success = backupSuccess,
             };
+            report = report.GenerateBackupReport(logEntry);
+            await api.PostReport(report);
 
-            LogEntries.Add(logEntry);
         }
     }
 }
