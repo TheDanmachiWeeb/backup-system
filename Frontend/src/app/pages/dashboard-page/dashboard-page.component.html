@@ -3,18 +3,19 @@
 <div class="flex flex-col md:flex-row gap-4 mt-4">
   <div class="bg-cyan-500 rounded-3xl p-4 flex-none">
     <h2 class="text-3xl text-center font-bold mb-4">Summary</h2>
-   
-      <div class="p-4">
-         <div class="chart" data-value="25"></div>
-      </div>
-      <div class=" p-4 mt-4">
-        <div class="chart" data-value="25"></div>
-     </div>
- 
+
+    <div class="p-4">
+      <div class="chart" data-value="25"></div>
+    </div>
+    <div class="p-4 mt-4">
+      <div class="chart" data-value="25"></div>
+    </div>
   </div>
 
   <div class="bg-cyan-950 rounded-3xl p-4 flex-1">
-    <h2 class="text-center text-3xl font-bold text-white mb-4">Latest backups</h2>
+    <h2 class="text-center text-3xl font-bold text-white mb-4">
+      Latest backups
+    </h2>
     <table class="table-auto">
       <thead>
         <tr>
@@ -27,11 +28,11 @@
       </thead>
       <tbody>
         <tr *ngFor="let backup of latestBackups">
-          <td class=" px-4 py-2 text-white">{{ backup.stationName }}</td>
-          <td class=" px-4 py-2 text-white">{{ backup.backupTime }}</td>
-          <td class=" px-4 py-2 text-white">{{ backup.backupType }}</td>
-          <td class=" px-4 py-2 text-white">{{ backup.backupSize }}</td>
-          <td class=" px-4 py-2 text-white">{{ backup.status }}</td>
+          <td class="px-4 py-2 text-white">{{ backup.stationName }}</td>
+          <td class="px-4 py-2 text-white">{{ backup.backupTime }}</td>
+          <td class="px-4 py-2 text-white">{{ backup.backupType }}</td>
+          <td class="px-4 py-2 text-white">{{ backup.backupSize }}</td>
+          <td class="px-4 py-2 text-white">{{ backup.status }}</td>
         </tr>
       </tbody>
     </table>
@@ -39,11 +40,11 @@
 </div>
 
 <div class="mt-4">
-    <div class="bg-rose-200 rounded-3xl grid grid-cols-5 gap-4 h-48">
-     <div class=" rounded-3xl p-4 my-8 ml-2"> </div>
-     <div class="bg-zinc-50 rounded-3xl p-4 my-8 w-32 h-32 "></div>
-     <div class="bg-zinc-50 rounded-3xl p-4 my-8 w-32 h-32"></div>
-     <div class="bg-zinc-50 rounded-3xl p-4 my-8 w-32 h-32"></div>
-     <div class="bg-zinc-50 rounded-3xl p-4 my-8 w-32 h-32 mr-2"></div>
-    </div>
+  <div class="bg-rose-200 rounded-3xl grid grid-cols-5 gap-4 h-48">
+    <div class="rounded-3xl p-4 my-8 ml-2"></div>
+    <div class="bg-zinc-50 rounded-3xl p-4 my-8 w-32 h-32"></div>
+    <div class="bg-zinc-50 rounded-3xl p-4 my-8 w-32 h-32"></div>
+    <div class="bg-zinc-50 rounded-3xl p-4 my-8 w-32 h-32"></div>
+    <div class="bg-zinc-50 rounded-3xl p-4 my-8 w-32 h-32 mr-2"></div>
+  </div>
 </div>

@@ -59,8 +59,16 @@ namespace BackupSystem.Controllers
 
         // POST api/<ReportsController>
         [HttpPost]
-        public async Task<ActionResult<Report>> Post([FromBody] Report report)
+        public async Task<ActionResult<Report>> Post([FromBody] ReportDto req)
         {
+            Report report = new Report
+            {
+                StationId = req.StationId,
+                ConfigId = req.ConfigId,
+                ReportTime = req.ReportTime,
+                BackupSize = req.BackupSize,
+                Success = req.Success
+            };
             context.Reports.Add(report);
             await context.SaveChangesAsync();
 
