@@ -38,8 +38,7 @@ namespace Daemon
                     if (!exists && backupSuccess == true)
                     {
                         backupSuccess = false;
-                        await logger.LogBackup(config, backupSuccess);
-                        Console.WriteLine("Bad source");
+                        await logger.LogBackup(config, backupSuccess, "Bad source");
                         Console.ReadLine();
                     }
             }
@@ -50,8 +49,7 @@ namespace Daemon
                     if (!exists && backupSuccess == true)
                     {
                         backupSuccess = false;
-                        await logger.LogBackup(config, backupSuccess);
-                        Console.WriteLine("Bad destination");
+                        await logger.LogBackup(config, backupSuccess, "Bad destination");
                         Console.ReadLine();
                     }
             }

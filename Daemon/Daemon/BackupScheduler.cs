@@ -63,7 +63,8 @@ namespace Daemon
             // Schedule each backup process with a non-null cron expression
             foreach (var config in configs.Where(p => !string.IsNullOrEmpty(p.periodCron)))
             {
-    
+                try
+                {
                     // Create a job detail with the backup process information
                     JobDataMap jobDataMap = new JobDataMap();
                     jobDataMap.Put("config", config); // Store the backup process ID as a job data
@@ -77,7 +78,13 @@ namespace Daemon
 
                     // Schedule the job with the trigger
                     await scheduler.ScheduleJob(jobDetail, trigger);
-
+                }
+                catch (Exception ex)
+                {
+                    BackupLogger backupLogger = new BackupLogger();
+                    await backupLogger.LogBackup(config, false, ex.Message);
+                    Console.WriteLine(ex.Message);
+                }
             }
         }
     }

@@ -19,9 +19,9 @@ namespace Daemon
 {
     internal class ApiHandler
     {
-        private string token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODQ5OTc5NDQsImxvZ2luIjoiYWRtaW4ifQ.xGAXWRT8hr15jTaieirEcunSerD82HLoeIpaEzwHlrM";
+        private string token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODUxNjg2MDIsImxvZ2luIjoiZGltYSJ9.E-suNWeEt5PcYBTQXzuoqtSlOZkB59lZ4CHYY3PZ_Ck";
         private string apiUrl = "http://localhost:5666/api";
-
+ 
 
 
         public async Task<List<BackupConfiguration>> GetConfigsByID(string id)

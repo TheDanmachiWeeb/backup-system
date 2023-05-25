@@ -9,8 +9,15 @@ namespace Daemon
 
           //Console.WriteLine("starting program");
             BackupScheduler scheduler = new BackupScheduler();
-            scheduler.ScheduleBackupProcesses().Wait();
-            Console.ReadLine();
+            try
+            {
+                scheduler.ScheduleBackupProcesses().Wait();
+                Console.ReadLine();
+            }
+            catch (Exception ex)
+            {
+                BackupReport report = new BackupReport();
+            }
         }
         
     }

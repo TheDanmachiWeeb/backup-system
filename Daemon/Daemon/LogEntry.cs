@@ -11,5 +11,7 @@ namespace Daemon
         public int ConfigId { get; set; }
         public int StationId { get; set; }
         public bool Success { get; set; }
+
+        public string errorMessage { get; set; }
     }
 }

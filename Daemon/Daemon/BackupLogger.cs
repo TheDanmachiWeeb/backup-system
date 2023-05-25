@@ -13,7 +13,7 @@ namespace Daemon
         private BackupReport report = new BackupReport();
         private ApiHandler api = new ApiHandler();
 
-        public async Task LogBackup(BackupConfiguration config, bool backupSuccess)
+        public async Task LogBackup(BackupConfiguration config, bool backupSuccess, string exceptionMessage = null)
         {
             LogEntry logEntry = new LogEntry
             {
@@ -21,9 +21,18 @@ namespace Daemon
                 StationId = manager.GetStationID(),
                 Success = backupSuccess,
             };
+
+            if (logEntry.Success == false && exceptionMessage != null)
+            {
+                logEntry.errorMessage = exceptionMessage;
+            }
+            else if (logEntry.Success == false && exceptionMessage == null)
+            {
+                logEntry.errorMessage = "No error message provided";
+            }
+
             report = report.GenerateBackupReport(logEntry);
             await api.PostReport(report);
-
         }
     }
 }
