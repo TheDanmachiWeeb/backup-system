@@ -21,41 +21,7 @@ namespace Daemon
             await scheduler.Start(); 
             configs = await setup.SetupConfigs();
 
-            //for (int i = 0; i < 3; i++)
-            //{
-            //    BackupConfiguration config = new BackupConfiguration
-            //    {
-            //        configId = i + 1,
-
-            //        sources = new List<source>
-            //        {
-            //            new source { sourcePath = $"SourcePath{i + 1}" }
-            //        },
-            //        destinations = new List<destination>
-            //        {
-            //            new destination { destinationPath = $"DestinationPath{i + 1}" }
-            //        },
-
-            //        BackupType = BackupType.Full
-            //    };
-
-            //    if (i == 1)
-            //    {
-            //        config.periodCron = "0 */5 * * * ?";
-            //    }
-            //    if (i == 2)
-            //    {
-            //        config.periodCron = "0 * * * * ?";
-            //    }
-            //    if (i == 3)
-            //    {
-            //        config.periodCron = "0 */15 * * * ?";
-            //    }
-
-            //    configs.Add(config);
-            //};
-
-                if (configs.Count < 1)
+            if (configs.Count < 1)
             {
                 Console.WriteLine("There are no configs assigned to your station");
             }

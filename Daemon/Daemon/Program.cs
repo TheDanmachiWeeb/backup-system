@@ -9,12 +9,6 @@ namespace Daemon
 
             BackupScheduler scheduler = new BackupScheduler();
 
-
-
-            
-
-
-
             try
             {
                 scheduler.ScheduleBackupProcesses().Wait();

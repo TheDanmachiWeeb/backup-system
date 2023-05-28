@@ -11,6 +11,7 @@ using static System.Net.WebRequestMethods;
 using File = System.IO.File;
 using Quartz;
 using System.Reflection.Metadata.Ecma335;
+using System.IO.Compression;
 
 namespace Daemon
 {
@@ -28,11 +29,12 @@ namespace Daemon
         private DateTime lastFullBackupTime;
         private FileManager fileManager = new FileManager();
         private bool backupSuccess = true;
+        private BackupConfiguration config;
 
         public async Task Execute(IJobExecutionContext context)
         {
             backupSize = 0;
-            BackupConfiguration config = context.JobDetail.JobDataMap.Get("config") as BackupConfiguration;
+            config = context.JobDetail.JobDataMap.Get("config") as BackupConfiguration;
 
             foreach (var source in config.sources)
             {
@@ -162,11 +164,17 @@ namespace Daemon
                     }
                     CreateSnapshot(Config);
                 }
+                if (config.zip == true)
+                {
+                    ZipFile.CreateFromDirectory(backupFolder, backupFolder + ".zip");
+                    backupSize = new System.IO.FileInfo(backupFolder+".zip").Length;
+                    Directory.Delete(backupFolder, true);
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
                 backupSuccess = false;
+                logger.LogBackup(config, backupSuccess, backupSize, ex.Message);
             }
         }
         private void MyCopy(string sourcePath, string file, string backupFolder)
