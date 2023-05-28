@@ -82,7 +82,7 @@ namespace Daemon
                 catch (Exception ex)
                 {
                     BackupLogger backupLogger = new BackupLogger();
-                    await backupLogger.LogBackup(config, false, ex.Message);
+                    await backupLogger.LogBackup(config, false, 0, ex.Message);
                     Console.WriteLine(ex.Message);
                 }
             }

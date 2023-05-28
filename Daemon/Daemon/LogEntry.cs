@@ -12,6 +12,8 @@ namespace Daemon
         public int StationId { get; set; }
         public bool Success { get; set; }
 
+        public long backupSize { get; set; } 
+
         public string errorMessage { get; set; }
     }
 }

@@ -16,13 +16,14 @@ namespace Daemon
 {
     public class Backup  : IJob
     {
+        public long backupSize;
         public BackupLogger logger = new BackupLogger();
         private BackupConfiguration Config;
         private BackupType type;
         private string backupFolder;
         private DateTime BackupStartTime;
         public Snapshot snapshot;
-        private DateTime lastBackupTime;
+        private DateTime? lastBackupTime;
         public BackupReport report = new BackupReport();
         private DateTime lastFullBackupTime;
         private FileManager fileManager = new FileManager();
@@ -30,6 +31,7 @@ namespace Daemon
 
         public async Task Execute(IJobExecutionContext context)
         {
+            backupSize = 0;
             BackupConfiguration config = context.JobDetail.JobDataMap.Get("config") as BackupConfiguration;
 
             foreach (var source in config.sources)
@@ -38,7 +40,7 @@ namespace Daemon
                     if (!exists && backupSuccess == true)
                     {
                         backupSuccess = false;
-                        await logger.LogBackup(config, backupSuccess, "Bad source");
+                        await logger.LogBackup(config, backupSuccess, 0, "Bad source");
                         Console.ReadLine();
                     }
             }
@@ -49,7 +51,7 @@ namespace Daemon
                     if (!exists && backupSuccess == true)
                     {
                         backupSuccess = false;
-                        await logger.LogBackup(config, backupSuccess, "Bad destination");
+                        await logger.LogBackup(config, backupSuccess, 0, "Bad destination");
                         Console.ReadLine();
                     }
             }
@@ -78,6 +80,7 @@ namespace Daemon
 
             BackupStartTime = DateTime.Now;
 
+
             for (int sID = 0; sID < sourcePaths.Count; sID++)
             {
                 for (int dID = 0; dID < destinationPaths.Count; dID++)
@@ -95,7 +98,7 @@ namespace Daemon
             }
             if (backupSuccess == true)
             {
-                logger.LogBackup(config, backupSuccess);
+                logger.LogBackup(config, backupSuccess, backupSize);
             }
         }
 
@@ -107,7 +110,7 @@ namespace Daemon
                 string LastFullBackup = Config.LastBackupPath;
                 string LastBackupPath = Config.LastBackupPath;
 
-                if ((backupType == BackupType.Diff || backupType == BackupType.Inc) && !Directory.Exists(LastFullBackup))
+                if ((backupType == BackupType.Diff || backupType == BackupType.Inc) && !Directory.Exists(LastFullBackup) && lastBackupTime == null)
                 {
                     Console.WriteLine("Full backup does not exist > I will create one");
                     type = BackupType.Full;
@@ -165,10 +168,6 @@ namespace Daemon
                 Console.WriteLine(ex.Message);
                 backupSuccess = false;
             }
-
-
-            //       Console.WriteLine("{1} backup completed: {0} files backed up.", filesToBackup.Length, backupType);
-
         }
         private void MyCopy(string sourcePath, string file, string backupFolder)
         {
@@ -179,7 +178,7 @@ namespace Daemon
             {
                 Directory.CreateDirectory(backupDirectory);
             }
-
+            backupSize += new System.IO.FileInfo(file).Length;
             File.Copy(file, backupFilePath, true);
         }
         

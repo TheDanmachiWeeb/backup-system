@@ -7,17 +7,25 @@ namespace Daemon
         static void Main(string[] args)
         {
 
-          //Console.WriteLine("starting program");
             BackupScheduler scheduler = new BackupScheduler();
+
+
+
+            
+
+
+
             try
             {
                 scheduler.ScheduleBackupProcesses().Wait();
-                Console.ReadLine();
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message) ;
                 BackupReport report = new BackupReport();
             }
+
+            Console.ReadLine();
         }
         
     }
