@@ -11,7 +11,9 @@ namespace Daemon
     {
         private string fileName = "database_secret.txt";
         private string programFolder = AppDomain.CurrentDomain.BaseDirectory + "\\secret";
+        public string separator = "@@@";
         public FileManager() { }
+       
 
 
         public void SaveSnapshot(BackupConfiguration config, Snapshot snapshot)
@@ -85,6 +87,39 @@ namespace Daemon
             ID = reader.ReadToEnd();
             reader.Close();
             return ID;
+        }
+
+        public void saveConfigs(string json)
+        {
+            string filePath = Path.Combine(programFolder + "\\" + "configJson");
+            JsonEncryption guard = new JsonEncryption();
+
+            string protectedJson = guard.Encrypt(json);
+            File.WriteAllText(filePath, protectedJson);
+        }
+
+        public string getConfigs()
+        {
+            string filePath = Path.Combine(programFolder + "\\" + "configJson");
+            JsonEncryption guard = new JsonEncryption();
+            string encryptedJson = File.ReadAllText(filePath);
+
+            string decryptedJson = guard.Decrypt(encryptedJson);
+            return decryptedJson;
+        }
+        public void saveKey(byte key)
+        {
+            string filePath = Path.Combine(programFolder + "\\" + "key"); 
+        }
+
+        public string getReports()
+        {
+            string filePath = Path.Combine(programFolder + "\\" + "oldReports");
+            JsonEncryption guard = new JsonEncryption();
+            string encryptedJson = File.ReadAllText(filePath);
+
+            string decryptedJson = guard.Decrypt(encryptedJson);
+            return decryptedJson;
         }
     }
 }

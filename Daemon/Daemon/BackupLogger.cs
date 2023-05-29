@@ -15,6 +15,7 @@ namespace Daemon
 
         public async Task LogBackup(BackupConfiguration config, bool backupSuccess, long backupSize, string exceptionMessage = null)
         {
+
             LogEntry logEntry = new LogEntry
             {
                 ConfigId = config.configId,

@@ -14,18 +14,21 @@ using static Daemon.ApiHandler;
 using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Daemon
 {
     internal class ApiHandler
     {
-        private string token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODU0MjAyMDQsImxvZ2luIjoiZGltYSJ9.FpzsXHUsbjb6sV-OPiab5GLribQcbIIfCPTni5azfd8";
+        private string token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODU2MjA3MTYsImxvZ2luIjoiZGltYSJ9.doWIqp4g-8aMLyHXkY2lXspZS9WS8jXIDgJh_9Tr4zI";
         private string apiUrl = "http://localhost:5666/api";
  
 
 
         public async Task<List<BackupConfiguration>> GetConfigsByID(string id)
         {
+            FileManager manager = new FileManager();
+
             using (var httpClient = new HttpClient())
             {
                 List<BackupConfiguration> configs = new List<BackupConfiguration>();
@@ -37,15 +40,22 @@ namespace Daemon
                     {
                         var responseContent = await response.Content.ReadAsStringAsync();
                         configs = CreateConfigs(responseContent);
+                        manager.saveConfigs(responseContent);
                     }
                     else
                     {
                         Console.WriteLine($"Request failed with status code {response.StatusCode}");
+                       
+                        if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\secret\\configJson"))
+                        {
+                            string json = manager.getConfigs(); //gets it from file
+                            configs = CreateConfigs(json);
+                        }
                     }
                 }
                 catch (HttpRequestException ex)
                 {
-                    Console.WriteLine($"Request failed: {ex.Message}");
+                    Console.WriteLine($"Getting configs failed: {ex.Message}");
                 }
                 return configs;
             }
@@ -82,26 +92,24 @@ namespace Daemon
         {
             using (var httpClient = new HttpClient())
             {
+                string path = AppDomain.CurrentDomain.BaseDirectory + "\\secret\\oldReports";
                 Console.WriteLine("Sending report to the server...");
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-
-               // Console.WriteLine(JsonConvert.SerializeObject(report));
+                FileManager manager = new FileManager();
 
                 var response = await httpClient.PostAsJsonAsync($"{apiUrl}/Reports", report);
-               // Console.WriteLine(response);
+
                 if (response.IsSuccessStatusCode)
                 {
                     Console.WriteLine("Report sent");
                 }
                 else
                 {
-                    Console.WriteLine($"Failed to send report {response.StatusCode}");
+                    Console.WriteLine($"Failed to send report {response.StatusCode}"); 
                 }
             }
         }
 
-            public async Task RegisterStation()
+        public async Task RegisterStation()
         {
             FileManager manager = new FileManager();
             ApiHandler api = new ApiHandler();
@@ -142,6 +150,7 @@ namespace Daemon
             List<BackupConfiguration> configurations = new List<BackupConfiguration>();
             try
             {
+                FileManager manager = new FileManager();
                 JObject jsonObject = JObject.Parse(jsonResponse);
                 string config = jsonObject["configs"].ToString();
                 configurations = JsonConvert.DeserializeObject<List<BackupConfiguration>>(config);
@@ -149,7 +158,7 @@ namespace Daemon
             catch (Exception ex)
             {
                 // write the exception
-                Console.WriteLine($"Serialization error: {ex.Message}");
+                Console.WriteLine($"error: {ex.Message}");
             }
             return configurations;
         }

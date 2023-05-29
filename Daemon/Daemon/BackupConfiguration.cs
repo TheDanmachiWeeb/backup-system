@@ -15,7 +15,7 @@ namespace Daemon
         public BackupType BackupType { get; set; }
         public string LastBackupPath { get; set; }
         public string periodCron { get; set; }
-        public bool zip { get; set; } = true;
+        public bool zip { get; set; }
     }
     public class destination
     {
