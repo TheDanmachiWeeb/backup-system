@@ -7,9 +7,7 @@ namespace BackupSystem.Models;
 public partial class StationConfiguration
 {
     public int StationId { get; set; }
-
     public int? GroupId { get; set; } = null!;
-
     public int ConfigId { get; set; }
 
     [ForeignKey("ConfigId")]

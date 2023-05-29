@@ -27,23 +27,27 @@ namespace BackupSystem.Controllers
         {
             var stations = await context.Stations.Select(s => new
             {
-                StationId = s.StationId,
-                StationName = s.StationName,
-                IpAddress = s.IpAddress,
+                stationId = s.StationId,
+                stationName = s.StationName,
+                ipAddress = s.IpAddress,
                 macAddress = s.MacAddress,
                 active = s.Active,
-                Groups = include.Contains("Groups") ? s.StationGroups.Select(sg => new GroupDto
+                status = s.Status,
+                groups = include.Contains("Groups") ? s.StationGroups.Select(sg => new GroupDto
                 {
                     GroupId = sg.Group.GroupId,
                     GroupName = sg.Group.GroupName
                 }).ToList() : null,
-                Configs = include.Contains("Configs") ? s.StationConfigurations.Select(sc => new ConfigurationDto
+                configs = include.Contains("Configs") ? s.StationConfigurations.Select(sc => new ConfigurationDto
                 {
                     ConfigId = sc.Config.ConfigId,
                     ConfigName = sc.Config.ConfigName,
                     BackupType = sc.Config.BackupType,
                     Retention = sc.Config.Retention,
                     PackageSize = sc.Config.PackageSize,
+                    Zip = sc.Config.Zip,
+                    Periodic = sc.Config.Periodic,
+                    Finished = sc.Config.Finished,
                     PeriodCron = sc.Config.PeriodCron,
                 }).ToList() : null
             }).ToListAsync();
@@ -59,19 +63,20 @@ namespace BackupSystem.Controllers
                 .Where(s => s.StationId == id)
                 .Select(s => new
                 {
-                    StationId = s.StationId,
-                    StationName = s.StationName,
-                    IpAddress = s.IpAddress,
-                    MacAddress = s.MacAddress,
-                    Active = s.Active,
-                    Groups = s.StationGroups
+                    stationId = s.StationId,
+                    stationName = s.StationName,
+                    ipAddress = s.IpAddress,
+                    macAddress = s.MacAddress,
+                    active = s.Active,
+                    status = s.Status,
+                    groups = s.StationGroups
                         .Select(sg => new GroupDto
                         {
                             GroupId = sg.GroupId,
                             GroupName = sg.Group!.GroupName
                         })
                         .ToList(),
-                    Configs = s.StationConfigurations
+                    configs = s.StationConfigurations
                         .Select(sc => new ConfigurationDto
                         {
                             ConfigId = sc.ConfigId,
@@ -79,6 +84,9 @@ namespace BackupSystem.Controllers
                             BackupType = sc.Config.BackupType,
                             Retention = sc.Config.Retention,
                             PackageSize = sc.Config.PackageSize,
+                            Zip = sc.Config.Zip,
+                            Periodic = sc.Config.Periodic,
+                            Finished = sc.Config.Finished,
                             PeriodCron = sc.Config.PeriodCron,
                             Sources = sc.Config.BackupSources
                                 .Where(bd => bd.ConfigId == sc.Config.ConfigId)
@@ -126,6 +134,7 @@ namespace BackupSystem.Controllers
             station.IpAddress = req.IpAddress;
             station.MacAddress = req.MacAddress;
             station.Active = req.Active;
+            station.Status = req.Status;
 
             await context.SaveChangesAsync();
 
