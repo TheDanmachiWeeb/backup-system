@@ -9,7 +9,6 @@ namespace Daemon
 {
     public class BackupReport
     {
-
         public int stationId { get; set; }
         public int configId { get; set; }
         public string reportTime { get; set; }

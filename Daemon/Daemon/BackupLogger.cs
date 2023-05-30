@@ -33,7 +33,7 @@ namespace Daemon
             {
                 logEntry.errorMessage = "No error message provided";
             }
-
+            //save entry and generate report from it after retrieving it from txt
             report = report.GenerateBackupReport(logEntry);
             await api.PostReport(report);
         }

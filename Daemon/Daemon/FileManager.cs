@@ -111,15 +111,5 @@ namespace Daemon
         {
             string filePath = Path.Combine(programFolder + "\\" + "key"); 
         }
-
-        public string getReports()
-        {
-            string filePath = Path.Combine(programFolder + "\\" + "oldReports");
-            JsonEncryption guard = new JsonEncryption();
-            string encryptedJson = File.ReadAllText(filePath);
-
-            string decryptedJson = guard.Decrypt(encryptedJson);
-            return decryptedJson;
-        }
     }
 }

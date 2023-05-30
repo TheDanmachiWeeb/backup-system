@@ -27,6 +27,7 @@ namespace Daemon
 
         public async Task<List<BackupConfiguration>> GetConfigsByID(string id)
         {
+            string filePath = AppDomain.CurrentDomain.BaseDirectory + "\\secret" + "\\" + "oldReports";
             FileManager manager = new FileManager();
 
             using (var httpClient = new HttpClient())
@@ -84,7 +85,7 @@ namespace Daemon
                     Console.WriteLine($"Failed to register station with status code {response.StatusCode}");
                     FileManager manager = new FileManager();
                     return string.Empty;
-                }
+                } 
             }
         }
 
@@ -128,6 +129,8 @@ namespace Daemon
         {
                 string ID = string.Empty;
                 string input = response;
+               // input.Split("@@@", StringSplitOptions.None);
+
                 // Regex pattern to match the number after "stationId":
                 string pattern = "\"stationId\":(\\d+)";
 
