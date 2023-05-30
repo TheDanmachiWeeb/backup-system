@@ -7,7 +7,7 @@ using Org.BouncyCastle.Ocsp;
 
 namespace BackupSystem.Controllers
 {
-    [Authorize]
+    [Authorize(admin = true)]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase

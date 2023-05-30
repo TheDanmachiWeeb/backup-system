@@ -8,7 +8,6 @@ using Org.BouncyCastle.Ocsp;
 
 namespace BackupSystem.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ReportsController : ControllerBase
@@ -17,12 +16,10 @@ namespace BackupSystem.Controllers
         private MyContext context = new MyContext();
 
         // GET: api/<ReportsController>
+        [Authorize(admin = true)]
         [HttpGet]
         public async Task<ActionResult<List<Report>>> Get()
         {
-            //var reports = await context.Reports.ToListAsync();
-            //return Ok(reports);
-
             var reports = await context.Reports
                 .Include(r => r.Config)
                 .Include(r => r.Station)
@@ -44,6 +41,7 @@ namespace BackupSystem.Controllers
         }
 
         // GET api/<ReportsController>/5
+        [Authorize(admin = true)]
         [HttpGet("{id}")]
         public async Task<ActionResult<Report>> Get(int id)
         {
@@ -58,6 +56,7 @@ namespace BackupSystem.Controllers
         }
 
         // POST api/<ReportsController>
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Report>> Post([FromBody] ReportDto req)
         {
@@ -76,6 +75,7 @@ namespace BackupSystem.Controllers
         }
 
         // PUT api/<ReportsController>/5
+        [Authorize(admin = true)]
         [HttpPut("{id}")]
         public async Task<ActionResult<Report>> Put(int id, [FromBody] Report req)
         {
@@ -90,6 +90,7 @@ namespace BackupSystem.Controllers
         }
 
         // DELETE api/<ReportsController>/5
+        [Authorize(admin = true)]
         [HttpDelete("{id}")]
         public async Task<ActionResult<List<Report>>> Delete(int id)
         {

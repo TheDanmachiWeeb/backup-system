@@ -15,7 +15,7 @@ using System.Text.RegularExpressions;
 
 namespace BackupSystem.Controllers
 {
-    [Authorize]
+    [Authorize(admin = true)]
     [Route("api/[controller]")]
     [ApiController]
     public class ConfigurationsController : ControllerBase

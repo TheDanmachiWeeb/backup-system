@@ -27,8 +27,8 @@ namespace BackupSystem.Controllers
                     string token = JwtBuilder.Create()
                       .WithAlgorithm(new HMACSHA256Algorithm())
                       .WithSecret("backpussy69")
-                      .AddClaim("exp", DateTimeOffset.UtcNow.AddHours(69).ToUnixTimeSeconds())
-                      .AddClaim("login", user.Username)
+                      .AddClaim("exp", DateTimeOffset.UtcNow.AddHours(3).ToUnixTimeSeconds())
+                      .AddClaim("role", "admin")
                       .Encode();
 
                     return Ok(new { token = token });
@@ -39,6 +39,27 @@ namespace BackupSystem.Controllers
             catch
             {
                 return Unauthorized(new { message = "Invalid credentials" });
+            }
+        }
+
+
+        // GET api/<SessionsController>
+        [HttpGet]
+        public async Task<ActionResult> Get()
+        {
+            try
+            {
+                string token = JwtBuilder.Create()
+                  .WithAlgorithm(new HMACSHA256Algorithm())
+                  .WithSecret("backpussy69")
+                  .AddClaim("role", "daemon")
+                  .Encode();
+
+                return Ok(new { token = token });
+            }
+            catch
+            {
+                return Unauthorized();
             }
         }
     }

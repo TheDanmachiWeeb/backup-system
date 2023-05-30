@@ -10,18 +10,17 @@ using System.Text.Json;
 
 namespace BackupSystem.Controllers
 
-
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    
+
     public class StationsController : ControllerBase
     {
 
         private MyContext context = new MyContext();
 
         // GET: api/<StationsController>
+        [Authorize(admin = true)]
         [HttpGet]
         public async Task<ActionResult<List<Station>>> Get([FromQuery] List<string> include)
         {
@@ -56,6 +55,7 @@ namespace BackupSystem.Controllers
         }
 
         // GET api/<StationsController>/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<Station>> Get(int id)
         {
@@ -102,7 +102,7 @@ namespace BackupSystem.Controllers
                                     Type = bd.DestinationType
                                 }).ToList()
                         }).ToList()
-                        
+
                 })
                 .FirstOrDefaultAsync();
 
@@ -113,6 +113,7 @@ namespace BackupSystem.Controllers
         }
 
         //// POST api/<StationsController>
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Station>> Post([FromBody] Station req)
         {
@@ -123,6 +124,7 @@ namespace BackupSystem.Controllers
         }
 
         // PUT api/<StationsController>/5
+        [Authorize(admin = true)]
         [HttpPut("{id}")]
         public async Task<ActionResult<List<Station>>> Put(int id, [FromBody] Station req)
         {
@@ -142,6 +144,7 @@ namespace BackupSystem.Controllers
         }
 
         // DELETE api/<StationsController>/5
+        [Authorize(admin = true)]
         [HttpDelete("{id}")]
         public async Task<ActionResult<List<Station>>> Delete(int id)
         {

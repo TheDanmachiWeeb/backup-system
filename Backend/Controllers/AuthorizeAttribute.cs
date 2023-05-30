@@ -7,17 +7,32 @@ namespace BackupSystem.Controllers
 {
     public class AuthorizeAttribute : Attribute, IAuthorizationFilter
     {
+        public bool admin { get; set; } = false;
         public void OnAuthorization(AuthorizationFilterContext context)
         {
             try
             {
                 string token = context.HttpContext.Request.Headers["Authorization"].ToString().Split(' ').Last();
 
-                var json = JwtBuilder.Create()
+                var jwt = JwtBuilder.Create()
                          .WithAlgorithm(new HMACSHA256Algorithm())
                          .WithSecret("backpussy69")
                          .MustVerifySignature()
-                         .Decode(token);
+                         .Decode<IDictionary<string, object>>(token);
+
+                string role = jwt["role"].ToString();
+
+                if (admin && role != "admin")
+                {
+                    context.Result = new JsonResult(new { message = "Access denied" })
+                    {
+                        StatusCode = StatusCodes.Status403Forbidden
+                    };
+                    return;
+                }
+
+                context.HttpContext.Items["role"] = role;
+
             }
             catch
             {
