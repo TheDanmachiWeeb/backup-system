@@ -34,6 +34,9 @@ namespace BackupSystem.Controllers
                     Retention = c.Retention,
                     PackageSize = c.PackageSize,
                     PeriodCron = c.PeriodCron,
+                    Zip = c.Zip,
+                    Periodic = c.Periodic,
+                    Finished = c.Finished,
                     BackupSources = c.BackupSources
                         .Select(bs => new
                         {
@@ -89,6 +92,9 @@ namespace BackupSystem.Controllers
                 Retention = config.Retention,
                 PackageSize = config.PackageSize,
                 PeriodCron = config.PeriodCron,
+                Zip = config.Zip,
+                Periodic = config.Periodic,
+                Finished = config.Finished,
                 Sources = config.BackupSources
                     .Select(bs => new
                     {
@@ -135,7 +141,10 @@ namespace BackupSystem.Controllers
                 BackupType = req.BackupType,
                 Retention = req.Retention,
                 PackageSize = req.PackageSize,
-                PeriodCron = req.PeriodCron
+                PeriodCron = req.PeriodCron,
+                Zip = req.Zip,
+                Periodic = req.Periodic,
+                Finished = req.Finished,
             };
 
             context.Configurations.Add(config);
@@ -225,6 +234,9 @@ namespace BackupSystem.Controllers
             config.BackupType = req.BackupType;
             config.Retention = req.Retention;
             config.PackageSize = req.PackageSize;
+            config.Zip = req.Zip;
+            config.Periodic = req.Periodic;
+            config.Finished = req.Finished;
             config.PeriodCron = req.PeriodCron;
 
             // Update the BackupSources records

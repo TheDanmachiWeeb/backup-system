@@ -14,6 +14,9 @@ public partial class ConfigurationDto
     public string? BackupType { get; set; }
     public int Retention { get; set; }
     public int PackageSize { get; set; }
+    public bool Zip { get; set; }
+    public bool Periodic { get; set; }
+    public bool Finished { get; set; }
     public string? PeriodCron { get; set; }
     public virtual ICollection<BackupDestinationDto> Destinations { get; set; } = new List<BackupDestinationDto>();
     public virtual ICollection<BackupSourceDto> Sources { get; set; } = new List<BackupSourceDto>();

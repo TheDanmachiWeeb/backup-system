@@ -8,15 +8,10 @@ namespace BackupSystem.Models;
 public partial class Report
 {
     public int ReportId { get; set; }
-
     public int StationId { get; set; }
-
     public int ConfigId { get; set; }
-
     public DateTime ReportTime { get; set; }
-
     public ulong BackupSize { get; set; }
-
     public Boolean Success { get; set; }
 
     [ForeignKey("ConfigId")]

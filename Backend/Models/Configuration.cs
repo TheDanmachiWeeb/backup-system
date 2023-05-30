@@ -8,18 +8,15 @@ namespace BackupSystem.Models;
 public partial class Configuration
 {
     public int ConfigId { get; set; }
-        
     public string? ConfigName { get; set; }
     public string? BackupType { get; set; } 
-
     public int Retention { get; set; }
-
     public int PackageSize { get; set; }
-
+    public bool Zip { get; set; }
+    public bool Periodic { get; set; }
+    public bool Finished { get; set; }
     public string? PeriodCron { get; set; }
-
     public virtual ICollection<Report> Reports { get; set; } = new List<Report>();
-
     public virtual ICollection<BackupDestination> BackupDestinations { get; set; } = new List<BackupDestination>();
     public virtual ICollection<BackupSource> BackupSources { get; set; } = new List<BackupSource>();
     public virtual ICollection<StationConfiguration> StationConfigurations { get; set; } = new List<StationConfiguration>();

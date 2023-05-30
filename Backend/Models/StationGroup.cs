@@ -8,10 +8,7 @@ namespace BackupSystem.Models;
 public partial class StationGroup
 {
     public int StationId { get; set; }
-
     public int GroupId { get; set; }
-
     public virtual Group Group { get; set; } = null!;
-
     public virtual Station Station { get; set; } = null!;
 }
