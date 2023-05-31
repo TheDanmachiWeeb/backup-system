@@ -14,6 +14,12 @@ export class Config {
 
   public packageSize: number;
 
+  public zip: boolean;
+
+  public periodic: boolean;
+
+  public finished: boolean;
+
   public periodCron: string;
 
   public sources: Source[];
@@ -31,6 +37,9 @@ export class Config {
     retention: number = 10,
     packageSize: number = 10,
     periodCron: string = '',
+    zip: boolean = false,
+    periodic: boolean = false,
+    finished: boolean = false,
     sources: Source[] = [],
     destinations: Destination[] = [],
     stations: Station[] = [],
@@ -42,6 +51,9 @@ export class Config {
     this.retention = retention;
     this.packageSize = packageSize;
     this.periodCron = periodCron;
+    this.zip = zip;
+    this.periodic = periodic;
+    this.finished = finished;
     this.sources = sources;
     this.destinations = destinations;
     this.stations = stations;

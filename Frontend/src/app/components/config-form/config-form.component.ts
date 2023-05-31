@@ -41,7 +41,9 @@ export class ConfigFormComponent {
       configName: [config.configName, Validators.required],
       backupType: [config.backupType, Validators.required],
       retention: [config.retention, Validators.required],
-      packageSize: [config.packageSize, Validators.required],
+      zip: [config.zip, Validators.required],
+      periodic: [config.periodic, Validators.required],
+      finished: [config.finished, Validators.required],
       periodCron: [config.periodCron, Validators.required],
       stations: fb.array(
         config.stations.map((station) =>
