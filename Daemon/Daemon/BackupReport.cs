@@ -11,9 +11,10 @@ namespace Daemon
     {
         public int stationId { get; set; }
         public int configId { get; set; }
-        public string reportTime { get; set; }
+        public string? reportTime { get; set; }
         public long backupSize { get; set; }
         public bool success { get; set; }
+        public string? errorMessage { get; set; }
 
         public BackupReport GenerateBackupReport(LogEntry logEntry)
         {
@@ -24,7 +25,8 @@ namespace Daemon
                 stationId = logEntry.StationId,
                 success = logEntry.Success,
                 backupSize = logEntry.backupSize,
-                reportTime = time
+                reportTime = time,
+                errorMessage = logEntry.errorMessage
             };
 
             return report;

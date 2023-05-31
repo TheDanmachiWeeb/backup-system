@@ -10,7 +10,7 @@ namespace Daemon
     public class FileManager
     {
         private string fileName = "database_secret.txt";
-        private string programFolder = AppDomain.CurrentDomain.BaseDirectory + "\\secret";
+        public string programFolder = AppDomain.CurrentDomain.BaseDirectory + "\\secret";
         public string separator = "@@@";
         public FileManager() { }
        
@@ -54,7 +54,7 @@ namespace Daemon
         public bool CheckIDFile()
         {
             string filePath = Path.Combine(programFolder, fileName);
-            if (Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\secret"))
+            if (Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\secret") && File.Exists(filePath))
             {
                 return true;
 
@@ -109,7 +109,21 @@ namespace Daemon
         }
         public void saveKey(byte key)
         {
-            string filePath = Path.Combine(programFolder + "\\" + "key"); 
+            string filePath = Path.Combine(programFolder + "\\" + "key");
+
         }
+
+        public void saveReports(string path, string content)
+        {
+            File.AppendAllText(path, content);
+        }
+
+        public string getReports(string path)
+        {
+            string reports = File.ReadAllText(path);
+            return reports;
+        }
+
+
     }
 }

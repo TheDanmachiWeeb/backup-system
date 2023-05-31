@@ -13,6 +13,7 @@ namespace Daemon
             FileManager manager = new FileManager();
             ApiHandler api = new ApiHandler();
             List<BackupConfiguration> configurations = new List<BackupConfiguration>();
+                await api.GetToken();
                 bool file = manager.CheckIDFile();
                 string IDString = manager.getID();
 

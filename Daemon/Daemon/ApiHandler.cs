@@ -15,19 +15,45 @@ using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using static System.Net.Mime.MediaTypeNames;
+using System.IO;
 
 namespace Daemon
 {
     internal class ApiHandler
     {
-        private string token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODU2MjA3MTYsImxvZ2luIjoiZGltYSJ9.doWIqp4g-8aMLyHXkY2lXspZS9WS8jXIDgJh_9Tr4zI";
+        private static string token;
         private string apiUrl = "http://localhost:5666/api";
  
 
+        public async Task GetToken()
+        {
+            using (var httpClient = new HttpClient())
+            {
+                try
+                {
+                    var response = await httpClient.GetAsync($"{apiUrl}/sessions");
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        //Console.WriteLine(responseContent);
+                        JObject obj = JObject.Parse(responseContent);
+                        token = obj["token"].ToString();
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Request failed with status code {response.StatusCode}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+        }
 
         public async Task<List<BackupConfiguration>> GetConfigsByID(string id)
         {
-            string filePath = AppDomain.CurrentDomain.BaseDirectory + "\\secret" + "\\" + "oldReports";
             FileManager manager = new FileManager();
 
             using (var httpClient = new HttpClient())
@@ -57,6 +83,11 @@ namespace Daemon
                 catch (HttpRequestException ex)
                 {
                     Console.WriteLine($"Getting configs failed: {ex.Message}");
+                    if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\secret\\configJson"))
+                    {
+                        string json = manager.getConfigs(); //gets it from file
+                        configs = CreateConfigs(json);
+                    }
                 }
                 return configs;
             }
@@ -89,23 +120,44 @@ namespace Daemon
             }
         }
 
-        public async Task PostReport(BackupReport report)
+        public async Task PostReport(BackupReport report, bool old = false)
         {
             using (var httpClient = new HttpClient())
             {
-                string path = AppDomain.CurrentDomain.BaseDirectory + "\\secret\\oldReports";
+               
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);  
                 Console.WriteLine("Sending report to the server...");
-                FileManager manager = new FileManager();
-
-                var response = await httpClient.PostAsJsonAsync($"{apiUrl}/Reports", report);
-
-                if (response.IsSuccessStatusCode)
+        
+                try
                 {
-                    Console.WriteLine("Report sent");
-                }
-                else
+                    var response = await httpClient.PostAsJsonAsync($"{apiUrl}/Reports", report);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("Report sent");
+                        if (old)
+                        {
+                            File.Delete(AppDomain.CurrentDomain.BaseDirectory + "\\secret\\oldReports");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Failed to send report {response.StatusCode}");
+                        Console.WriteLine("Saving report locally");
+                        if (!old)
+                        {
+                            saveThisReport(report);
+                        }
+                    }
+                } 
+                catch (Exception ex) 
                 {
-                    Console.WriteLine($"Failed to send report {response.StatusCode}"); 
+                    Console.WriteLine($"Failed to send report {ex.Message}");
+                    Console.WriteLine("Saving report locally");
+                    if (!old)
+                    {
+                        saveThisReport(report);
+                    }
                 }
             }
         }
@@ -164,6 +216,15 @@ namespace Daemon
                 Console.WriteLine($"error: {ex.Message}");
             }
             return configurations;
+        }
+        public void saveThisReport(BackupReport report)
+        {
+            string path = AppDomain.CurrentDomain.BaseDirectory + "\\secret\\oldReports";
+            FileManager manager = new FileManager();
+            string reportToSave;
+
+            reportToSave = $"{report.stationId.ToString()};{report.configId.ToString()};{report.reportTime.ToString()};{report.backupSize};{report.success};{report.errorMessage}\n";
+            manager.saveReports(path, reportToSave);
         }
 
 

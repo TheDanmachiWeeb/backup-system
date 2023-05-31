@@ -15,7 +15,16 @@ namespace Daemon
 
         public async Task LogBackup(BackupConfiguration config, bool backupSuccess, long backupSize, string exceptionMessage = null)
         {
-
+            string path = manager.programFolder + "\\oldReports";
+            if (File.Exists(path))
+            {
+                string reports = manager.getReports(path);
+                List<BackupReport> backupReports = new List<BackupReport>(GetBackupReports(reports));
+                foreach (var rep in backupReports)
+                {        
+                    await api.PostReport(rep, true);
+                }
+            }
             LogEntry logEntry = new LogEntry
             {
                 ConfigId = config.configId,
@@ -36,6 +45,65 @@ namespace Daemon
             //save entry and generate report from it after retrieving it from txt
             report = report.GenerateBackupReport(logEntry);
             await api.PostReport(report);
+        }
+
+        private List<BackupReport> GetBackupReports(string content)
+        {
+            List<BackupReport> backupReports = new List<BackupReport>();
+
+            string[] entries = content.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+            foreach (string entry in entries)
+            {
+                string[] values = entry.Split(';', StringSplitOptions.RemoveEmptyEntries);
+                if (values.Length == 6)
+                {
+                    BackupReport report = new BackupReport();
+
+                    if (int.TryParse(values[0], out int stationId) &&
+                        int.TryParse(values[1], out int configId) &&
+                        long.TryParse(values[3], out long backupSize) &&
+                        bool.TryParse(values[4], out bool success))
+                    {
+                        report.stationId = stationId;
+                        report.configId = configId;
+                        report.reportTime = values[2];
+                        report.backupSize = backupSize;
+                        report.success = success;
+                        report.errorMessage = values[5];
+
+                        backupReports.Add(report);
+                        Console.WriteLine("Old report from " + report.reportTime + " retrieved");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid backup report entry: " + entry);
+                    }
+                }
+                if (values.Length == 5)
+                {
+                    BackupReport report = new BackupReport();
+
+                    if (int.TryParse(values[0], out int stationId) &&
+                        int.TryParse(values[1], out int configId) &&
+                        long.TryParse(values[3], out long backupSize) &&
+                        bool.TryParse(values[4], out bool success))
+                    {
+                        report.stationId = stationId;
+                        report.configId = configId;
+                        report.reportTime = values[2];
+                        report.backupSize = backupSize;
+                        report.success = success;
+
+                        backupReports.Add(report);
+                        Console.WriteLine("Old report from " + report.reportTime + " retrieved");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid backup report entry: " + entry);
+                    }
+                }
+            }
+            return backupReports;
         }
     }
 }
