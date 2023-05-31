@@ -214,7 +214,7 @@ namespace BackupSystem.Controllers
         }
 
         // PUT api/<ConfigurationsController>/5
-        [Authorize]
+        [Authorize(admin = true)]
         [HttpPut("{id}")]
         public async Task<ActionResult> Put(int id, [FromBody] ConfigurationDto req)
         {
@@ -310,6 +310,23 @@ namespace BackupSystem.Controllers
             await context.SaveChangesAsync();
 
             return Ok(req);
+        }
+
+        // PUT api/<ConfigurationsController>/5
+        [Authorize]
+        [HttpPut("finished/{id}")]
+        public async Task<ActionResult> Put(int id)
+        {
+            Configuration? config = await context.Configurations.FindAsync(id);
+
+            if (config == null)
+                return NotFound();
+
+            config.Finished = !config.Finished;
+
+            await context.SaveChangesAsync();
+
+            return Ok("The value of finished for this config is " + config.Finished);
         }
 
         // DELETE api/<ConfigurationsController>/5
