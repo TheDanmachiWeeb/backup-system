@@ -35,9 +35,10 @@ namespace Daemon
         {
             backupSize = 0;
             config = context.JobDetail.JobDataMap.Get("config") as BackupConfiguration;
-
-            foreach (var source in config.sources)
+            if (!config.finished)
             {
+                foreach (var source in config.sources)
+                {
                     bool exists = FileOrDirectoryExists(source.path);
                     if (!exists && backupSuccess == true)
                     {
@@ -45,10 +46,10 @@ namespace Daemon
                         await logger.LogBackup(config, backupSuccess, 0, "Bad source");
                         Console.ReadLine();
                     }
-            }
-            foreach (var destination in config.destinations)
-            {
-       
+                }
+                foreach (var destination in config.destinations)
+                {
+
                     bool exists = FileOrDirectoryExists(destination.path);
                     if (!exists && backupSuccess == true)
                     {
@@ -56,9 +57,17 @@ namespace Daemon
                         await logger.LogBackup(config, backupSuccess, 0, "Bad destination");
                         Console.ReadLine();
                     }
-            }
+                }
 
-            PerformBackup(config);
+                PerformBackup(config);
+
+                if (!config.periodic)
+                {
+                    config.finished = true;
+                    ApiHandler api = new ApiHandler();
+                    api.MarkConfigAsFinished(config);
+                }
+            }
         }
 
         public void PerformBackup(BackupConfiguration config)

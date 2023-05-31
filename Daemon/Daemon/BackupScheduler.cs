@@ -31,19 +31,22 @@ namespace Daemon
             {
                 try
                 {
-                    // Create a job detail with the backup process information
-                    JobDataMap jobDataMap = new JobDataMap();
-                    jobDataMap.Put("config", config); // Store the backup process ID as a job data
-                    IJobDetail jobDetail = JobBuilder.Create<Backup>()
-                        .UsingJobData(jobDataMap)
-                        .Build();
-                    // Create a cron trigger based on the cron expression
-                    ITrigger trigger = TriggerBuilder.Create()
-                        .WithCronSchedule(config.periodCron)
-                        .Build();
+                    if (!config.finished)
+                    {
+                        // Create a job detail with the backup process information
+                        JobDataMap jobDataMap = new JobDataMap();
+                        jobDataMap.Put("config", config); // Store the backup process ID as a job data
+                        IJobDetail jobDetail = JobBuilder.Create<Backup>()
+                            .UsingJobData(jobDataMap)
+                            .Build();
+                        // Create a cron trigger based on the cron expression
+                        ITrigger trigger = TriggerBuilder.Create()
+                            .WithCronSchedule(config.periodCron)
+                            .Build();
 
-                    // Schedule the job with the trigger
-                    await scheduler.ScheduleJob(jobDetail, trigger);
+                        // Schedule the job with the trigger
+                        await scheduler.ScheduleJob(jobDetail, trigger);
+                    }
                 }
                 catch (Exception ex)
                 {

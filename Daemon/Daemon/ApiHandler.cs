@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using static System.Net.Mime.MediaTypeNames;
 using System.IO;
+using System.Security.Cryptography;
 
 namespace Daemon
 {
@@ -92,6 +93,37 @@ namespace Daemon
                 return configs;
             }
         }
+        public async Task MarkConfigAsFinished(BackupConfiguration config)
+        {
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    HttpContent emptyContent = new StringContent(string.Empty);
+                    var response = await httpClient.PutAsJsonAsync($"{apiUrl}/configurations/finished/{config.configId}", emptyContent );
+                    string requestPayload = await response.RequestMessage.Content.ReadAsStringAsync();
+
+                     //Print or log the JSON payload
+                   Console.WriteLine(requestPayload);
+
+                    Console.WriteLine($"{apiUrl}/configurations/finished/{config.configId}", emptyContent);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("Config marked as finished");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Failed to mark config as finished: {response.StatusCode}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to mark config as finished: {ex.Message}");
+            }
+        }
 
         public async Task<string> PostStation()
         {
@@ -102,7 +134,8 @@ namespace Daemon
 
                 var station = new Station();
                 var response = await httpClient.PostAsJsonAsync($"{apiUrl}/stations", station);
-
+                try
+                {
                 if (response.IsSuccessStatusCode)
                 {
                     string responseContent = await response.Content.ReadAsStringAsync();
@@ -116,7 +149,13 @@ namespace Daemon
                     Console.WriteLine($"Failed to register station with status code {response.StatusCode}");
                     FileManager manager = new FileManager();
                     return string.Empty;
-                } 
+                }
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
             }
         }
 
