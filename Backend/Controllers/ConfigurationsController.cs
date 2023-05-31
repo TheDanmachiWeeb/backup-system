@@ -15,13 +15,15 @@ using System.Text.RegularExpressions;
 
 namespace BackupSystem.Controllers
 {
-    [Authorize(admin = true)]
     [Route("api/[controller]")]
     [ApiController]
     public class ConfigurationsController : ControllerBase
     {
         private MyContext context = new MyContext();
+
+
         // GET: api/<ConfigurationsController>
+        [Authorize(admin = true)]
         [HttpGet]
         public async Task<ActionResult> Get([FromQuery] List<string> include)
         {
@@ -69,6 +71,7 @@ namespace BackupSystem.Controllers
         }
 
         // GET api/<ConfigurationsController>/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult> Get(int id)
         {
@@ -131,6 +134,7 @@ namespace BackupSystem.Controllers
 
 
         //POST api/<ConfigurationsController>
+        [Authorize(admin = true)]
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] ConfigurationDto req)
         {
@@ -210,6 +214,7 @@ namespace BackupSystem.Controllers
         }
 
         // PUT api/<ConfigurationsController>/5
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<ActionResult> Put(int id, [FromBody] ConfigurationDto req)
         {
@@ -308,6 +313,7 @@ namespace BackupSystem.Controllers
         }
 
         // DELETE api/<ConfigurationsController>/5
+        [Authorize(admin = true)]
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
