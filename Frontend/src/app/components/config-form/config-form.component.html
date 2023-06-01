@@ -302,3 +302,11 @@
     >
   </div>
 </form>
+
+<cron-gen ng-model="cronExpression" 
+          options="cronOptions" 
+          template-url="your optional, custom template (Defaults to a bootstrap 3 template)"
+          cron-format="quartz (Currently only compatible with 'quartz' and defaults to 'quartz')"
+          ng-disabled="isCronDisabled">
+</cron-gen>
+

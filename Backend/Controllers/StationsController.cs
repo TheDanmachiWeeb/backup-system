@@ -143,6 +143,23 @@ namespace BackupSystem.Controllers
             return Ok(await context.Stations.ToListAsync());
         }
 
+        // PUT api/<StationsController>/5
+        [Authorize]
+        [HttpPut("online/{id}")]
+        public async Task<ActionResult> Put(int id)
+        {
+            Station? station = await context.Stations.FindAsync(id);
+
+            if (station == null)
+                return NotFound();
+
+            station.Active = !station.Active;
+
+            await context.SaveChangesAsync();
+
+            return Ok("The value of online for this station is " + station.Active);
+        }
+
         // DELETE api/<StationsController>/5
         [Authorize(admin = true)]
         [HttpDelete("{id}")]

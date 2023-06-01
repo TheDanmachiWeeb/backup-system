@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AutocompleteLibModule } from 'angular-ng-autocomplete';
+import { CronGen } from "angular-cron-gen";
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -69,6 +70,7 @@ import { CatPageComponent } from './pages/cat-page/cat-page.component';
     ConfigsCreatePageComponent,
     GroupsCreatePageComponent,
     CatPageComponent,
+    CronGen
   ],
   imports: [
     BrowserModule,
@@ -78,6 +80,7 @@ import { CatPageComponent } from './pages/cat-page/cat-page.component';
     ReactiveFormsModule,
     FormsModule,
     AutocompleteLibModule,
+    CronGen
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true },
