@@ -18,41 +18,61 @@ namespace Daemon
             ApiHandler api = new ApiHandler();
             List<BackupConfiguration> configs = new List<BackupConfiguration>();
             BackupReport report = new BackupReport();
-            await scheduler.Start(); 
+
+            await scheduler.Start();
             configs = await setup.SetupConfigs();
-
-            if (configs.Count < 1)
+            if (setup.stationStatus == status.approved)
             {
-                Console.WriteLine("There are no configs assigned to your station");
-            }
-
-            // Schedule each backup process with a non-null cron expression
-            foreach (var config in configs.Where(p => !string.IsNullOrEmpty(p.periodCron)))
-            {
-                try
+                if (configs.Count < 1)
                 {
-                    if (!config.finished)
-                    {
-                        // Create a job detail with the backup process information
-                        JobDataMap jobDataMap = new JobDataMap();
-                        jobDataMap.Put("config", config); // Store the backup process ID as a job data
-                        IJobDetail jobDetail = JobBuilder.Create<Backup>()
-                            .UsingJobData(jobDataMap)
-                            .Build();
-                        // Create a cron trigger based on the cron expression
-                        ITrigger trigger = TriggerBuilder.Create()
-                            .WithCronSchedule(config.periodCron)
-                            .Build();
+                    Console.WriteLine("There are no configs assigned to your station");
+                }
 
-                        // Schedule the job with the trigger
-                        await scheduler.ScheduleJob(jobDetail, trigger);
+                // Schedule each backup process with a non-null cron expression
+                foreach (var config in configs.Where(p => !string.IsNullOrEmpty(p.periodCron)))
+                {
+                    try
+                    {
+                        if (config.periodic)
+                        {
+                            if (config.finished = true)
+                            {
+                                await api.MarkConfigAsFinished(config, true);
+                            }
+                            config.finished = false;
+                        }
+                        if (!config.finished)
+                        {
+                            // Create a job detail with the backup process information
+                            JobDataMap jobDataMap = new JobDataMap();
+                            jobDataMap.Put("config", config); // Store the backup process ID as a job data
+                            IJobDetail jobDetail = JobBuilder.Create<Backup>()
+                                .UsingJobData(jobDataMap)
+                                .Build();
+                            // Create a cron trigger based on the cron expression
+                            ITrigger trigger = TriggerBuilder.Create()
+                                .WithCronSchedule(config.periodCron)
+                                .Build();
+
+                            // Schedule the job with the trigger
+                            await scheduler.ScheduleJob(jobDetail, trigger);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        BackupLogger backupLogger = new BackupLogger();
+                        await backupLogger.LogBackup(config, false, 0, ex.Message);
+                        Console.WriteLine(ex.Message);
                     }
                 }
-                catch (Exception ex)
+            }
+            else
+            {
+                while (setup.stationStatus != status.rejected)
                 {
-                    BackupLogger backupLogger = new BackupLogger();
-                    await backupLogger.LogBackup(config, false, 0, ex.Message);
-                    Console.WriteLine(ex.Message);
+                    await Task.Delay(10000);
+                    Console.Clear();
+                    await ScheduleBackupProcesses();
                 }
             }
         }

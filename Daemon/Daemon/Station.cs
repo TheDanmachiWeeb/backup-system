@@ -19,6 +19,8 @@ namespace Daemon
 
         public string MacAddress { get; set; }
 
+        public status status { get; set; } = status.waiting;
+
         public Station()
         {
             this.StationName = getStationName();
@@ -61,7 +63,6 @@ namespace Daemon
         public string GetMACAddress()
         {
             string macAddress = string.Empty;
-
             try
             {
                 foreach (NetworkInterface n in NetworkInterface.GetAllNetworkInterfaces())

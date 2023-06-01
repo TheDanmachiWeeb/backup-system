@@ -8,11 +8,13 @@ namespace Daemon
 {
     public class Setup
     {
+        public status stationStatus;
         public async Task<List<BackupConfiguration>> SetupConfigs() {
 
             FileManager manager = new FileManager();
             ApiHandler api = new ApiHandler();
             List<BackupConfiguration> configurations = new List<BackupConfiguration>();
+
                 await api.GetToken();
                 bool file = manager.CheckIDFile();
                 string IDString = manager.getID();
@@ -23,9 +25,13 @@ namespace Daemon
                     IDString = manager.getID(); // Update IDString after registration
                 }
 
-                Console.WriteLine("Your ID in the database: " + IDString);
-                configurations = await api.GetConfigsByID(IDString);
+            Console.WriteLine("Your ID in the database: " + IDString);
+            stationStatus = await api.GetStatus(IDString);
 
+            if (stationStatus == status.approved)
+            {
+                configurations = await api.GetConfigsByID(IDString);
+            }
             return configurations;
         }
     }

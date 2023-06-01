@@ -37,7 +37,6 @@ namespace Daemon
                     if (response.IsSuccessStatusCode)
                     {
                         var responseContent = await response.Content.ReadAsStringAsync();
-                        //Console.WriteLine(responseContent);
                         JObject obj = JObject.Parse(responseContent);
                         token = obj["token"].ToString();
                     }
@@ -50,6 +49,52 @@ namespace Daemon
                 {
                     Console.WriteLine(ex.Message);
                 }
+            }
+        }
+
+        public async Task<status> GetStatus(string id)
+        {
+            bool approved = false;
+            
+            using (var httpClient = new HttpClient())
+            {
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                Station station = new Station();
+                try
+                {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    var response = await httpClient.GetAsync($"{apiUrl}/stations/{id}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string responseContent = await response.Content.ReadAsStringAsync();
+                        FileManager manager = new FileManager();
+                        JObject jsonObject = JObject.Parse(responseContent);
+                        string stationString = jsonObject.ToString();
+                        station = JsonConvert.DeserializeObject<Station>(stationString);
+                        if (station.status == status.approved)
+                        {
+                            Console.WriteLine("Station approved");
+                        }
+                        else if (station.status == status.waiting)
+                        {
+                            Console.WriteLine("Station is waiting for approval");
+                        }
+                        else if (station.status == status.rejected)
+                        {
+                            Console.WriteLine("Station not approved");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Request for approval failed with status code {response.StatusCode}");
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Checking approval failed: {ex.Message}");
+                }
+                    return station!.status;  
             }
         }
 
@@ -93,7 +138,7 @@ namespace Daemon
                 return configs;
             }
         }
-        public async Task MarkConfigAsFinished(BackupConfiguration config)
+        public async Task MarkConfigAsFinished(BackupConfiguration config, bool reserse = false)
         {
             try
             {
@@ -111,17 +156,27 @@ namespace Daemon
 
                     if (response.IsSuccessStatusCode)
                     {
-                        Console.WriteLine("Config marked as finished");
+                        if (!reserse)
+                        {
+                            Console.WriteLine("Config marked as finished");
+                        }
                     }
                     else
                     {
-                        Console.WriteLine($"Failed to mark config as finished: {response.StatusCode}");
+                        if (!reserse)
+                        {
+                            Console.WriteLine($"Failed to mark config as finished: {response.StatusCode}");
+                        }
+                        else Console.WriteLine($"Failed to mark periodic config: {config.configId} as unfinished, it should still work tho");
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to mark config as finished: {ex.Message}");
+                if (!reserse)
+                {
+                    Console.WriteLine($"Failed to mark config as finished: {ex.Message}");
+                }
             }
         }
 
@@ -136,20 +191,20 @@ namespace Daemon
                 var response = await httpClient.PostAsJsonAsync($"{apiUrl}/stations", station);
                 try
                 {
-                if (response.IsSuccessStatusCode)
-                {
-                    string responseContent = await response.Content.ReadAsStringAsync();
-                    string stationId = String.Empty;
-                    stationId = RegexID(responseContent);
-                    Console.WriteLine("Station registered successfully. Station ID: " + stationId);
-                    return stationId;
-                }
-                else
-                {
-                    Console.WriteLine($"Failed to register station with status code {response.StatusCode}");
-                    FileManager manager = new FileManager();
-                    return string.Empty;
-                }
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string responseContent = await response.Content.ReadAsStringAsync();
+                        string stationId = String.Empty;
+                        stationId = RegexID(responseContent);
+                        Console.WriteLine("Station registered successfully. Station ID: " + stationId);
+                        return stationId;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Failed to register station with status code {response.StatusCode}");
+                        FileManager manager = new FileManager();
+                        return string.Empty;
+                    }
                 }
                 catch (Exception)
                 {
