@@ -14,7 +14,7 @@ namespace Daemon
             FileManager manager = new FileManager();
             ApiHandler api = new ApiHandler();
             List<BackupConfiguration> configurations = new List<BackupConfiguration>();
-
+            
                 await api.GetToken();
                 bool file = manager.CheckIDFile();
                 string IDString = manager.getID();
@@ -26,9 +26,9 @@ namespace Daemon
                 }
 
             Console.WriteLine("Your ID in the database: " + IDString);
-            stationStatus = await api.GetStatus(IDString);
 
-            if (stationStatus == status.approved)
+            stationStatus = await api.GetStatus(IDString);
+            if (stationStatus == status.approved || ApiHandler.offline)
             {
                 configurations = await api.GetConfigsByID(IDString);
             }

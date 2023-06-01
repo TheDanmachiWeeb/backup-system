@@ -13,6 +13,7 @@ namespace Daemon
         private FileManager manager = new FileManager();
         private BackupReport report = new BackupReport();
         private ApiHandler api = new ApiHandler();
+        private int ThreadCounter = 0;
 
         public async Task LogBackup(BackupConfiguration config, bool backupSuccess, long backupSize, string exceptionMessage = null)
         {
@@ -20,7 +21,9 @@ namespace Daemon
             if (File.Exists(path))
             {
                 string reports = manager.getReports(path);
-                List<BackupReport> backupReports = new List<BackupReport>(GetBackupReports(reports));
+                List<BackupReport> backupReports = new List<BackupReport>(GetBackupReports(reports, config));
+                Console.WriteLine();
+
                 foreach (var rep in backupReports)
                 {        
                     await api.PostReport(rep, true);
@@ -46,9 +49,17 @@ namespace Daemon
             //save entry and generate report from it after retrieving it from txt
             report = report.GenerateBackupReport(logEntry);
             await api.PostReport(report);
+            if (ApiHandler.offline && ThreadCounter < 1)
+            {
+                ThreadCounter++;
+                ApiHandler.offline = false;
+                BackupScheduler scheduler = new BackupScheduler();
+                await api.GetToken();
+
+            }
         }
 
-        private List<BackupReport> GetBackupReports(string content)
+        private List<BackupReport> GetBackupReports(string content, BackupConfiguration config)
         {
             List<BackupReport> backupReports = new List<BackupReport>();
 
@@ -72,8 +83,11 @@ namespace Daemon
                         report.success = success;
                         report.errorMessage = values[5];
 
-                        backupReports.Add(report);
-                        Console.WriteLine("Old report from " + report.reportTime + " retrieved");
+                        if (report.configId == config.configId)
+                        {
+                            backupReports.Add(report);
+                            Console.WriteLine("Old report from " + report.reportTime + "    with config ID: " + report.configId + " retrieved");
+                        }
                     }
                     else
                     {
@@ -95,8 +109,12 @@ namespace Daemon
                         report.backupSize = backupSize;
                         report.success = success;
 
-                        backupReports.Add(report);
-                        Console.WriteLine("Old report from " + report.reportTime + " retrieved");
+
+                        if (report.configId == config.configId)
+                        {
+                            backupReports.Add(report);
+                            Console.WriteLine("Old report from " + report.reportTime + "    with config ID: " + report.configId + " retrieved");
+                        }
                     }
                     else
                     {

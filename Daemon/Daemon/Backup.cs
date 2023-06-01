@@ -65,7 +65,7 @@ namespace Daemon
                 {
                     config.finished = true;
                     ApiHandler api = new ApiHandler();
-                    api.MarkConfigAsFinished(config);
+                    await api.MarkConfigAsFinished(config);
                 }
             }
         }

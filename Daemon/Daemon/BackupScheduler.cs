@@ -21,7 +21,7 @@ namespace Daemon
 
             await scheduler.Start();
             configs = await setup.SetupConfigs();
-            if (setup.stationStatus == status.approved)
+            if (setup.stationStatus == status.approved || ApiHandler.offline)
             {
                 if (configs.Count < 1)
                 {
@@ -35,9 +35,10 @@ namespace Daemon
                     {
                         if (config.periodic)
                         {
-                            if (config.finished = true)
+                            if (config.finished)
                             {
                                 await api.MarkConfigAsFinished(config, true);
+                                await Console.Out.WriteLineAsync("Im here");
                             }
                             config.finished = false;
                         }
@@ -53,7 +54,7 @@ namespace Daemon
                             ITrigger trigger = TriggerBuilder.Create()
                                 .WithCronSchedule(config.periodCron)
                                 .Build();
-
+      
                             // Schedule the job with the trigger
                             await scheduler.ScheduleJob(jobDetail, trigger);
                         }
@@ -66,15 +67,17 @@ namespace Daemon
                     }
                 }
             }
-            else
+            else if (setup.stationStatus == status.waiting)
             {
-                while (setup.stationStatus != status.rejected)
+                while (setup.stationStatus != status.rejected || setup.stationStatus != status.approved)
                 {
                     await Task.Delay(10000);
                     Console.Clear();
                     await ScheduleBackupProcesses();
                 }
             }
+            else { return; }
+
         }
     }
 

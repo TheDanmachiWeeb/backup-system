@@ -18,7 +18,6 @@ namespace Daemon
                 Console.WriteLine(ex.Message) ;
                 BackupReport report = new BackupReport();
             }
-
             Console.ReadLine();
         }
         

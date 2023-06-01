@@ -18,11 +18,13 @@ using static System.Net.Mime.MediaTypeNames;
 using System.IO;
 using System.Security.Cryptography;
 
+
 namespace Daemon
 {
     internal class ApiHandler
     {
         private static string token;
+        public static bool offline = false;
         private string apiUrl = "http://localhost:5666/api";
  
 
@@ -43,19 +45,20 @@ namespace Daemon
                     else
                     {
                         Console.WriteLine($"Request failed with status code {response.StatusCode}");
+                        offline = true;
                     }
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
+                    offline = true;
+
                 }
             }
         }
 
         public async Task<status> GetStatus(string id)
-        {
-            bool approved = false;
-            
+        {            
             using (var httpClient = new HttpClient())
             {
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -93,6 +96,7 @@ namespace Daemon
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Checking approval failed: {ex.Message}");
+                    offline = true;
                 }
                     return station!.status;  
             }
@@ -114,6 +118,7 @@ namespace Daemon
                         var responseContent = await response.Content.ReadAsStringAsync();
                         configs = CreateConfigs(responseContent);
                         manager.saveConfigs(responseContent);
+                        await Console.Out.WriteLineAsync("Got configs online");
                     }
                     else
                     {
@@ -123,16 +128,20 @@ namespace Daemon
                         {
                             string json = manager.getConfigs(); //gets it from file
                             configs = CreateConfigs(json);
+                            Console.WriteLine("I will get saved configs offline");
                         }
                     }
                 }
                 catch (HttpRequestException ex)
                 {
                     Console.WriteLine($"Getting configs failed: {ex.Message}");
+
                     if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\secret\\configJson"))
                     {
                         string json = manager.getConfigs(); //gets it from file
                         configs = CreateConfigs(json);
+                        Console.WriteLine("I will get saved configs offline");
+
                     }
                 }
                 return configs;
@@ -150,9 +159,9 @@ namespace Daemon
                     string requestPayload = await response.RequestMessage.Content.ReadAsStringAsync();
 
                      //Print or log the JSON payload
-                   Console.WriteLine(requestPayload);
+                 //  Console.WriteLine(requestPayload);
 
-                    Console.WriteLine($"{apiUrl}/configurations/finished/{config.configId}", emptyContent);
+                   // Console.WriteLine($"{apiUrl}/configurations/finished/{config.configId}", emptyContent);
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -177,6 +186,8 @@ namespace Daemon
                 {
                     Console.WriteLine($"Failed to mark config as finished: {ex.Message}");
                 }
+                else Console.WriteLine($"Failed to mark periodic config: {config.configId} as unfinished, it should still work tho");
+
             }
         }
 
@@ -237,9 +248,11 @@ namespace Daemon
                     else
                     {
                         Console.WriteLine($"Failed to send report {response.StatusCode}");
-                        Console.WriteLine("Saving report locally");
+                        offline = true;
+
                         if (!old)
                         {
+                            Console.WriteLine("Saving report locally");
                             saveThisReport(report);
                         }
                     }
@@ -247,10 +260,12 @@ namespace Daemon
                 catch (Exception ex) 
                 {
                     Console.WriteLine($"Failed to send report {ex.Message}");
-                    Console.WriteLine("Saving report locally");
+                    offline = true;
+
                     if (!old)
                     {
                         saveThisReport(report);
+                        Console.WriteLine("Saving report locally");
                     }
                 }
             }
