@@ -1,5 +1,18 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewEncapsulation,
+} from '@angular/core';
+
+import {
+  FormBuilder,
+  FormGroup,
+  FormArray,
+  FormControl,
+  Validators,
+} from '@angular/forms';
 import { Config } from '../../models/config';
 import { Station } from '../../models/station';
 import { Group } from '../../models/group';
@@ -8,8 +21,11 @@ import { Group } from '../../models/group';
   selector: 'app-config-form',
   templateUrl: './config-form.component.html',
   styleUrls: ['./config-form.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class ConfigFormComponent {
+  cronForm: FormControl;
+
   @Input()
   form: FormGroup;
 
@@ -41,6 +57,7 @@ export class ConfigFormComponent {
       configName: [config.configName, Validators.required],
       backupType: [config.backupType, Validators.required],
       retention: [config.retention, Validators.required],
+      packageSize: [config.packageSize, Validators.required],
       zip: [config.zip, Validators.required],
       periodic: [config.periodic, Validators.required],
       finished: [config.finished, Validators.required],
