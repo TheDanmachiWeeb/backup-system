@@ -153,11 +153,14 @@ namespace BackupSystem.Controllers
             if (station == null)
                 return NotFound();
 
-            station.Active = !station.Active;
+            station.Active = true;
 
             await context.SaveChangesAsync();
 
-            return Ok("The value of online for this station is " + station.Active);
+            // Start a background task to reset the station.Active after 10 minutes
+            _ = ResetActiveAfterDelay(station);
+
+            return Ok("The station has been successfully sent to active for 10 minutes ");
         }
 
         // DELETE api/<StationsController>/5
@@ -181,6 +184,20 @@ namespace BackupSystem.Controllers
             await context.SaveChangesAsync();
 
             return Ok(await context.Stations.ToListAsync());
+        }
+
+        private async Task ResetActiveAfterDelay(Station station)
+        {
+            await Task.Delay(TimeSpan.FromMinutes(1));
+
+            // Retrieve the station from the database again (in case it was modified)
+            Station? updatedStation = await context.Stations.FindAsync(station.StationId);
+
+            if (updatedStation != null)
+            {
+                updatedStation.Active = false;
+                await context.SaveChangesAsync();
+            }
         }
     }
 }
