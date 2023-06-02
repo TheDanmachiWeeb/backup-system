@@ -25,6 +25,9 @@ namespace Daemon
                     IDString = manager.getID(); // Update IDString after registration
                 }
 
+            await api.MarkStationAsOnline(IDString);
+
+
             Console.WriteLine("Your ID in the database: " + IDString);
 
             stationStatus = await api.GetStatus(IDString);

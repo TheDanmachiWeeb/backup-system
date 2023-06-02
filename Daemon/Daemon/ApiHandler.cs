@@ -187,10 +187,41 @@ namespace Daemon
                     Console.WriteLine($"Failed to mark config as finished: {ex.Message}");
                 }
                 else Console.WriteLine($"Failed to mark periodic config: {config.configId} as unfinished, it should still work tho");
-
             }
         }
 
+        public async Task MarkStationAsOnline(string id)
+        {
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    HttpContent emptyContent = new StringContent(string.Empty);
+                    var response = await httpClient.PutAsJsonAsync($"{apiUrl}/stations/online/{id}", emptyContent);
+                    // string requestPayload = await response.RequestMessage.Content.ReadAsStringAsync();
+
+                    //Print or log the JSON payload
+                    //  Console.WriteLine(requestPayload);
+
+                    // Console.WriteLine($"{apiUrl}/configurations/finished/{config.configId}", emptyContent);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("Marked online");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Failed to mark station as online: {response.StatusCode}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to mark station as online: {ex.Message}");
+            }
+        }
+           
         public async Task<string> PostStation()
         {
             using (var httpClient = new HttpClient())
@@ -217,10 +248,10 @@ namespace Daemon
                         return string.Empty;
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-
-                    throw;
+                    Console.WriteLine("failed to reg station with " + ex.Message);
+                    return string.Empty;
                 }
             }
         }
