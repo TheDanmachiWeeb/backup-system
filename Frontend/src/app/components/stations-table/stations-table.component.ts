@@ -16,6 +16,12 @@ export class StationsTableComponent implements OnInit {
   @Output()
   edited: EventEmitter<Station> = new EventEmitter<Station>();
 
+  @Output()
+  approved: EventEmitter<Station> = new EventEmitter<Station>();
+
+  @Output()
+  rejected: EventEmitter<Station> = new EventEmitter<Station>();
+
   public constructor() {}
 
   public ngOnInit(): void {}

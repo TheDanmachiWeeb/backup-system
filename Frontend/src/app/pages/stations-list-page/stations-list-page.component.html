@@ -17,5 +17,7 @@
     [stations]="filteredData"
     (edited)="editStation($event)"
     (deleted)="deleteStation($event)"
+    (rejected)="rejectStation($event)"
+    (approved)="approveStation($event)"
   ></app-stations-table>
 </div>

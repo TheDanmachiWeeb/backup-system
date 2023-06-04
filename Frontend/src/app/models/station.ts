@@ -6,15 +6,17 @@ export class Station {
 
   public stationName: string;
 
-  public ipAddress: string = '';
+  public ipAddress: string;
 
-  public macAddress: string = '';
+  public macAddress: string;
 
-  public active: boolean = false;
+  public active: boolean;
 
-  public groups: Group[] = [];
+  public status: 'rejected' | 'approved' | 'waiting';
 
-  public configs: Config[] = [];
+  public groups: Group[];
+
+  public configs: Config[];
 
   public constructor(
     id: number,
@@ -22,6 +24,7 @@ export class Station {
     ip: string = '',
     mac: string = '',
     active: boolean = false,
+    status: 'rejected' | 'approved' | 'waiting' = 'waiting',
     groups: Group[] = [],
     configs: Config[] = []
   ) {
@@ -29,6 +32,7 @@ export class Station {
     this.stationName = name;
     this.ipAddress = ip;
     this.macAddress = mac;
+    this.status = status;
     this.active = active;
     this.groups = groups;
     this.configs = configs;

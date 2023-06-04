@@ -145,8 +145,8 @@ namespace BackupSystem.Controllers
 
         // PUT api/<StationsController>/5
         [Authorize]
-        [HttpPut("online/{id}")]
-        public async Task<ActionResult> Put(int id)
+        [HttpPatch("{id}/online")]
+        public async Task<ActionResult> PatchOnline(int id)
         {
             Station? station = await context.Stations.FindAsync(id);
 
@@ -160,7 +160,44 @@ namespace BackupSystem.Controllers
             // Start a background task to reset the station.Active after 10 minutes
             _ = ResetActiveAfterDelay(station);
 
-            return Ok("The station has been successfully sent to active for 10 minutes ");
+            return Ok("The station has been successfully set to active for 10 minutes");
+        }
+
+        // PUT api/<StationsController>/5
+        [Authorize(admin = true)]
+        [HttpPatch("{id}/reject")]
+        public async Task<ActionResult> PatchReject(int id)
+        {
+            Station? station = await context.Stations.FindAsync(id);
+
+            if (station == null)
+                return NotFound();
+
+            station.Status = "rejected";
+
+            await context.SaveChangesAsync();
+
+            // Start a background task to delete the station after 11 seconds
+            _ = DeleteAfterDelay(station);
+
+            return Ok(new { message = "The station has been successfully rejected and is going to be deleted" });
+        }
+
+        // PUT api/<StationsController>/5
+        [Authorize(admin = true)]
+        [HttpPatch("{id}/approve")]
+        public async Task<ActionResult> PatchApprove(int id)
+        {
+            Station? station = await context.Stations.FindAsync(id);
+
+            if (station == null)
+                return NotFound();
+
+            station.Status = "approved";
+
+            await context.SaveChangesAsync();
+
+            return Ok("The station has been successfully approved");
         }
 
         // DELETE api/<StationsController>/5
@@ -196,6 +233,20 @@ namespace BackupSystem.Controllers
             if (updatedStation != null)
             {
                 updatedStation.Active = false;
+                await context.SaveChangesAsync();
+            }
+        }
+
+        private async Task DeleteAfterDelay(Station station)
+        {
+            await Task.Delay(TimeSpan.FromSeconds(15));
+
+            // Retrieve the station from the database again (in case it was modified)
+            Station? updatedStation = await context.Stations.FindAsync(station.StationId);
+
+            if (updatedStation != null)
+            {
+                context.Stations.Remove(updatedStation);
                 await context.SaveChangesAsync();
             }
         }

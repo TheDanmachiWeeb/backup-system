@@ -20,6 +20,21 @@ export class StationsService {
     );
   }
 
+  public approve(station: Station): Observable<string> {
+    return this.http.patch(
+      'http://localhost:5666/api/stations/' + station.stationId + '/approve',
+      null,
+      { responseType: 'text' }
+    );
+  }
+
+  public reject(station: Station): Observable<Station> {
+    return this.http.patch<Station>(
+      'http://localhost:5666/api/stations/' + station.stationId + '/reject',
+      null
+    );
+  }
+
   public delete(station: Station): Observable<Station> {
     return this.http.delete<Station>(
       'http://localhost:5666/api/stations/' + station.stationId

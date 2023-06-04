@@ -29,14 +29,28 @@ export class StationsListPageComponent implements OnInit {
     this.service.delete(station).subscribe(() => this.refresh());
   }
 
+  public approveStation(station: Station): void {
+    this.service.approve(station).subscribe(() => this.refresh());
+  }
+
+  public rejectStation(station: Station): void {
+    this.service.reject(station).subscribe(() => this.refresh());
+  }
+
   private refresh(): void {
     this.service.findAll().subscribe((result) => {
       this.data = result;
       this.filteredData = [...this.data];
+      this.filteredData.sort((a, b) =>
+        a.status === 'waiting' && b.status !== 'waiting' ? -1 : 1
+      );
     });
   }
 
   onFiltered(filteredOptions: Station[]) {
     this.filteredData = filteredOptions;
+    this.filteredData.sort((a, b) =>
+      a.status === 'waiting' && b.status !== 'waiting' ? -1 : 1
+    );
   }
 }
