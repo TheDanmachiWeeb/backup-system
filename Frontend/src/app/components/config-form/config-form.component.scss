@@ -1,5 +1,81 @@
+.quartz-container {
+  @apply absolute  top-[-22rem] w-[50vw] max-w-[45rem]  left-full z-30 bg-slate-600/95 text-white;
+}
+
+.c-tab-content > * {
+  @apply flex flex-col gap-3;
+}
+
 quartz-cron {
-  .c-tab-item {
-    background: red;
+  .c-tabs {
+    @apply flex;
+    .c-tab {
+      @apply p-2;
+      &.active {
+        @apply bg-sky-600;
+      }
+    }
+    .c-tab.active {
+    }
+    .c-tab-item {
+    }
   }
+
+  .c-tab-content {
+    @apply pl-3 pb-3;
+  }
+  .c-and-list,
+  .c-and-monthday-list,
+  .c-and-weekday-list {
+    @apply flex pt-1 pl-3 flex-wrap;
+
+    .c-and-item,
+    .c-and-monthday-item {
+      @apply shrink mx-1 w-[6.5%];
+    }
+    .c-and-weekday-item-check {
+      @apply flex;
+    }
+
+    .c-and-item.col-3 {
+      @apply shrink mx-1 w-[17%];
+      &-field {
+        @apply mr-1;
+      }
+    }
+
+    .c-and-item.col-2 {
+      @apply shrink mx-1 w-[8%];
+      &-field {
+        @apply mr-1;
+      }
+    }
+
+    .c-and-weekday-item {
+      @apply shrink mx-1 w-[20%];
+      &-field {
+        @apply mr-1;
+      }
+    }
+
+    .c-and-item-check {
+      @apply flex;
+    }
+
+    .c-and-item-field {
+      @apply mr-1;
+    }
+  }
+
+  .c-segment {
+    @apply flex;
+  }
+
+  select {
+    @apply text-black p-0.5 mx-2 pl-1;
+  }
+}
+
+.cron-btn-active {
+  @apply text-white bg-blue-500;
 }

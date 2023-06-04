@@ -24,7 +24,7 @@ import { Group } from '../../models/group';
   encapsulation: ViewEncapsulation.None,
 })
 export class ConfigFormComponent {
-  cronForm: FormControl;
+  quartzValue = '';
 
   @Input()
   form: FormGroup;
@@ -42,6 +42,10 @@ export class ConfigFormComponent {
   deleted: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(private fb: FormBuilder) {}
+
+  ngOnInit() {
+    this.quartzValue = this.form.controls['periodCron'].value;
+  }
 
   getSourceControls() {
     return (this.form.get('sources') as FormArray).controls;
@@ -98,6 +102,7 @@ export class ConfigFormComponent {
         path: '',
         type: 'local',
       }),
+      cronForm: ['raw'],
     });
   }
 
@@ -202,4 +207,28 @@ export class ConfigFormComponent {
 
     destinations.push(destination);
   }
+
+  public showCronForm(): boolean {
+    return this.form.controls['cronForm'].value === 'pick';
+  }
+
+  updateCronInput(value: string): void {
+    this.quartzValue = value;
+    this.form.controls['periodCron'].setValue(value);
+  }
+
+  public getCronValue(): string {
+    return this.form.controls['periodCron'].value;
+  }
+
+  // public changeDisabledCronInput(): void {
+  //   const isEnabled = this.form.get('periodCron')?.value.isEnabled;
+  //   const periodCronControl = this.form.get('periodCron');
+
+  //   if (isEnabled) {
+  //     periodCronControl?.disable();
+  //   } else {
+  //     periodCronControl?.enable();
+  //   }
+  // }
 }

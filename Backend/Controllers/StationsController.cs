@@ -188,7 +188,7 @@ namespace BackupSystem.Controllers
 
         private async Task ResetActiveAfterDelay(Station station)
         {
-            await Task.Delay(TimeSpan.FromMinutes(1));
+            await Task.Delay(TimeSpan.FromMinutes(10));
 
             // Retrieve the station from the database again (in case it was modified)
             Station? updatedStation = await context.Stations.FindAsync(station.StationId);
