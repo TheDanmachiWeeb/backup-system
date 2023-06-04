@@ -15,6 +15,8 @@ export class Report {
 
   public success: boolean;
 
+  public errorMessage: string;
+
   public constructor(
     reportId: number,
     stationId: number,
@@ -23,7 +25,8 @@ export class Report {
     configName: string,
     reportTime: string,
     backupSize: number,
-    success: boolean
+    success: boolean,
+    errorMessage: string
   ) {
     this.reportId = reportId;
     this.stationId = stationId;
@@ -31,5 +34,6 @@ export class Report {
     this.reportTime = reportTime;
     this.backupSize = backupSize;
     this.success = success;
+    this.errorMessage = errorMessage;
   }
 }

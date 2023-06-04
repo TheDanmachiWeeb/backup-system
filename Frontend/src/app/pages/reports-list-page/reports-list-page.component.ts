@@ -22,6 +22,15 @@ export class ReportsListPageComponent implements OnInit {
   }
 
   private refresh(): void {
-    this.service.findAll().subscribe((result) => (this.data = result));
+    this.service
+      .findAll()
+      .subscribe(
+        (result) =>
+          (this.data = result.sort(
+            (a, b) =>
+              new Date(b.reportTime).getTime() -
+              new Date(a.reportTime).getTime()
+          ))
+      );
   }
 }
