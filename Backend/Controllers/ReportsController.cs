@@ -66,7 +66,8 @@ namespace BackupSystem.Controllers
                 ConfigId = req.ConfigId,
                 ReportTime = req.ReportTime,
                 BackupSize = req.BackupSize,
-                Success = req.Success
+                Success = req.Success,
+                ErrorMessage = req.ErrorMessage
             };
             context.Reports.Add(report);
             await context.SaveChangesAsync();
