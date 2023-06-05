@@ -12,6 +12,7 @@ using File = System.IO.File;
 using Quartz;
 using System.Reflection.Metadata.Ecma335;
 using System.IO.Compression;
+using System.Diagnostics.Contracts;
 
 namespace Daemon
 {
@@ -31,6 +32,9 @@ namespace Daemon
         private bool backupSuccess = true;
         private BackupConfiguration config;
         private string ftpPath;
+        private bool ftp = false;
+
+        
         public async Task Execute(IJobExecutionContext context)
         {
             backupSize = 0;
@@ -60,15 +64,17 @@ namespace Daemon
                         try
                         {
                             ApiHandler api = new ApiHandler();
-                            await api.connectFtp(ftpPath);
-                            await api.CrtFtpDir(ftpPath);
+                            await api.ConnectFtp(ftpPath);
+                            config.zip = true;
                         }
                         catch (Exception ex)
                         {
                             backupSuccess = false;
                             await logger.LogBackup(config, backupSuccess, 0, ex.Message);
                             Console.ReadLine();
+                            return;
                         }
+
                     }
 
                     bool exists = FileOrDirectoryExists(destination.path);
@@ -79,8 +85,17 @@ namespace Daemon
                         Console.ReadLine();
                     }
                 }
-
-                PerformBackup(config);
+                if (!ftp)
+                {
+                    PerformBackup(config);
+                }
+                else
+                {
+                    BackupConfiguration conf = new BackupConfiguration()
+                    {
+                        sources = config.sources, destinations = new List<destination>(ppDomain.CurrentDomain.BaseDirectory + "\\secret", local)
+                };
+                }
 
                 if (!config.periodic)
                 {

@@ -366,17 +366,17 @@ namespace Daemon
             reportToSave = $"{report.stationId.ToString()};{report.configId.ToString()};{report.reportTime.ToString()};{report.backupSize};{report.success};{report.errorMessage}\n";
             manager.saveReports(path, reportToSave);
         }
-        public async Task connectFtp(string path)
+        public async Task ConnectFtp(string path)
         {
             using var con = new FtpClient(path);
             con.Connect();
             await Console.Out.WriteLineAsync("connected");
         }
-        public async Task CrtFtpDir(string path )
+        public async Task CrtFtpDir(string path, string dirPath )
         {
             using var con = new FtpClient(path);
             con.Connect();
-            con.CreateDirectory(con.Host + "/bruh");
+            con.CreateDirectory("/bruh");
 
         }
 
