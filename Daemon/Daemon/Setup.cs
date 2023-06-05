@@ -28,7 +28,7 @@ namespace Daemon
             await api.MarkStationAsOnline(IDString);
 
 
-            Console.WriteLine("Your ID in the database: " + IDString);
+            //Console.WriteLine("Your ID in the database: " + IDString);
 
             stationStatus = await api.GetStatus(IDString);
             if (stationStatus == status.approved || ApiHandler.offline)

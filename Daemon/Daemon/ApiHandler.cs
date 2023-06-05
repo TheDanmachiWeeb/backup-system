@@ -117,7 +117,7 @@ namespace Daemon
                     if (response.IsSuccessStatusCode)
                     {
                         var responseContent = await response.Content.ReadAsStringAsync();
-                        await Console.Out.WriteLineAsync(responseContent.ToString());
+                      // await Console.Out.WriteLineAsync(responseContent.ToString());
 
                         configs = CreateConfigs(responseContent);
                         manager.saveConfigs(responseContent);
@@ -204,7 +204,7 @@ namespace Daemon
                     var response = await httpClient.PatchAsync($"{apiUrl}/stations/{id}/online", emptyContent);
                     if (response.IsSuccessStatusCode)
                     {
-                        Console.WriteLine("Marked online");
+                       // Console.WriteLine("Marked online");
                     }
                     else
                     {

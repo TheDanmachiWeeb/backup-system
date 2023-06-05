@@ -21,11 +21,14 @@ namespace Daemon
 
         public status status { get; set; } = status.waiting;
 
+        public bool active { get; set; } = false;
+
         public Station()
         {
             this.StationName = getStationName();
             this.IpAddress = GetIPAddress();
             this.MacAddress = GetMACAddress();
+            this.active = false;
         }
 
         public string getStationName()
