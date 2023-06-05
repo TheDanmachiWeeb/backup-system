@@ -34,7 +34,8 @@ namespace BackupSystem.Controllers
                 ConfigName = r.Config.ConfigName,
                 ReportTime = r.ReportTime,
                 BackupSize = r.BackupSize,
-                Success = r.Success
+                Success = r.Success,
+                ErrorMessage = r.ErrorMessage,
             });
 
             return Ok(result);

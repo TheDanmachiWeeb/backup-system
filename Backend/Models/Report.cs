@@ -13,7 +13,7 @@ public partial class Report
     public DateTime ReportTime { get; set; }
     public ulong BackupSize { get; set; }
     public Boolean Success { get; set; }
-    public string ErrorMessage { get; set; } = string.Empty;
+    public string? ErrorMessage { get; set; } = null;
 
     [ForeignKey("ConfigId")]
     public virtual Configuration Config { get; set; } = null!;

@@ -15,5 +15,5 @@ public partial class ReportDto
     public DateTime ReportTime { get; set; }
     public ulong BackupSize { get; set; }
     public Boolean Success { get; set; }
-    public string ErrorMessage { get; set; } = string.Empty;
+    public string? ErrorMessage { get; set; } = null;
 }
