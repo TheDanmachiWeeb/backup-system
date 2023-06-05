@@ -58,8 +58,9 @@ namespace BackupSystem.Controllers
             user.Email = req.Email;
             user.Username = req.Username;
             user.PasswordHash = req.PasswordHash;
+            user.ReportCron= req.ReportCron;
 
-            await context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
             return Ok(await context.Users.ToListAsync());
         }

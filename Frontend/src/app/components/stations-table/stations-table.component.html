@@ -34,48 +34,47 @@
       </th>
     </tr>
   </thead>
-  <tbody
-    *ngFor="let item of stations"
-    class="bg-white divide-y divide-gray-200"
-  >
-    <tr class="bg-gray-300" *ngIf="item.status === 'waiting'">
-      <td class="px-6 py-4 whitespace-nowrap">{{ item.stationName }}</td>
-      <td class="px-6 py-4 whitespace-nowrap">{{ item.ipAddress }}</td>
-      <td colspan="3" class="text-right px-6 py-4 whitespace-nowrap">
-        <app-button (click)="approved.emit(item)" variant="success" size="sm">
-          <i class="fa-solid fa-check"></i> Approve
-        </app-button>
-        <app-button
-          class="ml-4"
-          (click)="rejected.emit(item)"
-          variant="danger"
-          size="sm"
+  <tbody class="bg-white divide-y divide-gray-200">
+    <ng-container *ngFor="let item of stations">
+      <tr class="bg-gray-300" *ngIf="item.status === 'waiting'">
+        <td class="px-6 py-4 whitespace-nowrap">{{ item.stationName }}</td>
+        <td class="px-6 py-4 whitespace-nowrap">{{ item.ipAddress }}</td>
+        <td colspan="3" class="text-right px-6 py-4 whitespace-nowrap">
+          <app-button (click)="approved.emit(item)" variant="success" size="sm">
+            <i class="fa-solid fa-check"></i> Approve
+          </app-button>
+          <app-button
+            class="ml-4"
+            (click)="rejected.emit(item)"
+            variant="danger"
+            size="sm"
+          >
+            <i class="fa-solid fa-ban"></i> Reject
+          </app-button>
+        </td>
+      </tr>
+      <tr *ngIf="item.status === 'approved'">
+        <td class="px-6 py-4 whitespace-nowrap">{{ item.stationName }}</td>
+        <td class="px-6 py-4 whitespace-nowrap">{{ item.ipAddress }}</td>
+        <td class="px-6 py-4 whitespace-nowrap">{{ item.macAddress }}</td>
+        <td class="px-6 py-4 whitespace-nowrap">
+          <span
+            [class]="
+              'tracking-wide font-semibold uppercase ' +
+              (item.active ? 'text-green-700' : 'text-red-700')
+            "
+          >
+            {{ (item.active ? "" : "in") + "active" }}</span
+          >
+        </td>
+        <td
+          class="px-6 py-4 whitespace-nowrap flex justify-center font-medium font-bold"
         >
-          <i class="fa-solid fa-ban"></i> Reject
-        </app-button>
-      </td>
-    </tr>
-    <tr *ngIf="item.status === 'approved'">
-      <td class="px-6 py-4 whitespace-nowrap">{{ item.stationName }}</td>
-      <td class="px-6 py-4 whitespace-nowrap">{{ item.ipAddress }}</td>
-      <td class="px-6 py-4 whitespace-nowrap">{{ item.macAddress }}</td>
-      <td class="px-6 py-4 whitespace-nowrap">
-        <span
-          [class]="
-            'tracking-wide font-semibold uppercase ' +
-            (item.active ? 'text-green-700' : 'text-red-700')
-          "
-        >
-          {{ (item.active ? "" : "in") + "active" }}</span
-        >
-      </td>
-      <td
-        class="px-6 py-4 whitespace-nowrap flex justify-center font-medium font-bold"
-      >
-        <app-button (click)="deleted.emit(item)" variant="danger" size="sm">
-          <i class="fas fa-trash"></i> Delete
-        </app-button>
-      </td>
-    </tr>
+          <app-button (click)="deleted.emit(item)" variant="danger" size="sm">
+            <i class="fas fa-trash"></i> Delete
+          </app-button>
+        </td>
+      </tr>
+    </ng-container>
   </tbody>
 </table>

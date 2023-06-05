@@ -1,1 +1,13 @@
-<p>settings-page works!</p>
+<div class="pinky-container">
+  <form class="flex flex-col gap-3" [formGroup]="form">
+    <label for="emailCron">Enter CRON for email reports:</label>
+    <input
+      class="py-1 px-2 w-36"
+      type="text"
+      id="emailCron"
+      formControlName="emailCron"
+      placeholder="0 16 * * *"
+    />
+    <app-button variant="success" size="sm"> Save settings </app-button>
+  </form>
+</div>

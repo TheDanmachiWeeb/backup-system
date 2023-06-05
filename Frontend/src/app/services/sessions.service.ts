@@ -15,6 +15,9 @@ export class SessionsService {
         savePassword
           ? localStorage.setItem('token', result.token)
           : sessionStorage.setItem('token', result.token);
+
+        sessionStorage.setItem('user', user.username);
+        sessionStorage.setItem('userId', user.userId);
       })
     );
   }

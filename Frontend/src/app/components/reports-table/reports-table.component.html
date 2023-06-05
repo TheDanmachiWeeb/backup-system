@@ -60,7 +60,9 @@
           {{ item.success ? "Success" : "Fail" }}
         </app-button>
       </td>
-      <td class="px-6 py-4 whitespace-nowrap">{{ item.errorMessage }}</td>
+      <td class="px-6 py-4 whitespace-nowrap">
+        <div class="overflow-x-auto">{{ item.errorMessage }}</div>
+      </td>
     </tr>
   </tbody>
 </table>

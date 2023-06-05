@@ -12,4 +12,8 @@ export class SidebarComponent {
   logout(): void {
     this.logouted.emit();
   }
+
+  getCurrentUser(): string | null {
+    return sessionStorage.getItem('user');
+  }
 }
