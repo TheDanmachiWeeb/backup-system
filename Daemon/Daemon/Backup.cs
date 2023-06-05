@@ -91,10 +91,7 @@ namespace Daemon
                 }
                 else
                 {
-                    BackupConfiguration conf = new BackupConfiguration()
-                    {
-                        sources = config.sources, destinations = new List<destination>(ppDomain.CurrentDomain.BaseDirectory + "\\secret", local)
-                };
+                    Console.WriteLine("FTP moment");
                 }
 
                 if (!config.periodic)
