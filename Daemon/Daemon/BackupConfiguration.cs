@@ -21,11 +21,18 @@ namespace Daemon
     }
     public class destination
     {
-        public string path { get; set; } 
+        public string path { get; set; }
+        public destinationType type { get; set; }
     }
     public class source
     {
         public string path { get; set; }  
+    }
+    public enum destinationType
+    {
+        local,
+        ftp,
+        network
     }
 
 }

@@ -30,7 +30,7 @@ namespace Daemon
         private FileManager fileManager = new FileManager();
         private bool backupSuccess = true;
         private BackupConfiguration config;
-
+        private string ftpPath;
         public async Task Execute(IJobExecutionContext context)
         {
             backupSize = 0;
@@ -49,6 +49,27 @@ namespace Daemon
                 }
                 foreach (var destination in config.destinations)
                 {
+                    bool ftp = false;
+                    if (destination.type == destinationType.ftp)
+                    {
+                        ftp = true;
+                        ftpPath = destination.path;
+                    }
+                    if (ftp)
+                    {
+                        try
+                        {
+                            ApiHandler api = new ApiHandler();
+                            await api.connectFtp(ftpPath);
+                            await api.CrtFtpDir(ftpPath);
+                        }
+                        catch (Exception ex)
+                        {
+                            backupSuccess = false;
+                            await logger.LogBackup(config, backupSuccess, 0, ex.Message);
+                            Console.ReadLine();
+                        }
+                    }
 
                     bool exists = FileOrDirectoryExists(destination.path);
                     if (!exists && backupSuccess == true)
@@ -210,6 +231,19 @@ namespace Daemon
         private bool FileOrDirectoryExists(string name)
         {
             return (Directory.Exists(name) || File.Exists(name));
+        }
+        private bool BeginsWithFtp(string inputString)
+        {
+            if (inputString.StartsWith("ftp:", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            return false;
+        }
+        private string RemoveFtpPrefix(string inputString)
+        {
+            return inputString.Substring(4); // Remove the first 4 characters ("ftp:")
         }
     }
 }

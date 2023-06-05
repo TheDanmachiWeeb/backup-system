@@ -17,6 +17,7 @@ using Newtonsoft.Json.Linq;
 using static System.Net.Mime.MediaTypeNames;
 using System.IO;
 using System.Security.Cryptography;
+using FluentFTP;
 
 
 namespace Daemon
@@ -116,6 +117,8 @@ namespace Daemon
                     if (response.IsSuccessStatusCode)
                     {
                         var responseContent = await response.Content.ReadAsStringAsync();
+                        await Console.Out.WriteLineAsync(responseContent.ToString());
+
                         configs = CreateConfigs(responseContent);
                         manager.saveConfigs(responseContent);
                         await Console.Out.WriteLineAsync("Got configs online");
@@ -198,14 +201,7 @@ namespace Daemon
                 {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                     HttpContent emptyContent = new StringContent(string.Empty);
-                    var response = await httpClient.PutAsJsonAsync($"{apiUrl}/stations/online/{id}", emptyContent);
-                    // string requestPayload = await response.RequestMessage.Content.ReadAsStringAsync();
-
-                    //Print or log the JSON payload
-                    //  Console.WriteLine(requestPayload);
-
-                    // Console.WriteLine($"{apiUrl}/configurations/finished/{config.configId}", emptyContent);
-
+                    var response = await httpClient.PatchAsync($"{apiUrl}/stations/{id}/online", emptyContent);
                     if (response.IsSuccessStatusCode)
                     {
                         Console.WriteLine("Marked online");
@@ -263,10 +259,14 @@ namespace Daemon
                
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);  
                 Console.WriteLine("Sending report to the server...");
-        
-                try
-                {
+
+                try { 
+
+
                     var response = await httpClient.PostAsJsonAsync($"{apiUrl}/Reports", report);
+                    string requestPayload = await response.RequestMessage.Content.ReadAsStringAsync();
+                    Console.WriteLine(requestPayload);
+
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -366,7 +366,19 @@ namespace Daemon
             reportToSave = $"{report.stationId.ToString()};{report.configId.ToString()};{report.reportTime.ToString()};{report.backupSize};{report.success};{report.errorMessage}\n";
             manager.saveReports(path, reportToSave);
         }
+        public async Task connectFtp(string path)
+        {
+            using var con = new FtpClient(path);
+            con.Connect();
+            await Console.Out.WriteLineAsync("connected");
+        }
+        public async Task CrtFtpDir(string path )
+        {
+            using var con = new FtpClient(path);
+            con.Connect();
+            con.CreateDirectory(con.Host + "/bruh");
 
+        }
 
     }
 

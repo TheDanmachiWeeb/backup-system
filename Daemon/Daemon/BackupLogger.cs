@@ -15,7 +15,7 @@ namespace Daemon
         private ApiHandler api = new ApiHandler();
         private int ThreadCounter = 0;
 
-        public async Task LogBackup(BackupConfiguration config, bool backupSuccess, long backupSize, string exceptionMessage = null)
+        public async Task LogBackup(BackupConfiguration config, bool backupSuccess, long backupSize, string? exceptionMessage = null)
         {
             string path = manager.programFolder + "\\oldReports";
             if (File.Exists(path))
@@ -36,11 +36,13 @@ namespace Daemon
                 Success = backupSuccess,
                 backupSize = backupSize,
             };
-
+            if (logEntry.Success == false)
+            {
+                logEntry.errorMessage = exceptionMessage;
+            }
             if (logEntry.Success == false && exceptionMessage != null)
             {
                 logEntry.errorMessage = exceptionMessage;
-                await Console.Out.WriteLineAsync(exceptionMessage);
             }
             else if (logEntry.Success == false && exceptionMessage == null)
             {
